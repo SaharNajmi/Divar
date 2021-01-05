@@ -8,11 +8,21 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
+
     <include
+        android:id="@+id/toolbar"
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="15dp" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
+
+        <include layout="@layout/fab_subfab_menu" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
@@ -22,14 +32,12 @@
         app:headerLayout="@layout/navigationview_header"
         app:menu="@menu/my_navigation_items" />
 
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/cordinatorBottom"
+        android:id="@+id/coordinatorBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:background="@android:color/transparent">
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_bar"
@@ -51,8 +59,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
+                app:itemIconTint="@drawable/state_bottom_navigation_color"
+                app:itemTextColor="@color/myColor"
                 android:layout_marginEnd="0dp"
-                android:background="@drawable/ic_search"
                 app:labelVisibilityMode="selected"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -65,11 +74,21 @@
             android:id="@+id/floating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_search"
+            android:tint="@color/white"
+            app:backgroundTint="@color/myColor"
             app:layout_anchor="@id/bottom_bar"
-            tools:ignore="ContentDescription" />
+            app:srcCompat="@drawable/ic_add"
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/coordinatorBottom"
+        android:layout_below="@id/toolbar">
+
+    </androidx.viewpager.widget.ViewPager>
 
 </androidx.drawerlayout.widget.DrawerLayout>
