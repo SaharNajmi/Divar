@@ -1,14 +1,14 @@
 package com.example.divar
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
-import com.example.divar.adapter.PageAdapter
 import com.example.divar.fragment.AdListFragment
+import com.example.divar.fragment.ChatFragment
 import com.example.divar.fragment.FavoriteFragment
+import com.example.divar.fragment.ProfileFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //بک گراند fab خالی میشه -> زیر fab روی باتن نویگیشن به حالت نیم دایره درمیاد
         bottomNavigationView.background = null
 
         image_filter.setOnClickListener {
@@ -44,27 +45,33 @@ class MainActivity : AppCompatActivity() {
             drawer_layout.closeDrawers()
             true
         }
-
+        /*=====================Switch between Fragments in BottomNavigationView==================*/
         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.profile -> {
-                    //  Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.switch_fragment, ProfileFragment())
+                        .commit()
                 }
                 R.id.chat -> {
-                    Toast.makeText(this, "aaaaaaaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.switch_fragment, ChatFragment())
+                        .commit()
                 }
                 R.id.home -> {
-                    Toast.makeText(this, "aaaaaaaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.switch_fragment, AdListFragment())
+                        .commit()
                 }
                 R.id.favorite -> {
-                    val go = Intent(this, FavoriteFragment::class.java)
-                    startActivity(go)
-                    viewPager.currentItem = 3
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.switch_fragment, FavoriteFragment())
+                        .commit()
                 }
             }
             true
         }
-
         /*======================Sub Open FloatingActionButton =================================*/
         fab.setOnClickListener {
             if (!isFABOpen) {
