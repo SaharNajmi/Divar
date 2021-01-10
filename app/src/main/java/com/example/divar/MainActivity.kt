@@ -3,14 +3,11 @@ package com.example.divar
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.divar.fragment.AdListFragment
-import com.example.divar.fragment.ChatFragment
-import com.example.divar.fragment.FavoriteFragment
-import com.example.divar.fragment.ProfileFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
 import kotlinx.android.synthetic.main.toolbar.*
+import view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,10 +17,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         //بک گراند fab خالی میشه -> زیر fab روی باتن نویگیشن به حالت نیم دایره درمیاد
         bottomNavigationView.background = null
 
+        /*================================ Navigation Drawer ===============================*/
         image_filter.setOnClickListener {
             drawer_layout.openDrawer(nav_view)
         }
@@ -31,9 +28,6 @@ class MainActivity : AppCompatActivity() {
         nav_view.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.main_menu -> {
-                    /*      toolbar.title = getString(R.string.inbox)
-                          navigationPosition = R.id.navItemInbox
-                          navigateToFragment(InboxFragment.newInstance())*/
                 }
                 R.id.favorite -> {
                     Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show()
@@ -46,6 +40,15 @@ class MainActivity : AppCompatActivity() {
             true
         }
         /*=====================Switch between Fragments in BottomNavigationView==================*/
+
+        //show default fragment
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.switch_fragment, AdListFragment())
+            .commit()
+
+        //bottom navigation default selected option
+        bottomNavigationView.selectedItemId = R.id.home
+
         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.profile -> {
@@ -72,6 +75,13 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        floatingAdd.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.switch_fragment, NewAdFragment())
+                .commit()
+        }
+
         /*======================Sub Open FloatingActionButton =================================*/
         fab.setOnClickListener {
             if (!isFABOpen) {

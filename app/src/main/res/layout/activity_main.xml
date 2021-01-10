@@ -26,18 +26,23 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
 
-        <include layout="@layout/fab_subfab_menu" />
+        <FrameLayout
+            android:id="@+id/switch_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar"
+            android:layout_marginBottom="60dp"
+            android:layout_alignParentBottom="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
         <include
             android:id="@+id/btn_nav"
             layout="@layout/bottom_navigation_with_fab" />
 
-        <FrameLayout
-            android:id="@+id/switch_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/btn_nav"
-            android:layout_below="@id/toolbar"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <include layout="@layout/fab_subfab_menu" />
+
+
     </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

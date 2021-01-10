@@ -2,7 +2,7 @@ package com.example.divar
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.divar.fragment.FavoriteFragment
+import view.FavoriteFragment
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
 
 
@@ -10,12 +10,12 @@ class TestActivity : AppCompatActivity() {
 
     var isFABOpen = false
     companion object{
-        fun newInstance(): FavoriteFragment = FavoriteFragment()
+        fun newInstance(): FavoriteFragment =
+            FavoriteFragment()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-
 
         /*    bbb.setOnClickListener {
                 //   drawer_layout.openDrawer(nav_view)

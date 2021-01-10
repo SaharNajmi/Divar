@@ -5,8 +5,8 @@
     android:id="@+id/fabFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize"
     android:layout_marginBottom="60dp"
+    android:layout_alignParentBottom="true"
     android:orientation="vertical">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
