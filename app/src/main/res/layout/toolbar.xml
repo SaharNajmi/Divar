@@ -21,7 +21,7 @@
         android:layout_marginLeft="80dp"
         android:layout_marginRight="80dp"
         android:adjustViewBounds="true"
-        android:background="@drawable/background_search_view"
+        android:background="@drawable/background_radius"
         android:layoutDirection="rtl"
         android:padding="10dp" />
 

@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.squareup.picasso.Picasso
 
-class AdModel {
+class AdModel{
     companion object {
         @BindingAdapter("android:loadImage")
         @JvmStatic
@@ -63,5 +63,4 @@ class AdModel {
     @SerializedName("status")
     @Expose
     var status: String = ""
-
 }

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -32,7 +33,6 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         /*====================================viewModel===========================================*/
-
         val viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
             .create(BannerViewModel::class.java)
 
@@ -65,5 +65,6 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         go.putExtra("img2", item.img2)
         go.putExtra("img3", item.img3)
         startActivity(go)
+       // Toast.makeText(requireContext(), item.city, Toast.LENGTH_SHORT).show()
     }
 }
