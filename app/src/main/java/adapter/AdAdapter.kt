@@ -1,14 +1,10 @@
 package adapter
 
-import android.app.PendingIntent.getActivity
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.databinding.AdListItemBinding
-import kotlinx.android.synthetic.main.ad_list_item.view.*
 import model.AdModel
 
 

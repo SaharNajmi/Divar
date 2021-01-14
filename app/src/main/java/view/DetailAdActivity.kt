@@ -1,21 +1,26 @@
 package view
 
-import android.app.Application
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.divar.R
 import com.example.divar.databinding.ActivityDetailAdBinding
-import kotlinx.android.synthetic.main.ad_list_item.*
-import model.AdModel
+import com.synnapps.carouselview.ImageListener
 import model.DetailModel
-import viewmodel.BannerViewModel
+
 
 class DetailAdActivity : AppCompatActivity() {
 
     lateinit var mainBinding: ActivityDetailAdBinding
+
+    var img1: String? = null
+    var img2: String? = null
+    var img3: String? = null
+
+    var sampleImages: ArrayList<String>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +36,31 @@ class DetailAdActivity : AppCompatActivity() {
         val category = intent.getStringExtra("category")
         val date = intent.getStringExtra("date")
         val status = intent.getStringExtra("status")
-        val img1 = intent.getStringExtra("img1")
-        val img2 = intent.getStringExtra("img2")
-        val img3 = intent.getStringExtra("img3")
 
-        mainBinding.detailAd = DetailModel(title, price, description, date, img1)
+        img1 = intent.getStringExtra("img1")
+        img2 = intent.getStringExtra("img2")
+        img3 = intent.getStringExtra("img3")
 
+        /*===============================image slider with CarouselView=========================================*/
+        sampleImages = arrayListOf(img1!!, img2!!, img3!!)
+        mainBinding.carouselView.pageCount = sampleImages!!.size
+        mainBinding.carouselView.stopCarousel()
+        mainBinding.carouselView.setImageListener(imageListener)
+
+
+        mainBinding.detailAd = DetailModel(title, price, description, date)
+
+    }
+
+    private var imageListener: ImageListener = object : ImageListener {
+        override fun setImageForPosition(position: Int, imageView: ImageView) {
+
+            imageView.scaleType = ImageView.ScaleType.FIT_XY
+
+            Glide.with(imageView.context)
+                .load(sampleImages?.get(position))
+                .into(imageView)
+
+        }
     }
 }

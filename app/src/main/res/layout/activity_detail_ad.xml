@@ -24,14 +24,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="8dp"
+                tools:ignore="MissingClass">
 
-                <ImageView
+
+                <com.synnapps.carouselview.CarouselView
+                    android:id="@+id/carouselView"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:loadImageURL="@{detailAd.img1}"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/advertising" />
+                    android:layout_height="250dp"
+                    android:background="@drawable/advertising"
+                    app:fillColor="@color/white"
+                    app:radius="6dp"
+                    app:strokeColor="@color/myColor" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -58,10 +62,10 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:layout_marginLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
+                        android:layout_marginLeft="10dp"
                         android:src="@drawable/ic_time" />
                 </LinearLayout>
 
@@ -81,9 +85,9 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:layout_marginLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:src="@drawable/ic_money" />
                 </LinearLayout>
 

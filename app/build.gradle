@@ -67,4 +67,7 @@ dependencies {
     //Retrofit gson converter
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    /*=============================carouselview=================================*/
+    implementation 'com.synnapps:carouselview:0.1.5'
+
 }

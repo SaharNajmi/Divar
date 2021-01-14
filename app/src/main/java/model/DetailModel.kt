@@ -8,8 +8,7 @@ data class DetailModel(
     var title: String,
     var price: String,
     var description: String,
-    var date: String,
-    var img1: String
+    var date: String
 ) {
     companion object {
         @BindingAdapter("android:loadImageURL")
@@ -30,5 +29,5 @@ data class DetailModel(
         img1: String,
         img2: String,
         img3: String
-    ) : this(title, price, description, date, img1)
+    ) : this(title, price, description, date)
 }
