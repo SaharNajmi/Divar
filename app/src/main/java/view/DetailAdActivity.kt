@@ -1,6 +1,7 @@
 package view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -19,7 +20,7 @@ class DetailAdActivity : AppCompatActivity() {
     var img2: String? = null
     var img3: String? = null
 
-    var sampleImages: ArrayList<String>? = null
+    val sampleImages: ArrayList<String> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +42,20 @@ class DetailAdActivity : AppCompatActivity() {
         img2 = intent.getStringExtra("img2")
         img3 = intent.getStringExtra("img3")
 
-        /*===============================image slider with CarouselView=========================================*/
-        sampleImages = arrayListOf(img1!!, img2!!, img3!!)
-        mainBinding.carouselView.pageCount = sampleImages!!.size
+        /*===============================image slider with CarouselView=====================*/
+
+        if (!img1.equals(""))
+            sampleImages.add(img1!!)
+
+        if (!img2.equals(""))
+            sampleImages.add(img2!!)
+
+        if (!img3.equals(""))
+            sampleImages.add(img3!!)
+
         mainBinding.carouselView.stopCarousel()
         mainBinding.carouselView.setImageListener(imageListener)
-
+        mainBinding.carouselView.pageCount = sampleImages.size
 
         mainBinding.detailAd = DetailModel(title, price, description, date)
 
@@ -58,7 +67,7 @@ class DetailAdActivity : AppCompatActivity() {
             imageView.scaleType = ImageView.ScaleType.FIT_XY
 
             Glide.with(imageView.context)
-                .load(sampleImages?.get(position))
+                .load(sampleImages[position])
                 .into(imageView)
 
         }
