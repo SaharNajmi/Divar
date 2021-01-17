@@ -6,16 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
-
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        app:headerLayout="@layout/navigationview_header"
-        app:menu="@menu/my_navigation_items" />
+    tools:context=".MainActivity"
+    tools:openDrawer="right">
 
     <RelativeLayout
         android:id="@+id/main_actv"
@@ -31,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
-            android:layout_marginBottom="60dp"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
@@ -44,5 +36,27 @@
         <include layout="@layout/fab_subfab_menu" />
 
 
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/toolbar"
+            android:dividerHeight="0.5dp" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:headerLayout="@layout/nav_header" />
+    </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
