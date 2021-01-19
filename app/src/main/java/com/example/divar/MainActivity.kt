@@ -1,11 +1,10 @@
 package com.example.divar
 
 import adapter.ExpandableListCategoryAdapter
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ExpandableListAdapter
-import android.widget.ExpandableListView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private var adapter: ExpandableListAdapter? = null
     private var titleList: List<String>? = null
     private val cate_base = HashMap<String, List<String>>()
-
+    private val cityArray = listOf("کردستان", "تهران", "اردبیل")
     private val data: HashMap<String, List<String>>
         get() {
             val cate_0 = ArrayList<String>()
@@ -57,28 +56,28 @@ class MainActivity : AppCompatActivity() {
 
         /*===================================== Navigation Drawer ==================================*/
         image_filter.setOnClickListener {
-           drawer_layout.openDrawer(linearLayout)
+            drawer_layout.openDrawer(linearLayout)
         }
 
-             nav_view.setNavigationItemSelectedListener { menuItem ->
-                 drawer_layout.openDrawer(nav_view)
-                 when (menuItem.itemId) {
-                     R.id.main_menu -> {
+        nav_view.setNavigationItemSelectedListener { menuItem ->
+            drawer_layout.openDrawer(nav_view)
+            when (menuItem.itemId) {
+                R.id.main_menu -> {
 
-                     }
-                     R.id.favorite -> {
-                         Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show()
-                     }
-                 }
-                 // set item as selected to persist highlight
-                 menuItem.isChecked = true
-                 // close drawer when item is tapped
-                 drawer_layout.closeDrawers()
-                 true
-             }
+                }
+                R.id.favorite -> {
+                    Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show()
+                }
+            }
+            // set item as selected to persist highlight
+            menuItem.isChecked = true
+            // close drawer when item is tapped
+            drawer_layout.closeDrawers()
+            true
+        }
 
         /*========================expandableListView  <list and sublist category>==================*/
-      expandableListView = nav_view.getHeaderView(0).expandableListViewHeader
+        expandableListView = nav_view.getHeaderView(0).expandableListViewHeader
 
         if (expandableListView != null) {
             val listData = data
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             expandableListView!!.setOnGroupExpandListener { groupPosition ->
                 Toast.makeText(
                     applicationContext,
-                    (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
+                    (titleList as ArrayList<String>)[groupPosition] + " باز شد ",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -97,15 +96,24 @@ class MainActivity : AppCompatActivity() {
             expandableListView!!.setOnGroupCollapseListener { groupPosition ->
                 Toast.makeText(
                     applicationContext,
-                    (titleList as ArrayList<String>)[groupPosition] + " List Collapsed.",
+                    (titleList as ArrayList<String>)[groupPosition] + " بسته شد ",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
             expandableListView!!.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+
+                val category = "$groupPosition,$childPosition"
+                val titleCate =
+                    (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(titleList as ArrayList<String>)[groupPosition]]!![childPosition]
+                val go = Intent(this, CategoryActivity::class.java)
+                go.putExtra("category", category)
+                go.putExtra("titleCate", titleCate)
+                startActivity(go)
+
                 Toast.makeText(
                     applicationContext,
-                    "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(
+                    "clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(
                         childPosition
                     ),
                     Toast.LENGTH_SHORT
@@ -113,16 +121,16 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
-        expandableListView!!.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
-            Toast.makeText(
-                applicationContext,
-                "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + cate_base[(titleList as ArrayList<String>)[groupPosition]]!!.get(
-                    childPosition
-                ),
-                Toast.LENGTH_SHORT
-            ).show()
-            false
-        }
+        /*   expandableListView!!.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+               Toast.makeText(
+                   applicationContext,
+                   "clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + cate_base[(titleList as ArrayList<String>)[groupPosition]]!!.get(
+                       childPosition
+                   ),
+                   Toast.LENGTH_SHORT
+               ).show()
+               false
+           }*/
 
         /*=====================Switch between Fragments in BottomNavigationView==================*/
 
@@ -175,6 +183,10 @@ class MainActivity : AppCompatActivity() {
                 closeFABMenu()
             }
         }
+
+        /*==================================spinner city======================================*/
+        val adapterCity = ArrayAdapter<String>(this, R.layout.row_spinner, cityArray)
+        spinner_city.adapter = adapterCity
     }
 
     private fun showFABMenu() {
