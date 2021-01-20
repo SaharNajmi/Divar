@@ -1,11 +1,13 @@
 package com.example.divar
 
 import adapter.ExpandableListCategoryAdapter
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.ActionBarDrawerToggle
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
@@ -24,6 +26,10 @@ class MainActivity : AppCompatActivity() {
     private var titleList: List<String>? = null
     private val cate_base = HashMap<String, List<String>>()
     private val cityArray = listOf("کردستان", "تهران", "اردبیل")
+
+    private var myDataSaved: SharedPreferences? = null
+    private var editor: SharedPreferences.Editor? = null
+
     private val data: HashMap<String, List<String>>
         get() {
             val cate_0 = ArrayList<String>()
@@ -187,6 +193,26 @@ class MainActivity : AppCompatActivity() {
         /*==================================spinner city======================================*/
         val adapterCity = ArrayAdapter<String>(this, R.layout.row_spinner, cityArray)
         spinner_city.adapter = adapterCity
+
+        myDataSaved = getSharedPreferences("myCity", Context.MODE_PRIVATE)
+        val cityCode = myDataSaved?.getInt("spinnerSelectionCity", 0)
+        spinner_city.setSelection(cityCode!!)
+
+        spinner_city.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedPosition: Int = spinner_city.selectedItemPosition
+                editor = myDataSaved?.edit()
+                editor?.putInt("spinnerSelectionCity", selectedPosition)
+                editor?.apply()
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {}
+        })
     }
 
     private fun showFABMenu() {
