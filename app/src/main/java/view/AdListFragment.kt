@@ -3,11 +3,13 @@ package view
 import adapter.AdAdapter
 import adapter.ItemOnClickListener
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_ad_list.*
 import model.AdModel
 import viewmodel.BannerViewModel
 
+
 class AdListFragment : Fragment(), ItemOnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,13 +34,17 @@ class AdListFragment : Fragment(), ItemOnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         /*====================================viewModel===========================================*/
+
+        //آگهی ها را بر اساس شهر انتخاب شده نمایش دهد
+        val myDataSaved = activity?.getSharedPreferences("myCity", Context.MODE_PRIVATE)
+        val cityName = myDataSaved?.getString("CityName", "all")
+
         val viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
             .create(BannerViewModel::class.java)
 
         val listMutableLiveData: MutableLiveData<ArrayList<AdModel>> =
-            viewModel.getListMutableLiveData()
+            viewModel.getListMutableLiveData(cityName!!, "all")
 
         listMutableLiveData.observe(this, object : Observer<ArrayList<AdModel>> {
             override fun onChanged(t: ArrayList<AdModel>?) {
@@ -65,6 +72,6 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         go.putExtra("img2", item.img2)
         go.putExtra("img3", item.img3)
         startActivity(go)
-       // Toast.makeText(requireContext(), item.city, Toast.LENGTH_SHORT).show()
+        // Toast.makeText(requireContext(), item.city, Toast.LENGTH_SHORT).show()
     }
 }

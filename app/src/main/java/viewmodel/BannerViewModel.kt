@@ -19,11 +19,11 @@ class BannerViewModel : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     lateinit var api: ApiClient
 
-    fun getListMutableLiveData(): MutableLiveData<ArrayList<AdModel>> {
+    fun getListMutableLiveData(city: String, cate: String): MutableLiveData<ArrayList<AdModel>> {
         listMutableLiveData = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
-            api.getAllBanners()
+            api.getAllBanners(city, cate)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<ArrayList<AdModel>>() {

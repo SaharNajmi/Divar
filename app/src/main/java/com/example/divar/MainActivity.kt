@@ -206,8 +206,11 @@ class MainActivity : AppCompatActivity() {
                 id: Long
             ) {
                 val selectedPosition: Int = spinner_city.selectedItemPosition
+                val cityName=cityArray[cityCode]
+
                 editor = myDataSaved?.edit()
                 editor?.putInt("spinnerSelectionCity", selectedPosition)
+                editor?.putString("CityName", cityName)
                 editor?.apply()
             }
 

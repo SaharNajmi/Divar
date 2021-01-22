@@ -24,7 +24,8 @@ class ApiClient {
         request = retrofit!!.create(ApiInterface::class.java)
     }
 
-    fun getAllBanners(): Single<ArrayList<AdModel>> {
-        return request.getBanner()
+    fun getAllBanners(city:String,cate:String): Single<ArrayList<AdModel>> {
+        //return request.getBanner()
+        return request.getAllBanner(city,cate)
     }
 }
