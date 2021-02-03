@@ -1,19 +1,15 @@
 package com.example.divar
 
 import adapter.ExpandableListCategoryAdapter
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import android.widget.*
-import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
 import kotlinx.android.synthetic.main.nav_header.view.*
-import kotlinx.android.synthetic.main.toolbar.*
 import view.*
 
 
@@ -53,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
             return cate_base
         }
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -152,7 +148,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.profile -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.switch_fragment, ProfileFragment())
+                        .replace(R.id.switch_fragment, LoginFragment())
                         .commit()
                 }
                 R.id.chat -> {
@@ -173,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
-        }
+      }
 
         floatingAdd.setOnClickListener {
             supportFragmentManager.beginTransaction()
@@ -191,31 +187,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         /*==================================spinner city======================================*/
-        val adapterCity = ArrayAdapter<String>(this, R.layout.row_spinner, cityArray)
-        spinner_city.adapter = adapterCity
+        /*  val adapterCity = ArrayAdapter<String>(this,
+              R.layout.row_spinner, cityArray)
+          spinner_city.adapter = adapterCity
 
-        myDataSaved = getSharedPreferences("myCity", Context.MODE_PRIVATE)
-        val cityCode = myDataSaved?.getInt("spinnerSelectionCity", 0)
-        spinner_city.setSelection(cityCode!!)
+          myDataSaved = getSharedPreferences("myCity", Context.MODE_PRIVATE)
+          val cityCode = myDataSaved?.getInt("spinnerSelectionCity", 0)
+          spinner_city.setSelection(cityCode!!)
 
-        spinner_city.setOnItemSelectedListener(object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parentView: AdapterView<*>?,
-                selectedItemView: View?,
-                position: Int,
-                id: Long
-            ) {
-                val selectedPosition: Int = spinner_city.selectedItemPosition
-                val cityName=cityArray[cityCode]
+          spinner_city.setOnItemSelectedListener(object : OnItemSelectedListener {
+              override fun onItemSelected(
+                  parentView: AdapterView<*>?,
+                  selectedItemView: View?,
+                  position: Int,
+                  id: Long
+              ) {
+                  val selectedPosition: Int = spinner_city.selectedItemPosition
+                  val cityName=cityArray[cityCode]
 
-                editor = myDataSaved?.edit()
-                editor?.putInt("spinnerSelectionCity", selectedPosition)
-                editor?.putString("CityName", cityName)
-                editor?.apply()
-            }
+                  editor = myDataSaved?.edit()
+                  editor?.putInt("spinnerSelectionCity", selectedPosition)
+                  editor?.putString("CityName", cityName)
+                  editor?.apply()
+              }
 
-            override fun onNothingSelected(parentView: AdapterView<*>?) {}
-        })
+              override fun onNothingSelected(parentView: AdapterView<*>?) {}
+          })*/
     }
 
     private fun showFABMenu() {

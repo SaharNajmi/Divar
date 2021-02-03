@@ -32,9 +32,9 @@ class AdModel{
     @Expose
     var price: String = ""
 
-    @SerializedName("tell")
+    @SerializedName("userID")
     @Expose
-    var tell: String = ""
+    var userID: String = ""
 
     @SerializedName("city")
     @Expose

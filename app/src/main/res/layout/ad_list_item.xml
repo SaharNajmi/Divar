@@ -35,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:layout_width="381dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:singleLine="true"
@@ -45,9 +45,8 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:gravity="right"
                 android:singleLine="true"
                 android:text="@{advertise.price,default=Price}"

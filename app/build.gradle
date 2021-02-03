@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id "androidx.navigation.safeargs.kotlin"
 }
 
 android {
@@ -23,6 +24,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -69,5 +76,12 @@ dependencies {
 
     /*=============================carouselview=================================*/
     implementation 'com.synnapps:carouselview:0.1.5'
+
+    /*====================navigation=====================*/
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+
+    //for error 64k method
+    implementation 'com.android.support:multidex:1.0.3'
 
 }

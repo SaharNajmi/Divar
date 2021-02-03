@@ -15,6 +15,12 @@ class AdAdapter(
 ) : RecyclerView.Adapter<AdAdapter.Holder>() {
 
     lateinit var date: String
+    var listFilter = ArrayList<AdModel>()
+
+    fun updateList(list: ArrayList<AdModel>?) {
+        this.listFilter = list!!
+        notifyDataSetChanged()
+    }
 
     class Holder(private val binding: AdListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AdModel) {

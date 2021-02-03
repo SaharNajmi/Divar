@@ -5,7 +5,6 @@ import adapter.ItemOnClickListener
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
@@ -13,10 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.divar.MainActivity
 import com.example.divar.R
 import kotlinx.android.synthetic.main.activity_category.*
-import kotlinx.android.synthetic.main.fragment_ad_list.*
 import model.AdModel
 import viewmodel.BannerViewModel
 
@@ -63,7 +60,7 @@ class CategoryActivity : AppCompatActivity(), ItemOnClickListener {
         go.putExtra("description", item.description)
         go.putExtra("price", item.price)
         go.putExtra("city", item.city)
-        go.putExtra("tell", item.tell)
+        go.putExtra("tell", item.userID)
         go.putExtra("category", item.category)
         go.putExtra("date", item.date)
         go.putExtra("status", item.status)
