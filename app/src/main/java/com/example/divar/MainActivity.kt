@@ -1,6 +1,7 @@
 package com.example.divar
 
 import adapter.ExpandableListCategoryAdapter
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
             return cate_base
         }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -150,6 +151,16 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.switch_fragment, LoginFragment())
                         .commit()
+               /*     val pref = this.getSharedPreferences("pref", Context.MODE_PRIVATE)
+                    if (pref.getBoolean("login", false)) {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.switch_fragment, ProfileFragment())
+                            .commit()
+                    } else {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.switch_fragment, LoginFragment())
+                            .commit()
+                    }*/
                 }
                 R.id.chat -> {
                     supportFragmentManager
@@ -169,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
-      }
+        }
 
         floatingAdd.setOnClickListener {
             supportFragmentManager.beginTransaction()

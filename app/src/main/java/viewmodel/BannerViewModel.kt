@@ -49,6 +49,7 @@ class BannerViewModel : ViewModel() {
     fun getListMutableLiveDataUserBanner(tell: String): MutableLiveData<ArrayList<AdModel>> {
         listMutableLiveData = MutableLiveData()
         api = ApiClient()
+        //Schedulers: مدیریت ترد ها
         compositeDisposable.add(
             api.getUserBanners(tell)
                 .subscribeOn(Schedulers.newThread())
@@ -77,8 +78,6 @@ class BannerViewModel : ViewModel() {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe{
                     mutableLiveDataSendActivation.value = it
-                    Log.d("sssssssss", it.toString())
-
                 })
             return mutableLiveDataSendActivation
     }
@@ -87,12 +86,13 @@ class BannerViewModel : ViewModel() {
     fun applyActivationKey(mobile: String, code: String): MutableLiveData<LoginModel> {
         mutableLiveDataApplyActivation = MutableLiveData()
         api = ApiClient()
+        compositeDisposable.add(
         api.applyActivationKey(mobile, code)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 mutableLiveDataApplyActivation.value = it
-            }
+            })
         return mutableLiveDataApplyActivation
     }
 

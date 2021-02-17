@@ -27,19 +27,19 @@ class ApiClient {
         request = retrofit!!.create(ApiInterface::class.java)
     }
 
-    fun getAllBanners(city: String, cate: String): Single<ArrayList<AdModel>> {
-        return request.getAllBanner(city, cate)
-    }
-
-    fun getUserBanners(tell: String): Single<ArrayList<AdModel>> {
-        return request.getUserBanner(tell)
+    fun sendActivationKey(mobile: String): Observable<LoginModel> {
+        return request.sendActivationKey(mobile)
     }
 
     fun applyActivationKey(mobile: String, code: String): Observable<LoginModel> {
         return request.applyActivationKey(mobile, code)
     }
 
-    fun sendActivationKey(mobile: String): Observable<LoginModel> {
-        return request.sendActivationKey(mobile)
+    fun getAllBanners(city: String, cate: String): Single<ArrayList<AdModel>> {
+        return request.getAllBanner(city, cate)
+    }
+
+    fun getUserBanners(tell: String): Single<ArrayList<AdModel>> {
+        return request.getUserBanner(tell)
     }
 }

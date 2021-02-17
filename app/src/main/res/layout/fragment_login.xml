@@ -11,7 +11,7 @@
         android:fillViewport="true">
 
         <LinearLayout
-          android:id="@+id/fragment_show"
+            android:id="@+id/fragment_show"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -23,6 +23,7 @@
                 android:layout_margin="8dp"
                 android:layout_marginTop="?attr/actionBarSize"
                 android:background="@color/white"
+
                 android:orientation="vertical">
 
                 <TextView
@@ -101,6 +102,23 @@
                     android:textSize="20dp" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_log_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="خروج از حساب"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rec_my_ad"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/txt_log_out"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
