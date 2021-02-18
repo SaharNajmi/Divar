@@ -15,7 +15,6 @@
         <activity android:name="view.AccountActivity" />
         <activity android:name="view.CategoryActivity" />
         <activity android:name="view.DetailAdActivity" />
-        <activity android:name=".TestActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
