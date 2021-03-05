@@ -1,5 +1,6 @@
 package adapter
 
+import RoomDatabase.FavoriteEntity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +11,7 @@ import model.AdModel
 
 class AdAdapter(
     val context: Context,
-    private val list: ArrayList<AdModel>,
+    private var list: ArrayList<AdModel>,
     private val click: ItemOnClickListener
 ) : RecyclerView.Adapter<AdAdapter.Holder>() {
 
@@ -27,7 +28,6 @@ class AdAdapter(
             binding.advertise = item
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val layoutInflater = LayoutInflater.from(context)
         val binding = AdListItemBinding.inflate(layoutInflater, parent, false)

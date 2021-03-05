@@ -1,5 +1,6 @@
 package view
 
+import RoomDatabase.FavoriteEntity
 import adapter.AdAdapter
 import adapter.ItemOnClickListener
 import android.app.Application
@@ -24,10 +25,11 @@ import kotlinx.android.synthetic.main.fragment_ad_list.*
 import kotlinx.android.synthetic.main.toolbar.*
 import model.AdModel
 import viewmodel.BannerViewModel
+import viewmodel.FavoriteRoomDBViewModel
 
 
 class AdListFragment : Fragment(), ItemOnClickListener {
-    
+
     private val cityArray = listOf("کردستان", "تهران", "اردبیل")
     private var editor: SharedPreferences.Editor? = null
 
@@ -61,7 +63,6 @@ class AdListFragment : Fragment(), ItemOnClickListener {
                 rec_ad.adapter = adapter
             }
         })
-
 
         /*==================================spinner city======================================*/
         val adapterCity = ArrayAdapter<String>(requireContext(),
@@ -107,6 +108,5 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         go.putExtra("img2", item.img2)
         go.putExtra("img3", item.img3)
         startActivity(go)
-         Toast.makeText(requireContext(), item.city, Toast.LENGTH_SHORT).show()
     }
 }
