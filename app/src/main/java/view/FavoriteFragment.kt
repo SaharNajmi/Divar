@@ -2,6 +2,7 @@ package view
 
 import RoomDatabase.*
 import adapter.FavoriteAdapter
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -46,15 +47,26 @@ class FavoriteFragment : Fragment(), RowClickListener {
                 override fun onChanged(t: List<FavoriteEntity>?) {
                     adapter.saveInformation(t!!)
                 }
-
             })
     }
 
     override fun onItemClick(item: FavoriteEntity) {
-        TODO("Not yet implemented")
+        val go = Intent(context, DetailAdActivity::class.java)
+        go.putExtra("id", item.id)
+        go.putExtra("title", item.title)
+        go.putExtra("description", item.description)
+        go.putExtra("price", item.price)
+        go.putExtra("city", item.city)
+        go.putExtra("tell", item.userID)
+        go.putExtra("category", item.category)
+        go.putExtra("date", item.date)
+        go.putExtra("img1", item.img1)
+        go.putExtra("img2", item.img2)
+        go.putExtra("img3", item.img3)
+        startActivity(go)
     }
 
     override fun onDeleteClick(item: FavoriteEntity) {
-        //viewModel.deleteInformation(item)
+
     }
 }

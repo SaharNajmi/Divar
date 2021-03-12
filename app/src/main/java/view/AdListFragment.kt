@@ -1,6 +1,5 @@
 package view
 
-import RoomDatabase.FavoriteEntity
 import adapter.AdAdapter
 import adapter.ItemOnClickListener
 import android.app.Application
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -25,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_ad_list.*
 import kotlinx.android.synthetic.main.toolbar.*
 import model.AdModel
 import viewmodel.BannerViewModel
-import viewmodel.FavoriteRoomDBViewModel
 
 
 class AdListFragment : Fragment(), ItemOnClickListener {

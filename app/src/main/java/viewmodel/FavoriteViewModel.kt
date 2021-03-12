@@ -1,6 +1,5 @@
 package viewmodel
 
-import RoomDatabase.FavoriteDao
 import RoomDatabase.FavoriteEntity
 import RoomDatabase.FavoriteRepository
 import android.content.Context
@@ -10,18 +9,18 @@ import androidx.lifecycle.ViewModel
 class FavoriteViewModel : ViewModel() {
 
     private var liveDataFav: LiveData<List<FavoriteEntity>>? = null
-    private val favoriteDao: FavoriteDao? = null
 
     fun getAllFavorite(context: Context): LiveData<List<FavoriteEntity>>? {
-        liveDataFav = FavoriteRepository.getAllFav(context)
+        liveDataFav = FavoriteRepository(context).getAllFav()
+
         return liveDataFav
     }
 
-    fun insertInformation(favorite: FavoriteEntity) {
-        FavoriteRepository.insertFav(favorite)
+    fun insertInformation(favorite: FavoriteEntity, context: Context) {
+        FavoriteRepository(context).insertFav(favorite)
     }
 
-    fun deleteInformation(favorite: FavoriteEntity) {
-        FavoriteRepository.deleteFav(favorite)
+    fun deleteInformation(favorite: FavoriteEntity, context: Context) {
+        FavoriteRepository(context).deleteFav(favorite)
     }
 }

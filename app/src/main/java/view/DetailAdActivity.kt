@@ -1,8 +1,6 @@
 package view
 
 import RoomDatabase.FavoriteEntity
-import adapter.FavoriteAdapter
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -10,19 +8,15 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.divar.R
 import com.example.divar.databinding.ActivityDetailAdBinding
 import com.synnapps.carouselview.ImageListener
-import kotlinx.android.synthetic.main.fragment_favorite.*
 import kotlinx.android.synthetic.main.more_information_ad.*
 import kotlinx.android.synthetic.main.more_information_ad.view.*
 import model.DetailModel
-import viewmodel.FavoriteRoomDBViewModel
+import viewmodel.FavoriteViewModel
 
 
 class DetailAdActivity : AppCompatActivity() {
@@ -37,7 +31,7 @@ class DetailAdActivity : AppCompatActivity() {
     private var myFavSaved: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private lateinit var addFavorite: FavoriteEntity
-    lateinit var viewModel: FavoriteRoomDBViewModel
+    lateinit var viewModel: FavoriteViewModel
     private var favorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +75,7 @@ class DetailAdActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory(application)
-        ).get(FavoriteRoomDBViewModel::class.java)
+        ).get(FavoriteViewModel::class.java)
 
         myFavSaved = getSharedPreferences("myFav", Context.MODE_PRIVATE)
         val toggleMode = myFavSaved?.getBoolean(title, false)
@@ -102,6 +96,7 @@ class DetailAdActivity : AppCompatActivity() {
                 fab_fav.setImageResource(R.drawable.ic_bookmark_on)
                 addFavorite = FavoriteEntity(
                     id,
+                    tell,
                     favorite,
                     title,
                     description,
@@ -113,7 +108,7 @@ class DetailAdActivity : AppCompatActivity() {
                     img2.toString(),
                     img3.toString()
                 )
-                viewModel.insertInformation(addFavorite)
+                viewModel.insertInformation(addFavorite, this)
 
                 Toast.makeText(this, "به لیست علاقه مندی اضافه شد", Toast.LENGTH_SHORT).show()
                 favorite = false
@@ -127,7 +122,7 @@ class DetailAdActivity : AppCompatActivity() {
 
                 val deleteFavorite: FavoriteEntity = FavoriteEntity(id, favorite)
 
-                viewModel.deleteInformation(deleteFavorite)
+                viewModel.deleteInformation(deleteFavorite, this)
                 Toast.makeText(this, "از لیست علاقه مندی حذف شد", Toast.LENGTH_SHORT).show()
 
                 favorite = true

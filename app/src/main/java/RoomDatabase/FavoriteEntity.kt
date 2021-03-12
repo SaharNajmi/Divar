@@ -6,6 +6,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.bumptech.glide.Glide
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 
 @Entity(tableName = "RoomDataBase")
@@ -13,6 +15,9 @@ data class FavoriteEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Int = 0,
+    @SerializedName("userID")
+    @Expose
+    var userID: String = "",
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false,
     @ColumnInfo(name = "title")
@@ -44,7 +49,20 @@ data class FavoriteEntity(
         }
     }
 
-    constructor(id: Int, isFavorite: Boolean) : this(0, false, "", "", "", "", "", "", "", "", "") {
+    constructor(id: Int, isFavorite: Boolean) : this(
+        0,
+        "",
+        false,
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ) {
         this.id = id
         this.isFavorite = isFavorite
     }
