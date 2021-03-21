@@ -1,7 +1,7 @@
 package view
 
-import adapter.AdAdapter
 import adapter.ItemOnClickListener
+import adapter.UserBannerAdapter
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_login.rec_my_ad
 import model.AdModel
 import model.LoginModel
 import viewmodel.BannerViewModel
-
 
 class LoginFragment : Fragment(), ItemOnClickListener {
 
@@ -137,16 +136,19 @@ class LoginFragment : Fragment(), ItemOnClickListener {
         }
     }
 
-
     /*=========================== show ad user banners ===========================*/
     fun showAdUser() {
         val phone = pref.getString("tell", "")
+        txt_log_out.text = "خروج از حساب  " + phone
+
+        rec_my_ad.visibility = View.VISIBLE
+
         val listMutableLiveData: MutableLiveData<ArrayList<AdModel>> =
             viewModel.getListMutableLiveDataUserBanner(phone!!)
 
         listMutableLiveData.observe(requireActivity(), object : Observer<ArrayList<AdModel>> {
             override fun onChanged(t: ArrayList<AdModel>?) {
-                val adapter = AdAdapter(requireContext(), t!!, this@LoginFragment)
+                val adapter = UserBannerAdapter(requireContext(), t!!, this@LoginFragment)
                 val manager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
                 rec_my_ad.layoutManager = manager
                 rec_my_ad.adapter = adapter
@@ -163,7 +165,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
     }
 
     override fun onItemClick(item: AdModel) {
-        val go = Intent(context, DetailAdActivity::class.java)
+        val go = Intent(context, DetailUserBannerActivity::class.java)
         go.putExtra("id", item.id)
         go.putExtra("title", item.title)
         go.putExtra("description", item.description)

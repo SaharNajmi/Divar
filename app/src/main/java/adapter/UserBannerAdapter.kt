@@ -4,15 +4,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.divar.databinding.AdListItemBinding
+import com.example.divar.databinding.UserBannerBinding
+import kotlinx.android.synthetic.main.user_banner.view.*
 import model.AdModel
 
-
-class AdAdapter(
+class UserBannerAdapter(
     val context: Context,
     private var list: ArrayList<AdModel>,
     private val click: ItemOnClickListener
-) : RecyclerView.Adapter<AdAdapter.Holder>() {
+) : RecyclerView.Adapter<UserBannerAdapter.Holder>() {
 
     lateinit var date: String
     var listFilter = ArrayList<AdModel>()
@@ -22,14 +22,15 @@ class AdAdapter(
         notifyDataSetChanged()
     }
 
-    class Holder(private val binding: AdListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(private val binding: UserBannerBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AdModel) {
             binding.advertise = item
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val layoutInflater = LayoutInflater.from(context)
-        val binding = AdListItemBinding.inflate(layoutInflater, parent, false)
+        val binding = UserBannerBinding.inflate(layoutInflater, parent, false)
         return Holder(binding)
     }
 
@@ -46,9 +47,11 @@ class AdAdapter(
         holder.itemView.setOnClickListener {
             click.onItemClick(list[position])
         }
+        holder.itemView.img_del.setOnClickListener {  }
+        holder.itemView.img_edit.setOnClickListener {  }
     }
 
-    fun calculateDate(item: String): String {
+    private fun calculateDate(item: String): String {
         // date +="همین الان
         //0-59  کمتر یک ساعت
         //60-1439  کمتر از یک روز
@@ -76,4 +79,6 @@ class AdAdapter(
         }
         return date
     }
+
+
 }

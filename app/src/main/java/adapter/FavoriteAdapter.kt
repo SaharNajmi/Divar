@@ -25,7 +25,6 @@ class FavoriteAdapter(
             price.text = data.price
             title.text = data.title
             date.text = data.date
-            date.setOnClickListener { }
             Glide.with(image.context)
                 .load(data.img1)
                 .error(R.mipmap.ic_launcher)

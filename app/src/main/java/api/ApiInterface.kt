@@ -29,4 +29,24 @@ interface ApiInterface {
         @Field("mobile") mobile: String,
         @Field("activation_key") activation_key: String
     ): Observable<LoginModel>
+
+    /*    @GET("DeleteCart.php")
+    fun deleteCart(
+        @Query("id") productID: Int
+    ): Call<MSG>
+
+    //گرفتن ای دی کاربر از طریق یوزرنیم
+    @GET("getUserIdFromUsername.php")
+    fun getUserIdFromUsername(
+        @Query("username") username: String
+    ): Call<UserIdModel>
+
+    @FormUrlEncoded
+    @POST("editUser.php")
+    fun editUser(
+        @Field("id") id: Int,
+        @Field("username") username: String,
+        @Field("email") email: String,
+        @Field("newPassword") password: String
+    ): Call<MSG>*/
 }

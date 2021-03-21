@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.toolbar.*
 import model.AdModel
 import viewmodel.BannerViewModel
 
-
 class AdListFragment : Fragment(), ItemOnClickListener {
 
     private val cityArray = listOf("کردستان", "تهران", "اردبیل")
