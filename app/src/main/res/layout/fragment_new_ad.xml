@@ -1,15 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="view.NewAdFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:gravity="center"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="AddNewAd" />
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_radius_2"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/add_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="right"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_add_a_photo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/add_img"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:text="افزودن عکس"
+                    android:textColor="@color/myColor"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:padding="15dp"
+                android:src="@drawable/ic_image" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:padding="15dp"
+                android:src="@drawable/ic_image" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:padding="15dp"
+                android:src="@drawable/ic_image" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="10dp"
+            android:text="دسته بندی"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <Spinner
+            android:id="@+id/spinner_cate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/background_radius_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="10dp"
+            android:text="موقعیت مکانی"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <Spinner
+            android:id="@+id/spinner_city"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/background_radius_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="10dp"
+            android:text="عنوان آگهی"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/background_radius_2"
+            android:maxLength="50" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="10dp"
+            android:text="توضیحات"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/background_radius_2"
+            android:maxLength="1500"
+            android:maxLines="6" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="10dp"
+            android:text="قیمت"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/background_radius_2"
+            android:inputType="number"
+            android:maxLength="15" />
+
+    </LinearLayout>
+</ScrollView>
