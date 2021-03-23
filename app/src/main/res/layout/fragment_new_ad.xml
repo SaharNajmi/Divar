@@ -3,19 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="view.NewAdFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
+        android:layoutDirection="rtl"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_radius_2"
-            android:layoutDirection="rtl"
             android:orientation="horizontal"
             android:weightSum="4">
 
@@ -29,7 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_gravity="right"
-                    android:padding="10dp"
+                    android:padding="15dp"
                     android:src="@drawable/ic_add_a_photo" />
 
                 <TextView
@@ -67,83 +68,123 @@
                 android:padding="15dp"
                 android:src="@drawable/ic_image" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_margin="10dp"
-            android:text="دسته بندی"
-            android:textColor="@color/myColor"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/spinner_cate"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/city_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/background_radius_2" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_margin="10dp"
-            android:text="موقعیت مکانی"
-            android:textColor="@color/myColor"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/spinner_city"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/category_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/background_radius_2" />
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_radius_2"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Spinner
+                android:id="@+id/spinner_cate"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/myColor" />
+
+
+            <Spinner
+                android:id="@+id/spinner_city"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/myColor" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:text="عنوان آگهی"
             android:textColor="@color/myColor"
             android:textSize="18sp" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <EditText
+            android:id="@+id/txt_title"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/background_radius_2"
-            android:maxLength="50" />
+            android:maxLength="50"
+            android:padding="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:text="توضیحات"
             android:textColor="@color/myColor"
             android:textSize="18sp" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <EditText
+            android:id="@+id/txt_description"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:background="@drawable/background_radius_2"
             android:maxLength="1500"
-            android:maxLines="6" />
+            android:padding="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:text="قیمت"
             android:textColor="@color/myColor"
             android:textSize="18sp" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/price_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <EditText
+            android:id="@+id/txt_price"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/background_radius_2"
+            android:hint="تومان"
             android:inputType="number"
-            android:maxLength="15" />
+            android:maxLength="15"
+            android:padding="5dp" />
 
+        <Button
+            android:id="@+id/btn_add_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/background_radius_3"
+            android:text="ثبت آگهی"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

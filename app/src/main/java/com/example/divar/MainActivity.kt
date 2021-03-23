@@ -151,16 +151,16 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.switch_fragment, LoginFragment())
                         .commit()
-               /*     val pref = this.getSharedPreferences("pref", Context.MODE_PRIVATE)
-                    if (pref.getBoolean("login", false)) {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.switch_fragment, ProfileFragment())
-                            .commit()
-                    } else {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.switch_fragment, LoginFragment())
-                            .commit()
-                    }*/
+                    /*     val pref = this.getSharedPreferences("pref", Context.MODE_PRIVATE)
+                         if (pref.getBoolean("login", false)) {
+                             supportFragmentManager.beginTransaction()
+                                 .replace(R.id.switch_fragment, ProfileFragment())
+                                 .commit()
+                         } else {
+                             supportFragmentManager.beginTransaction()
+                                 .replace(R.id.switch_fragment, LoginFragment())
+                                 .commit()
+                         }*/
                 }
                 R.id.chat -> {
                     supportFragmentManager

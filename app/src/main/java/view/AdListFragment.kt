@@ -61,11 +61,13 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         })
 
         /*==================================spinner city======================================*/
-        val adapterCity = ArrayAdapter<String>(requireContext(),
-            R.layout.row_spinner, cityArray)
+        val adapterCity = ArrayAdapter<String>(
+            requireContext(),
+            R.layout.row_spinner, cityArray
+        )
         spinner_city.adapter = adapterCity
 
-        myDataSaved =requireActivity().getSharedPreferences("myCity", Context.MODE_PRIVATE)
+        myDataSaved = requireActivity().getSharedPreferences("myCity", Context.MODE_PRIVATE)
         val cityCode = myDataSaved?.getInt("spinnerSelectionCity", 0)
         spinner_city.setSelection(cityCode!!)
 
@@ -77,7 +79,7 @@ class AdListFragment : Fragment(), ItemOnClickListener {
                 id: Long
             ) {
                 val selectedPosition: Int = spinner_city.selectedItemPosition
-                val cityName=cityArray[cityCode]
+                val cityName = cityArray[cityCode]
 
                 editor = myDataSaved?.edit()
                 editor?.putInt("spinnerSelectionCity", selectedPosition)
