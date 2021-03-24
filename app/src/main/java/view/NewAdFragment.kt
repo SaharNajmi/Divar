@@ -1,22 +1,30 @@
 package view
 
-import android.content.Context
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.divar.R
 import kotlinx.android.synthetic.main.fragment_new_ad.*
-import kotlinx.android.synthetic.main.fragment_new_ad.spinner_city
-import kotlinx.android.synthetic.main.toolbar.*
+import model.ListCity
+
 
 class NewAdFragment : Fragment() {
 
     private var validate = true
+    private var titleList: List<String>? = null
+    private var autoCompleteTextView: AutoCompleteTextView? = null
     private val cate_base = HashMap<String, List<String>>()
+    private var menuItems: ListCity? = null
 
     private val cityArray = listOf("کردستان", "تهران", "اردبیل")
 
@@ -54,6 +62,20 @@ class NewAdFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//select text only from drop down list in Autocompletetextview
+        menuItems = ListCity()
+        val list = menuItems!!.arrayListCity()
+        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu, list)
+        exposed_dropdown.setAdapter(adapter)
+        exposed_dropdown.setOnFocusChangeListener (object :View.OnFocusChangeListener {
+            override fun onFocusChange(view: View?, hasFocus: Boolean) {
+                if (!hasFocus) {
+                    if (!list.contains(exposed_dropdown.getText().toString())) {
+                            exposed_dropdown.setText("")
+                        }
+                }
+        }})
+
         /*===============================add banner======================================*/
         btn_add_banner.setOnClickListener {
 

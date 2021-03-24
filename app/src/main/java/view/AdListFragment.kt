@@ -63,7 +63,7 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         /*==================================spinner city======================================*/
         val adapterCity = ArrayAdapter<String>(
             requireContext(),
-            R.layout.row_spinner, cityArray
+            R.layout.dropdown_menu, cityArray
         )
         spinner_city.adapter = adapterCity
 

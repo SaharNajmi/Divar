@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="view.NewAdFragment">
 
     <LinearLayout
@@ -68,14 +68,17 @@
                 android:padding="15dp"
                 android:src="@drawable/ic_image" />
         </LinearLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/city_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/category_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,14 +86,15 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <Spinner
-                android:id="@+id/spinner_cate"
+
+            <AutoCompleteTextView
+                android:id="@+id/exposed_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="10dp"
+                android:padding="10dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/myColor" />
-
+                android:background="@drawable/background_radius_2" />
 
             <Spinner
                 android:id="@+id/spinner_city"
@@ -115,7 +119,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/title_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/txt_title"
@@ -124,6 +128,7 @@
             android:background="@drawable/background_radius_2"
             android:maxLength="50"
             android:padding="5dp" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -139,7 +144,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/description_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/txt_description"
@@ -163,7 +168,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/price_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/txt_price"
