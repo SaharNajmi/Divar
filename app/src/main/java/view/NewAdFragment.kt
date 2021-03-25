@@ -1,16 +1,12 @@
 package view
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.divar.R
@@ -21,36 +17,22 @@ import model.ListCity
 class NewAdFragment : Fragment() {
 
     private var validate = true
-    private var titleList: List<String>? = null
-    private var autoCompleteTextView: AutoCompleteTextView? = null
-    private val cate_base = HashMap<String, List<String>>()
     private var menuItems: ListCity? = null
+    var selectedPosition: Int? = null
+    var inputCity = true
 
-    private val cityArray = listOf("کردستان", "تهران", "اردبیل")
-
-    private val data: HashMap<String, List<String>>
-        get() {
-            val cate_0 = ArrayList<String>()
-            cate_0.add("موبایل")
-            cate_0.add("تبلت")
-            cate_0.add("لپ تاپ")
-
-            val cate_1 = ArrayList<String>()
-            cate_1.add("رهن و اجاره")
-            cate_1.add("خرید و فروش")
-
-            val cate_2 = ArrayList<String>()
-            cate_2.add("خودرو")
-            cate_2.add("موتور سیکلت")
-            cate_2.add("اجاره خودرو")
-            cate_2.add("کشاورزی")
-
-            cate_base["لوازم الکترونیکی"] = cate_0
-            cate_base["املاک"] = cate_1
-            cate_base["وسایل نقلیه"] = cate_2
-
-            return cate_base
-        }
+    private val cate_base = arrayOf(
+        "لوازم الکترونیکی", "املاک", "وسایل نقلیه"
+    )
+    val cate_0 = arrayOf(
+        "موبایل", "تبلت", "لپ تاپ"
+    )
+    val cate_1 = arrayOf(
+        "رهن و اجاره", "خرید و فروش"
+    )
+    val cate_2 = arrayOf(
+        "خودرو", "موتور سیکلت", "اجاره خودرو", "کشاورزی"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,23 +44,72 @@ class NewAdFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//select text only from drop down list in Autocompletetextview
+
+        /*==============use AutoCompleteTextView for search list city=====================*/
         menuItems = ListCity()
         val list = menuItems!!.arrayListCity()
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu, list)
         exposed_dropdown.setAdapter(adapter)
-        exposed_dropdown.setOnFocusChangeListener (object :View.OnFocusChangeListener {
+        exposed_dropdown.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(view: View?, hasFocus: Boolean) {
                 if (!hasFocus) {
                     if (!list.contains(exposed_dropdown.getText().toString())) {
-                            exposed_dropdown.setText("")
-                        }
-                }
-        }})
+                        exposed_dropdown.setText("")
+                        inputCity = true
+                        city_layout.error = "شهر خود را انتخاب کنید"
+                        city_layout.isErrorEnabled = true
+                    }
+                } else inputCity = false
+            }
+        })
 
-        /*===============================add banner======================================*/
+        /*===========================spinner category===============================*/
+        val adapterCate = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_item, cate_base
+        )
+        adapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinner_cate.adapter = adapterCate
+
+        spinner_cate.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                var cateSub = cate_0
+                selectedPosition = spinner_cate.selectedItemPosition
+                cateSub = when (selectedPosition) {
+                    0 -> cate_0
+                    1 -> cate_1
+                    else -> cate_2
+                }
+
+                val adapterCateSub = ArrayAdapter<String>(
+                    requireContext(),
+                    android.R.layout.simple_spinner_item, cateSub
+                )
+                adapterCateSub.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                spinner_cate_sub.adapter = adapterCateSub
+                Toast.makeText(requireContext(), selectedPosition.toString(), Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            override fun onNothingSelected(arg0: AdapterView<*>?) {
+            }
+        }
+
+
+        /*===============================button submit add banner======================================*/
         btn_add_banner.setOnClickListener {
 
+            if (inputCity) {
+                city_layout.error = "شهر خود را انتخاب کنید"
+                city_layout.isErrorEnabled = true
+            }
             if (txt_title.text.toString().trim().length >= 10) {
                 title_layout.isErrorEnabled = false
             } else {
