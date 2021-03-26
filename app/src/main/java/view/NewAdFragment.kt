@@ -22,18 +22,21 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_new_ad.*
 import model.AdModel
 import model.ListCity
+import model.MSG
 import model.UserIdModel
 import viewmodel.BannerViewModel
 
 class NewAdFragment : Fragment() {
 
-    private var validate = true
+    private var validate1 = false
+    private var validate2 = false
+    private var validate3 = false
+    private var validate4 = false
     private var menuItems: ListCity? = null
-    var selectedPositionCateBase: Int? = null
-    var selectedPositionSubCate: Int? = null
+    private var selectedPositionCateBase: Int? = null
+    private var selectedPositionSubCate: Int? = null
     var userId: Int? = null
     private lateinit var pref: SharedPreferences
-    var inputCity = true
     private lateinit var viewModel: BannerViewModel
 
     private val cate_base = arrayOf(
@@ -73,11 +76,14 @@ class NewAdFragment : Fragment() {
                 if (!hasFocus) {
                     if (!list.contains(exposed_dropdown.text.toString())) {
                         exposed_dropdown.setText("")
-                        inputCity = true
                         city_layout.error = "شهر خود را انتخاب کنید"
                         city_layout.isErrorEnabled = true
+                        validate1 = false
+                    } else {
+                        city_layout.isErrorEnabled = false
+                        validate1 = true
                     }
-                } else inputCity = false
+                }
             }
         })
 
@@ -118,7 +124,17 @@ class NewAdFragment : Fragment() {
             override fun onNothingSelected(arg0: AdapterView<*>?) {
             }
         }
+        /*==============================get userId================================*/
+        pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+        val phone = pref.getString("tell", "")
 
+        val idUser = viewModel.getMutableLiveDataTell(phone!!)
+        idUser.observe(requireActivity(), object : Observer<UserIdModel> {
+            override fun onChanged(t: UserIdModel?) {
+                userId = t!!.id
+
+            }
+        })
 
         /*===============================button submit add banner======================================*/
         btn_add_banner.setOnClickListener {
@@ -128,31 +144,34 @@ class NewAdFragment : Fragment() {
             selectedPositionSubCate = selectedPositionSubCate?.plus(1)
             category = "$selectedPositionCateBase,$selectedPositionSubCate"
 
-            if (inputCity) {
+            if (!validate1) {
                 city_layout.error = "شهر خود را انتخاب کنید"
                 city_layout.isErrorEnabled = true
+                validate1 = false
+            } else {
+                city_layout.isErrorEnabled = false
+                validate1 = true
             }
+
+
             if (txt_title.text.toString().trim().length >= 10) {
                 title_layout.isErrorEnabled = false
-                validate = true
+                validate2 = true
 
             } else {
-
                 title_layout.error = "عنوان آگهی باید حداقل 10 حرف باشد"
                 title_layout.isErrorEnabled = true
-
-                validate = false
-
+                validate2 = false
             }
 
             if (txt_description.text.toString().trim().length >= 30) {
                 description_layout.isErrorEnabled = false
-                validate = true
+                validate3 = true
 
             } else {
                 description_layout.error = "توضیحات آگهی باید حداقل 30 حرف باشد";
                 description_layout.isErrorEnabled = true
-                validate = false
+                validate3 = false
             }
 
             if (txt_price.text.toString().trim()
@@ -160,35 +179,30 @@ class NewAdFragment : Fragment() {
             ) {
                 price_layout.error = "قیمت وارد شده اشتباه است"
                 price_layout.isErrorEnabled = true
-                validate = false
+                validate4 = false
             } else {
                 price_layout.isErrorEnabled = false
-                validate = true
+                validate4 = true
             }
 
 
-            if (validate) {
-                Toast.makeText(requireContext(), "success", Toast.LENGTH_SHORT).show()
-
+            if (validate1 && validate2 && validate3 && validate4) {
                 val title = txt_title.text.toString()
                 val desc = txt_description.text.toString()
                 val price = txt_price.text.toString()
                 val city = exposed_dropdown.text.toString()
-
-
-                /*==============================get userId================================*/
-                pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
-                val phone = pref.getString("tell", "")
-
-                val idUser = viewModel.getMutableLiveDataTell(phone!!)
-                idUser.observe(requireActivity(), object : Observer<UserIdModel> {
-                    override fun onChanged(t: UserIdModel?) {
-                        userId = t!!.id
+                val msgAddBanner =
+                    viewModel.addBanner(title, desc, price, userId!!, city, category, "", "", "")
+                msgAddBanner.observe(requireActivity(), object : Observer<MSG> {
+                    override fun onChanged(t: MSG?) {
+                        Toast.makeText(requireContext(), t!!.msg, Toast.LENGTH_LONG).show()
                     }
                 })
-                //  val msgAddBanner = viewModel.addBanner(title, desc, price,userId)
 
-            }
+            } else
+                Toast.makeText(requireContext(), "تمام فیلد ها پر کنید!!!", Toast.LENGTH_SHORT)
+                    .show()
+
 
         }
     }
