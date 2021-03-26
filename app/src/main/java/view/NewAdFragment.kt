@@ -13,12 +13,12 @@ import com.example.divar.R
 import kotlinx.android.synthetic.main.fragment_new_ad.*
 import model.ListCity
 
-
 class NewAdFragment : Fragment() {
 
     private var validate = true
     private var menuItems: ListCity? = null
-    var selectedPosition: Int? = null
+    var selectedPositionCateBase: Int? = null
+    var selectedPositionSubCate: Int? = null
     var inputCity = true
 
     private val cate_base = arrayOf(
@@ -71,7 +71,7 @@ class NewAdFragment : Fragment() {
         adapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         spinner_cate.adapter = adapterCate
-
+        var category = ""
         spinner_cate.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -79,14 +79,14 @@ class NewAdFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
+
                 var cateSub = cate_0
-                selectedPosition = spinner_cate.selectedItemPosition
-                cateSub = when (selectedPosition) {
+                selectedPositionCateBase = spinner_cate.selectedItemPosition
+                cateSub = when (selectedPositionCateBase) {
                     0 -> cate_0
                     1 -> cate_1
                     else -> cate_2
                 }
-
                 val adapterCateSub = ArrayAdapter<String>(
                     requireContext(),
                     android.R.layout.simple_spinner_item, cateSub
@@ -94,10 +94,8 @@ class NewAdFragment : Fragment() {
                 adapterCateSub.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
                 spinner_cate_sub.adapter = adapterCateSub
-                Toast.makeText(requireContext(), selectedPosition.toString(), Toast.LENGTH_SHORT)
-                    .show()
-            }
 
+            }
             override fun onNothingSelected(arg0: AdapterView<*>?) {
             }
         }
@@ -106,6 +104,13 @@ class NewAdFragment : Fragment() {
         /*===============================button submit add banner======================================*/
         btn_add_banner.setOnClickListener {
 
+            selectedPositionSubCate = spinner_cate_sub.selectedItemPosition!!
+            selectedPositionCateBase = selectedPositionCateBase?.plus(1)
+            selectedPositionSubCate = selectedPositionSubCate?.plus(1)
+            category = "$selectedPositionCateBase,$selectedPositionSubCate"
+
+            Toast.makeText(requireContext(), category, Toast.LENGTH_SHORT)
+                .show()
             if (inputCity) {
                 city_layout.error = "شهر خود را انتخاب کنید"
                 city_layout.isErrorEnabled = true
