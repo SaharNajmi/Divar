@@ -10,6 +10,8 @@ import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 import model.AdModel
 import model.LoginModel
+import model.MSG
+import model.UserIdModel
 
 class BannerViewModel : ViewModel() {
 
@@ -21,6 +23,8 @@ class BannerViewModel : ViewModel() {
     private var listMutableLiveData = MutableLiveData<ArrayList<AdModel>>()
     private var mutableLiveDataApplyActivation = MutableLiveData<LoginModel>()
     private var mutableLiveDataSendActivation = MutableLiveData<LoginModel>()
+    private var mutableLiveDataAddBanner = MutableLiveData<MSG>()
+    private var mutableLiveDataPhoneNumber = MutableLiveData<UserIdModel>()
 
     //مدیریت درخواست رکوست به سمت سرور compositeDisposable
     private val compositeDisposable = CompositeDisposable()
@@ -76,10 +80,10 @@ class BannerViewModel : ViewModel() {
             api.sendActivationKey(mobile)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe{
+                .subscribe {
                     mutableLiveDataSendActivation.value = it
                 })
-            return mutableLiveDataSendActivation
+        return mutableLiveDataSendActivation
     }
 
     /*=========================لاگین کردن با ورود کد تایید=================================*/
@@ -87,13 +91,68 @@ class BannerViewModel : ViewModel() {
         mutableLiveDataApplyActivation = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
-        api.applyActivationKey(mobile, code)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                mutableLiveDataApplyActivation.value = it
-            })
+            api.applyActivationKey(mobile, code)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    mutableLiveDataApplyActivation.value = it
+                })
         return mutableLiveDataApplyActivation
+    }
+
+    /*==================================اضافه کردن آگهی=========================================*/
+    fun addBanner(
+        title: String,
+        desc: String,
+        price: String,
+        userId: Int,
+        city: String,
+        cate: String,
+        img1: String,
+        img2: String,
+        img3: String
+    ): MutableLiveData<MSG> {
+        mutableLiveDataAddBanner = MutableLiveData()
+        api = ApiClient()
+        compositeDisposable.add(
+            api.addBanner(
+                title,
+                desc,
+                price,
+                userId,
+                city,
+                cate,
+                img1,
+                img2,
+                img3
+            ).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe() {
+                    mutableLiveDataAddBanner.value = it
+                }
+        )
+        return mutableLiveDataAddBanner
+    }
+
+
+    /*==================گرفتن id کاربر از طریق گرفتن شماره موبایل========================*/
+    fun getMutableLiveDataTell(tell: String): MutableLiveData<UserIdModel> {
+        mutableLiveDataPhoneNumber = MutableLiveData()
+        api = ApiClient()
+        compositeDisposable.add(
+            api.getUserIdFromPhoneNumber(tell)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<UserIdModel>() {
+                    override fun onSuccess(t: UserIdModel?) {
+                        mutableLiveDataPhoneNumber.value = t
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        Log.d("error live data!!!", e.toString())
+                    }
+                })
+        )
+        return mutableLiveDataPhoneNumber
     }
 
     override fun onCleared() {

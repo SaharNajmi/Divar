@@ -5,6 +5,8 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import model.AdModel
 import model.LoginModel
+import model.MSG
+import model.UserIdModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -41,5 +43,23 @@ class ApiClient {
 
     fun getUserBanners(tell: String): Single<ArrayList<AdModel>> {
         return request.getUserBanner(tell)
+    }
+
+    fun addBanner(
+        title: String,
+        desc: String,
+        price: String,
+        userId: Int,
+        city: String,
+        cate: String,
+        img1: String,
+        img2: String,
+        img3: String
+    ): Observable<MSG> {
+        return request.addBanner(title, desc, price, userId, city, cate, img1, img2, img3)
+    }
+
+    fun getUserIdFromPhoneNumber(tell: String): Single<UserIdModel> {
+        return request.getUserIdFromTell(tell)
     }
 }

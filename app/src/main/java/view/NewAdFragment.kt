@@ -1,5 +1,9 @@
 package view
 
+import adapter.UserBannerAdapter
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +13,17 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_new_ad.*
+import model.AdModel
 import model.ListCity
+import model.UserIdModel
+import viewmodel.BannerViewModel
 
 class NewAdFragment : Fragment() {
 
@@ -19,7 +31,10 @@ class NewAdFragment : Fragment() {
     private var menuItems: ListCity? = null
     var selectedPositionCateBase: Int? = null
     var selectedPositionSubCate: Int? = null
+    var userId: Int? = null
+    private lateinit var pref: SharedPreferences
     var inputCity = true
+    private lateinit var viewModel: BannerViewModel
 
     private val cate_base = arrayOf(
         "لوازم الکترونیکی", "املاک", "وسایل نقلیه"
@@ -45,6 +60,9 @@ class NewAdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+            .create(BannerViewModel::class.java)
+
         /*==============use AutoCompleteTextView for search list city=====================*/
         menuItems = ListCity()
         val list = menuItems!!.arrayListCity()
@@ -53,7 +71,7 @@ class NewAdFragment : Fragment() {
         exposed_dropdown.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(view: View?, hasFocus: Boolean) {
                 if (!hasFocus) {
-                    if (!list.contains(exposed_dropdown.getText().toString())) {
+                    if (!list.contains(exposed_dropdown.text.toString())) {
                         exposed_dropdown.setText("")
                         inputCity = true
                         city_layout.error = "شهر خود را انتخاب کنید"
@@ -96,6 +114,7 @@ class NewAdFragment : Fragment() {
                 spinner_cate_sub.adapter = adapterCateSub
 
             }
+
             override fun onNothingSelected(arg0: AdapterView<*>?) {
             }
         }
@@ -109,14 +128,14 @@ class NewAdFragment : Fragment() {
             selectedPositionSubCate = selectedPositionSubCate?.plus(1)
             category = "$selectedPositionCateBase,$selectedPositionSubCate"
 
-            Toast.makeText(requireContext(), category, Toast.LENGTH_SHORT)
-                .show()
             if (inputCity) {
                 city_layout.error = "شهر خود را انتخاب کنید"
                 city_layout.isErrorEnabled = true
             }
             if (txt_title.text.toString().trim().length >= 10) {
                 title_layout.isErrorEnabled = false
+                validate = true
+
             } else {
 
                 title_layout.error = "عنوان آگهی باید حداقل 10 حرف باشد"
@@ -128,6 +147,8 @@ class NewAdFragment : Fragment() {
 
             if (txt_description.text.toString().trim().length >= 30) {
                 description_layout.isErrorEnabled = false
+                validate = true
+
             } else {
                 description_layout.error = "توضیحات آگهی باید حداقل 30 حرف باشد";
                 description_layout.isErrorEnabled = true
@@ -142,7 +163,33 @@ class NewAdFragment : Fragment() {
                 validate = false
             } else {
                 price_layout.isErrorEnabled = false
+                validate = true
             }
+
+
+            if (validate) {
+                Toast.makeText(requireContext(), "success", Toast.LENGTH_SHORT).show()
+
+                val title = txt_title.text.toString()
+                val desc = txt_description.text.toString()
+                val price = txt_price.text.toString()
+                val city = exposed_dropdown.text.toString()
+
+
+                /*==============================get userId================================*/
+                pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+                val phone = pref.getString("tell", "")
+
+                val idUser = viewModel.getMutableLiveDataTell(phone!!)
+                idUser.observe(requireActivity(), object : Observer<UserIdModel> {
+                    override fun onChanged(t: UserIdModel?) {
+                        userId = t!!.id
+                    }
+                })
+                //  val msgAddBanner = viewModel.addBanner(title, desc, price,userId)
+
+            }
+
         }
     }
 }
