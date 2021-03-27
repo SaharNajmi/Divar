@@ -1,12 +1,22 @@
 package adapter
 
+import android.app.AlertDialog
+import android.app.Application
 import android.content.Context
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.databinding.UserBannerBinding
 import kotlinx.android.synthetic.main.user_banner.view.*
 import model.AdModel
+import model.MSG
+import viewmodel.BannerViewModel
+
 
 class UserBannerAdapter(
     val context: Context,
@@ -14,11 +24,12 @@ class UserBannerAdapter(
     private val click: ItemOnClickListener
 ) : RecyclerView.Adapter<UserBannerAdapter.Holder>() {
 
+    private lateinit var viewModel: BannerViewModel
     lateinit var date: String
-    var listFilter = ArrayList<AdModel>()
+    var newList = ArrayList<AdModel>()
 
     fun updateList(list: ArrayList<AdModel>?) {
-        this.listFilter = list!!
+        this.newList = list!!
         notifyDataSetChanged()
     }
 
@@ -47,8 +58,34 @@ class UserBannerAdapter(
         holder.itemView.setOnClickListener {
             click.onItemClick(list[position])
         }
-        holder.itemView.img_del.setOnClickListener {  }
-        holder.itemView.img_edit.setOnClickListener {  }
+        holder.itemView.img_del.setOnClickListener {
+
+            /* ==================================alert dialog delete product=====================================*/
+            // build alert dialog
+            val dialogBuilder = AlertDialog.Builder(context)
+
+            // set message of alert dialog
+            dialogBuilder.setMessage("آیا میخواهید این آگهی را حذف کنید؟")
+                // if the dialog is cancelable
+                .setCancelable(false)
+                // positive button text and action
+                .setPositiveButton("بله", DialogInterface.OnClickListener { dialog, id ->
+                    viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+                        .create(BannerViewModel::class.java)
+                    deleteBanner(list[position].id)
+                //    updateList(list)
+                })
+                // negative button text and action
+                .setNegativeButton("خیر", DialogInterface.OnClickListener { dialog, id ->
+                    dialog.cancel()
+                })
+
+            // create dialog box
+            val alert = dialogBuilder.create()
+            // show alert dialog
+            alert.show()
+        }
+        holder.itemView.img_edit.setOnClickListener { }
     }
 
     private fun calculateDate(item: String): String {
@@ -81,4 +118,12 @@ class UserBannerAdapter(
     }
 
 
+    private fun deleteBanner(id: Int) {
+        val delete = viewModel.deleteBanner(id)
+        delete.observe((context as AppCompatActivity), object : Observer<MSG> {
+            override fun onChanged(t: MSG?) {
+                Toast.makeText(context, t!!.msg, Toast.LENGTH_LONG).show()
+            }
+        })
+    }
 }

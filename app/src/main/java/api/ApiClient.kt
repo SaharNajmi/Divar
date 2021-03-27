@@ -62,4 +62,8 @@ class ApiClient {
     fun getUserIdFromPhoneNumber(tell: String): Single<UserIdModel> {
         return request.getUserIdFromTell(tell)
     }
+
+    fun deleteBanner(id: Int): Single<MSG> {
+        return request.deleteBanner(id)
+    }
 }

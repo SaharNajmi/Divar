@@ -47,11 +47,17 @@ interface ApiInterface {
     ): Observable<MSG>
 
 
+    @GET("DeleteBanner.php")
+    fun deleteBanner(
+        @Query("id") id: Int
+    ): Single<MSG>
+
     //گرفتن ای دی کاربر از طریق شماره موبایل
     @GET("getUserIdFromPhoneNumber.php")
     fun getUserIdFromTell(
         @Query("tell") tell: String
     ): Single<UserIdModel>
+
 
     /*    @GET("DeleteCart.php")
     fun deleteCart(

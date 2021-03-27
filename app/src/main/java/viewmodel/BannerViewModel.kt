@@ -25,6 +25,7 @@ class BannerViewModel : ViewModel() {
     private var mutableLiveDataSendActivation = MutableLiveData<LoginModel>()
     private var mutableLiveDataAddBanner = MutableLiveData<MSG>()
     private var mutableLiveDataPhoneNumber = MutableLiveData<UserIdModel>()
+    private var mutableLiveDataDelete = MutableLiveData<MSG>()
 
     //مدیریت درخواست رکوست به سمت سرور compositeDisposable
     private val compositeDisposable = CompositeDisposable()
@@ -153,6 +154,26 @@ class BannerViewModel : ViewModel() {
                 })
         )
         return mutableLiveDataPhoneNumber
+    }
+
+    fun deleteBanner(id: Int): MutableLiveData<MSG> {
+        mutableLiveDataDelete = MutableLiveData()
+        api = ApiClient()
+        compositeDisposable.add(
+            api.deleteBanner(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<MSG>() {
+                    override fun onSuccess(t: MSG?) {
+                        mutableLiveDataDelete.value = t
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        Log.d("error delete!!!", e.toString())
+                    }
+                })
+        )
+        return mutableLiveDataDelete
     }
 
     override fun onCleared() {

@@ -1,6 +1,5 @@
 package view
 
-import adapter.UserBannerAdapter
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -15,19 +14,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_new_ad.*
-import model.AdModel
 import model.ListCity
 import model.MSG
 import model.UserIdModel
 import viewmodel.BannerViewModel
 
 class NewAdFragment : Fragment() {
-
     private var validate1 = false
     private var validate2 = false
     private var validate3 = false
