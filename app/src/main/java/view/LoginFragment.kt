@@ -151,6 +151,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
                 val adapter = UserBannerAdapter(requireContext(), t!!, this@LoginFragment)
                 val manager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
                 rec_my_ad.layoutManager = manager
+              //  adapter.updateList(t)
                 rec_my_ad.adapter = adapter
             }
         })
