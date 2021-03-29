@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="view.NewAdFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layoutDirection="rtl"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/image_1"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="right"
+                android:background="@drawable/background_radius_2"
+                android:layout_weight="1"
+                android:padding="15dp"
+                android:src="@drawable/ic_image" />
+
+            <ImageView
+                android:id="@+id/image_2"
+                android:background="@drawable/background_radius_2"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:padding="15dp"
+                android:src="@drawable/ic_image" />
+
+            <ImageView
+                android:id="@+id/image_3"
+                android:background="@drawable/background_radius_2"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:padding="15dp"
+                android:src="@drawable/ic_image" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/city_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_radius_2"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+
+            <AutoCompleteTextView
+                android:id="@+id/exposed_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_radius_2"
+                android:hint="موقعیت مکانی"
+                android:padding="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1">
+
+                <Spinner
+                    android:id="@+id/spinner_edit_cate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:backgroundTint="@color/myColor" />
+
+                <Spinner
+                    android:id="@+id/spinner_edit_cate_sub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/spinner_edit_cate"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="20dp"
+                    android:backgroundTint="@color/myColor" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="عنوان آگهی"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/txt_edit_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/background_radius_2"
+            android:maxLength="50"
+            android:padding="5dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="توضیحات"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/txt_edit_description"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/background_radius_2"
+            android:maxLength="1500"
+            android:padding="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="قیمت"
+            android:textColor="@color/myColor"
+            android:textSize="18sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/price_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/txt_edit_price"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/background_radius_2"
+            android:hint="تومان"
+            android:inputType="number"
+            android:layout_marginBottom="25dp"
+            android:maxLength="15"
+            android:padding="5dp" />
+
+    </LinearLayout>
+</ScrollView>
