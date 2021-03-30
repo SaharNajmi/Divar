@@ -44,7 +44,7 @@ class DetailAdActivity : AppCompatActivity() {
         val price = intent.getStringExtra("price")
         val description = intent.getStringExtra("description")
         val city = intent.getStringExtra("city")
-        val tell = intent.getStringExtra("tell")
+        val userId = intent.getIntExtra("userID",0)
         val category = intent.getStringExtra("category")
         val date = intent.getStringExtra("date")
         val status = intent.getStringExtra("status")
@@ -96,7 +96,7 @@ class DetailAdActivity : AppCompatActivity() {
                 fab_fav.setImageResource(R.drawable.ic_bookmark_on)
                 addFavorite = FavoriteEntity(
                     id,
-                    tell,
+                    userId,
                     favorite,
                     title,
                     description,

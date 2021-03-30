@@ -197,33 +197,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        /*==================================spinner city======================================*/
-        /*  val adapterCity = ArrayAdapter<String>(this,
-              R.layout.row_spinner, cityArray)
-          spinner_city.adapter = adapterCity
-
-          myDataSaved = getSharedPreferences("myCity", Context.MODE_PRIVATE)
-          val cityCode = myDataSaved?.getInt("spinnerSelectionCity", 0)
-          spinner_city.setSelection(cityCode!!)
-
-          spinner_city.setOnItemSelectedListener(object : OnItemSelectedListener {
-              override fun onItemSelected(
-                  parentView: AdapterView<*>?,
-                  selectedItemView: View?,
-                  position: Int,
-                  id: Long
-              ) {
-                  val selectedPosition: Int = spinner_city.selectedItemPosition
-                  val cityName=cityArray[cityCode]
-
-                  editor = myDataSaved?.edit()
-                  editor?.putInt("spinnerSelectionCity", selectedPosition)
-                  editor?.putString("CityName", cityName)
-                  editor?.apply()
-              }
-
-              override fun onNothingSelected(parentView: AdapterView<*>?) {}
-          })*/
     }
 
     private fun showFABMenu() {

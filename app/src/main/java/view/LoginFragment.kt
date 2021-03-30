@@ -172,6 +172,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
         go.putExtra("description", item.description)
         go.putExtra("price", item.price)
         go.putExtra("city", item.city)
+        go.putExtra("userID", item.userID)
         go.putExtra("tell", item.userID)
         go.putExtra("category", item.category)
         go.putExtra("date", item.date)

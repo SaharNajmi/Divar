@@ -17,7 +17,7 @@ data class FavoriteEntity(
     var id: Int = 0,
     @SerializedName("userID")
     @Expose
-    var userID: String = "",
+    var userID: Int = 0,
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false,
     @ColumnInfo(name = "title")
@@ -51,7 +51,7 @@ data class FavoriteEntity(
 
     constructor(id: Int, isFavorite: Boolean) : this(
         0,
-        "",
+        0,
         false,
         "",
         "",

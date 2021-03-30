@@ -59,6 +59,21 @@ class ApiClient {
         return request.addBanner(title, desc, price, userId, city, cate, img1, img2, img3)
     }
 
+    fun editBanner(
+        id: Int,
+        title: String,
+        desc: String,
+        price: String,
+        userId: Int,
+        city: String,
+        cate: String,
+        img1: String,
+        img2: String,
+        img3: String
+    ): Observable<MSG> {
+        return request.editBanner(id,title, desc, price, userId, city, cate, img1, img2, img3)
+    }
+
     fun getUserIdFromPhoneNumber(tell: String): Single<UserIdModel> {
         return request.getUserIdFromTell(tell)
     }

@@ -34,7 +34,7 @@ class AdModel{
 
     @SerializedName("userID")
     @Expose
-    var userID: String = ""
+    var userID: Int = 0
 
     @SerializedName("city")
     @Expose

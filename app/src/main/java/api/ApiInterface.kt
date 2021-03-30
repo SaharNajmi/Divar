@@ -46,6 +46,20 @@ interface ApiInterface {
         @Field("img3") img3: String
     ): Observable<MSG>
 
+    @FormUrlEncoded
+    @POST("EditBanner.php")
+    fun editBanner(
+        @Field("id") id: Int,
+        @Field("title") title: String,
+        @Field("description") description: String,
+        @Field("price") price: String,
+        @Field("userID") userID: Int,
+        @Field("city") city: String,
+        @Field("category") category: String,
+        @Field("img1") img1: String,
+        @Field("img2") img2: String,
+        @Field("img3") img3: String
+    ): Observable<MSG>
 
     @GET("DeleteBanner.php")
     fun deleteBanner(
@@ -57,25 +71,4 @@ interface ApiInterface {
     fun getUserIdFromTell(
         @Query("tell") tell: String
     ): Single<UserIdModel>
-
-
-    /*    @GET("DeleteCart.php")
-    fun deleteCart(
-        @Query("id") productID: Int
-    ): Call<MSG>
-
-    //گرفتن ای دی کاربر از طریق یوزرنیم
-    @GET("getUserIdFromUsername.php")
-    fun getUserIdFromUsername(
-        @Query("username") username: String
-    ): Call<UserIdModel>
-
-    @FormUrlEncoded
-    @POST("editUser.php")
-    fun editUser(
-        @Field("id") id: Int,
-        @Field("username") username: String,
-        @Field("email") email: String,
-        @Field("newPassword") password: String
-    ): Call<MSG>*/
 }

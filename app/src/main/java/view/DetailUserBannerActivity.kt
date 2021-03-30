@@ -15,10 +15,9 @@ import com.example.divar.R
 import com.example.divar.databinding.ActivityDetailUserBannerBinding
 import com.synnapps.carouselview.ImageListener
 import kotlinx.android.synthetic.main.delete_and_edit_layout.view.*
-import kotlinx.android.synthetic.main.dialog_edit.*
 import kotlinx.android.synthetic.main.dialog_edit.view.*
-import kotlinx.android.synthetic.main.fragment_new_ad.*
 import model.DetailModel
+import model.ListCity
 import model.MSG
 import viewmodel.BannerViewModel
 
@@ -26,6 +25,7 @@ class DetailUserBannerActivity : AppCompatActivity() {
     lateinit var mainBinding: ActivityDetailUserBannerBinding
 
     var id: Int? = null
+    var userId: Int? = null
     var title: String? = null
     var price: String? = null
     var description: String? = null
@@ -37,8 +37,14 @@ class DetailUserBannerActivity : AppCompatActivity() {
     var img2: String? = null
     var img3: String? = null
 
+    private var validate1 = false
+    private var validate2 = false
+    private var validate3 = false
+    private var validate4 = false
+
     val sampleImages: ArrayList<String> = ArrayList()
     private lateinit var viewModel: BannerViewModel
+    private var menuItems: ListCity? = null
     lateinit var customLayout: View
     private var selectedPositionCateBase: Int? = null
     private var selectedPositionCateSub: Int? = null
@@ -65,6 +71,7 @@ class DetailUserBannerActivity : AppCompatActivity() {
             .create(BannerViewModel::class.java)
 
         id = intent.getIntExtra("id", 0)
+        userId = intent.getIntExtra("userID", 0)
         title = intent.getStringExtra("title")
         price = intent.getStringExtra("price")
         description = intent.getStringExtra("description")
@@ -92,17 +99,38 @@ class DetailUserBannerActivity : AppCompatActivity() {
         mainBinding.carouselView.setImageListener(imageListener)
         mainBinding.carouselView.pageCount = sampleImages.size
 
-        mainBinding.detailAd = DetailModel(title!!, price!!, description!!, date!!)
-        mainBinding.layoutDelEdit.fab_del.setOnClickListener {
-            val delete = viewModel.deleteBanner(id!!)
-            delete.observe(this, object : Observer<MSG> {
-                override fun onChanged(t: MSG?) {
-                    Toast.makeText(this@DetailUserBannerActivity, t!!.msg, Toast.LENGTH_LONG).show()
+        mainBinding.detailAd = DetailModel(title!!,price!!, description!!, date!!)
 
-                    finish()
-                }
-            })
+        /*=================================delete banner==============================================*/
+        mainBinding.layoutDelEdit.fab_del.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("آیا میخواهید این آگهی را حذف کنید؟")
+            builder.setPositiveButton(
+                "بله",
+                DialogInterface.OnClickListener { dialog, which ->
+                    val delete = viewModel.deleteBanner(id!!)
+                    delete.observe(this, object : Observer<MSG> {
+                        override fun onChanged(t: MSG?) {
+                            Toast.makeText(
+                                this@DetailUserBannerActivity,
+                                t!!.msg,
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                            finish()
+                        }
+                    })
+                })
+            builder.setNegativeButton(
+                "خیر",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.cancel()
+                })
+
+            builder.create().show()
         }
+
+        /*=================================edit banner==============================================*/
         mainBinding.layoutDelEdit.fab_edit.setOnClickListener {
             showDialogEdit()
         }
@@ -120,31 +148,109 @@ class DetailUserBannerActivity : AppCompatActivity() {
 
     /*==============================alert dialog edit banner==============================================*/
     private fun showDialogEdit() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("ویرایش آگهی")
-        customLayout = getLayoutInflater().inflate(R.layout.dialog_edit, null);
-        builder.setView(customLayout)
+        customLayout = layoutInflater.inflate(R.layout.dialog_edit, null);
+
+        //create alert dialog
+        val dialog: AlertDialog = AlertDialog.Builder(this)
+            .setTitle("ویرایش آگهی")
+            .setView(customLayout)
+            .setPositiveButton("ثبت", null)
+            .setNegativeButton("انصراف", null)
+            .show()
+
+        // prevent a dialog from closing when a button is clicked
+        val positiveButton: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         //show old value in dialog box
         customLayout.txt_edit_title.setText(title)
         customLayout.txt_edit_description.setText(description)
         customLayout.txt_edit_price.setText(price)
-        customLayout.exposed_dropdown.setText(city)
+        customLayout.exposed_dropdown_edit.setText(city)
         showSpinnerCateInDialogBox()
 
-        builder.setPositiveButton("ثبت", DialogInterface.OnClickListener { dialog, which ->
+        //spinner list city
+        searchListCity()
 
-        })
-        builder.setNegativeButton(
-            "انصراف",
-            DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+        positiveButton.setOnClickListener {
 
-        builder.show()
+            if (customLayout.txt_edit_title.text.toString().trim().length >= 10) {
+                customLayout.title_layout.isErrorEnabled = false
+                validate2 = true
+
+            } else {
+                customLayout.title_layout.error = "عنوان آگهی باید حداقل 10 حرف باشد"
+                customLayout.title_layout.isErrorEnabled = true
+                validate2 = false
+            }
+
+            if (customLayout.txt_edit_description.text.toString().trim().length >= 30) {
+                customLayout.description_layout.isErrorEnabled = false
+                validate3 = true
+
+            } else {
+                customLayout.description_layout.error = "توضیحات آگهی باید حداقل 30 حرف باشد";
+                customLayout.description_layout.isErrorEnabled = true
+                validate3 = false
+            }
+
+            if (customLayout.txt_edit_price.text.toString().trim()
+                    .isEmpty() || Integer.parseInt(customLayout.txt_edit_price.text.toString()) <= 0
+            ) {
+                customLayout.price_layout.error = "قیمت وارد شده اشتباه است"
+                customLayout.price_layout.isErrorEnabled = true
+                validate4 = false
+            } else {
+                customLayout.price_layout.isErrorEnabled = false
+                validate4 = true
+            }
+
+            if (validate1 && validate2 && validate3 && validate4) {
+                title = customLayout.txt_edit_title.text.toString()
+                description = customLayout.txt_edit_description.text.toString()
+                price = customLayout.txt_edit_price.text.toString()
+                city = customLayout.exposed_dropdown_edit.text.toString()
+
+                selectedPositionCateSub = customLayout.spinner_edit_cate_sub.selectedItemPosition!!
+                selectedPositionCateBase = selectedPositionCateBase?.plus(1)
+                selectedPositionCateSub = selectedPositionCateSub?.plus(1)
+                category = "$selectedPositionCateBase,$selectedPositionCateSub"
+
+                val msgEditBanner = viewModel.editBanner(
+                    id!!,
+                    title!!,
+                    description!!,
+                    price!!,
+                    userId!!,
+                    city!!,
+                    category!!,
+                    "",
+                    "",
+                    ""
+                )
+                msgEditBanner.observe(this, object : Observer<MSG> {
+                    override fun onChanged(t: MSG?) {
+                        Toast.makeText(this@DetailUserBannerActivity, t!!.msg, Toast.LENGTH_LONG)
+                            .show()
+
+                        mainBinding.detailAd = DetailModel(title!!, price!!, description!!, date!!)
+                        dialog.dismiss()
+                    }
+                })
+            } else {
+
+                Toast.makeText(this, "تمام فیلد ها را پر کنید!!!", Toast.LENGTH_SHORT)
+                    .show()
+
+            }
+
+        }
 
     }
 
-    /*===========================spinner category===============================*/
+
+    /*===========================spinner category===============================**/
     private fun showSpinnerCateInDialogBox() {
+        //split string category
         val splitCate = category!!.split(",").toTypedArray()
         var cateBase = splitCate[0].toInt()
         cateBase -= 1
@@ -181,35 +287,59 @@ class DetailUserBannerActivity : AppCompatActivity() {
 
         //item default spinner cate sub
         customLayout.spinner_edit_cate_sub.setSelection(cateSub)
-        var category = ""
 
         //Show subcategories when change baseCategory
-        customLayout.spinner_edit_cate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
+        customLayout.spinner_edit_cate.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
 
-                selectedPositionCateBase = customLayout.spinner_edit_cate.selectedItemPosition
-                cate_sub = when (selectedPositionCateBase) {
-                    0 -> cate_0
-                    1 -> cate_1
-                    else -> cate_2
+                    selectedPositionCateBase = customLayout.spinner_edit_cate.selectedItemPosition
+                    cate_sub = when (selectedPositionCateBase) {
+                        0 -> cate_0
+                        1 -> cate_1
+                        else -> cate_2
+                    }
+                    adapterCateSub = ArrayAdapter<String>(
+                        this@DetailUserBannerActivity,
+                        android.R.layout.simple_spinner_item, cate_sub
+                    )
+                    adapterCateSub.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                    customLayout.spinner_edit_cate_sub.adapter = adapterCateSub
+
                 }
-                 adapterCateSub = ArrayAdapter<String>(
-                   this@DetailUserBannerActivity,
-                    android.R.layout.simple_spinner_item, cate_sub
-                )
-                adapterCateSub.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-                customLayout.spinner_edit_cate_sub.adapter = adapterCateSub
-
+                override fun onNothingSelected(arg0: AdapterView<*>?) {
+                }
             }
+    }
 
-            override fun onNothingSelected(arg0: AdapterView<*>?) {
+    /*================================spinner list city==================================*/
+    private fun searchListCity() {
+        menuItems = ListCity()
+        val list = menuItems!!.arrayListCity()
+        val adapter = ArrayAdapter(this, R.layout.dropdown_menu, list)
+        customLayout.exposed_dropdown_edit.setAdapter(adapter)
+        customLayout.exposed_dropdown_edit.setOnFocusChangeListener(object :
+            View.OnFocusChangeListener {
+            override fun onFocusChange(view: View?, hasFocus: Boolean) {
+                if (!hasFocus) {
+                    if (!list.contains(customLayout.exposed_dropdown_edit.text.toString())) {
+                        customLayout.exposed_dropdown_edit.setText("")
+                        customLayout.city_layout.error = "شهر خود را انتخاب کنید"
+                        customLayout.city_layout.isErrorEnabled = true
+                        validate1 = false
+                    } else {
+                        customLayout.city_layout.isErrorEnabled = false
+                        validate1 = true
+                    }
+                }
             }
-        }
+        })
     }
 }

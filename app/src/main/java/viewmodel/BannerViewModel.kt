@@ -23,9 +23,8 @@ class BannerViewModel : ViewModel() {
     private var listMutableLiveData = MutableLiveData<ArrayList<AdModel>>()
     private var mutableLiveDataApplyActivation = MutableLiveData<LoginModel>()
     private var mutableLiveDataSendActivation = MutableLiveData<LoginModel>()
-    private var mutableLiveDataAddBanner = MutableLiveData<MSG>()
+    private var mutableLiveDataUserBanner = MutableLiveData<MSG>()
     private var mutableLiveDataPhoneNumber = MutableLiveData<UserIdModel>()
-    private var mutableLiveDataDelete = MutableLiveData<MSG>()
 
     //مدیریت درخواست رکوست به سمت سرور compositeDisposable
     private val compositeDisposable = CompositeDisposable()
@@ -113,7 +112,7 @@ class BannerViewModel : ViewModel() {
         img2: String,
         img3: String
     ): MutableLiveData<MSG> {
-        mutableLiveDataAddBanner = MutableLiveData()
+        mutableLiveDataUserBanner = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
             api.addBanner(
@@ -128,12 +127,47 @@ class BannerViewModel : ViewModel() {
                 img3
             ).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe() {
-                    mutableLiveDataAddBanner.value = it
+                    mutableLiveDataUserBanner.value = it
                 }
         )
-        return mutableLiveDataAddBanner
+        return mutableLiveDataUserBanner
     }
 
+
+    /*==================================ویرایش آگهی=========================================*/
+    fun editBanner(
+        id: Int,
+        title: String,
+        desc: String,
+        price: String,
+        userId: Int,
+        city: String,
+        cate: String,
+        img1: String,
+        img2: String,
+        img3: String
+    ): MutableLiveData<MSG> {
+        mutableLiveDataUserBanner = MutableLiveData()
+        api = ApiClient()
+        compositeDisposable.add(
+            api.editBanner(
+                id,
+                title,
+                desc,
+                price,
+                userId,
+                city,
+                cate,
+                img1,
+                img2,
+                img3
+            ).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe() {
+                    mutableLiveDataUserBanner.value = it
+                }
+        )
+        return mutableLiveDataUserBanner
+    }
 
     /*==================گرفتن id کاربر از طریق گرفتن شماره موبایل========================*/
     fun getMutableLiveDataTell(tell: String): MutableLiveData<UserIdModel> {
@@ -157,7 +191,7 @@ class BannerViewModel : ViewModel() {
     }
 
     fun deleteBanner(id: Int): MutableLiveData<MSG> {
-        mutableLiveDataDelete = MutableLiveData()
+        mutableLiveDataUserBanner = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
             api.deleteBanner(id)
@@ -165,7 +199,7 @@ class BannerViewModel : ViewModel() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<MSG>() {
                     override fun onSuccess(t: MSG?) {
-                        mutableLiveDataDelete.value = t
+                        mutableLiveDataUserBanner.value = t
                     }
 
                     override fun onError(e: Throwable?) {
@@ -173,7 +207,7 @@ class BannerViewModel : ViewModel() {
                     }
                 })
         )
-        return mutableLiveDataDelete
+        return mutableLiveDataUserBanner
     }
 
     override fun onCleared() {

@@ -16,6 +16,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.divar.R
 import kotlinx.android.synthetic.main.fragment_new_ad.*
+import kotlinx.android.synthetic.main.fragment_new_ad.city_layout
+import kotlinx.android.synthetic.main.fragment_new_ad.description_layout
+import kotlinx.android.synthetic.main.fragment_new_ad.price_layout
+import kotlinx.android.synthetic.main.fragment_new_ad.title_layout
 import model.ListCity
 import model.MSG
 import model.UserIdModel
@@ -28,7 +32,7 @@ class NewAdFragment : Fragment() {
     private var validate4 = false
     private var menuItems: ListCity? = null
     private var selectedPositionCateBase: Int? = null
-    private var selectedPositionSubCate: Int? = null
+    private var selectedPositionCateSub: Int? = null
     var userId: Int? = null
     private lateinit var pref: SharedPreferences
     private lateinit var viewModel: BannerViewModel
@@ -133,10 +137,10 @@ class NewAdFragment : Fragment() {
         /*===============================button submit add banner======================================*/
         btn_add_banner.setOnClickListener {
 
-            selectedPositionSubCate = spinner_cate_sub.selectedItemPosition!!
+            selectedPositionCateSub = spinner_cate_sub.selectedItemPosition!!
             selectedPositionCateBase = selectedPositionCateBase?.plus(1)
-            selectedPositionSubCate = selectedPositionSubCate?.plus(1)
-            category = "$selectedPositionCateBase,$selectedPositionSubCate"
+            selectedPositionCateSub = selectedPositionCateSub?.plus(1)
+            category = "$selectedPositionCateBase,$selectedPositionCateSub"
 
             if (!validate1) {
                 city_layout.error = "شهر خود را انتخاب کنید"
@@ -194,7 +198,7 @@ class NewAdFragment : Fragment() {
                 })
 
             } else
-                Toast.makeText(requireContext(), "تمام فیلد ها پر کنید!!!", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "تمام فیلد ها را پر کنید!!!", Toast.LENGTH_SHORT)
                     .show()
 
 

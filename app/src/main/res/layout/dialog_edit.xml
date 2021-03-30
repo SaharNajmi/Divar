@@ -67,7 +67,7 @@
 
 
             <AutoCompleteTextView
-                android:id="@+id/exposed_dropdown"
+                android:id="@+id/exposed_dropdown_edit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
