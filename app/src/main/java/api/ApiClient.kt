@@ -7,6 +7,8 @@ import model.AdModel
 import model.LoginModel
 import model.MSG
 import model.UserIdModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -46,15 +48,15 @@ class ApiClient {
     }
 
     fun addBanner(
-        title: String,
-        desc: String,
-        price: String,
+        title: RequestBody,
+        desc: RequestBody,
+        price: RequestBody,
         userId: Int,
-        city: String,
-        cate: String,
-        img1: String,
-        img2: String,
-        img3: String
+        city: RequestBody,
+        cate: RequestBody,
+        img1: MultipartBody.Part,
+        img2: MultipartBody.Part,
+        img3: MultipartBody.Part
     ): Observable<MSG> {
         return request.addBanner(title, desc, price, userId, city, cate, img1, img2, img3)
     }
@@ -71,7 +73,7 @@ class ApiClient {
         img2: String,
         img3: String
     ): Observable<MSG> {
-        return request.editBanner(id,title, desc, price, userId, city, cate, img1, img2, img3)
+        return request.editBanner(id, title, desc, price, userId, city, cate, img1, img2, img3)
     }
 
     fun getUserIdFromPhoneNumber(tell: String): Single<UserIdModel> {

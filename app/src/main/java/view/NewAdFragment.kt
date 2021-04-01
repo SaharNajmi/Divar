@@ -1,19 +1,25 @@
 package view
 
+import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import api.UriToUploadable
 import com.example.divar.R
 import kotlinx.android.synthetic.main.fragment_new_ad.*
 import kotlinx.android.synthetic.main.fragment_new_ad.city_layout
@@ -23,7 +29,9 @@ import kotlinx.android.synthetic.main.fragment_new_ad.title_layout
 import model.ListCity
 import model.MSG
 import model.UserIdModel
+import okhttp3.RequestBody
 import viewmodel.BannerViewModel
+import java.util.*
 
 class NewAdFragment : Fragment() {
     private var validate1 = false
@@ -36,6 +44,10 @@ class NewAdFragment : Fragment() {
     var userId: Int? = null
     private lateinit var pref: SharedPreferences
     private lateinit var viewModel: BannerViewModel
+    lateinit var imageView: ImageView
+    private val pickImage = 100
+    private var imageUri: Uri? = null
+    private var data: Uri? = null
 
     private val cate_base = arrayOf(
         "لوازم الکترونیکی", "املاک", "وسایل نقلیه"
@@ -93,7 +105,7 @@ class NewAdFragment : Fragment() {
         adapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         spinner_cate.adapter = adapterCate
-        var category = ""
+        var category= RequestBody.create(okhttp3.MultipartBody.FORM, "")
         spinner_cate.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -140,7 +152,7 @@ class NewAdFragment : Fragment() {
             selectedPositionCateSub = spinner_cate_sub.selectedItemPosition!!
             selectedPositionCateBase = selectedPositionCateBase?.plus(1)
             selectedPositionCateSub = selectedPositionCateSub?.plus(1)
-            category = "$selectedPositionCateBase,$selectedPositionCateSub"
+            category = RequestBody.create(okhttp3.MultipartBody.FORM,"$selectedPositionCateBase,$selectedPositionCateSub")
 
             if (!validate1) {
                 city_layout.error = "شهر خود را انتخاب کنید"
@@ -185,12 +197,32 @@ class NewAdFragment : Fragment() {
 
 
             if (validate1 && validate2 && validate3 && validate4) {
-                val title = txt_title.text.toString()
-                val desc = txt_description.text.toString()
-                val price = txt_price.text.toString()
-                val city = exposed_dropdown.text.toString()
+                //RequestBody  به خاطر اینکه مقادیری که به سمت سرور ارسال میشوند داخل""قرار نگیرند
+                val title =
+                    RequestBody.create(okhttp3.MultipartBody.FORM, txt_title.text.toString())
+                val desc =
+                    RequestBody.create(okhttp3.MultipartBody.FORM, txt_description.text.toString())
+                val price =
+                    RequestBody.create(okhttp3.MultipartBody.FORM, txt_price.text.toString())
+                val city =
+                    RequestBody.create(okhttp3.MultipartBody.FORM, exposed_dropdown.text.toString())
+                val upload = UriToUploadable(requireActivity())
+                /*   فایل با چه اسمی آپلود شود
+                  UUID.randomUUID(): فایل با اسم تصادفی آپلود شود*/
+                val postImage = upload.getUploaderFile(data, "image1", "${UUID.randomUUID()}")
+
                 val msgAddBanner =
-                    viewModel.addBanner(title, desc, price, userId!!, city, category, "", "", "")
+                    viewModel.addBanner(
+                        title,
+                        desc,
+                        price,
+                        userId!!,
+                        city,
+                        category,
+                        postImage,
+                        postImage,
+                        postImage
+                    )
                 msgAddBanner.observe(requireActivity(), object : Observer<MSG> {
                     override fun onChanged(t: MSG?) {
                         Toast.makeText(requireContext(), t!!.msg, Toast.LENGTH_LONG).show()
@@ -203,5 +235,22 @@ class NewAdFragment : Fragment() {
 
 
         }
+
+        /*===============================btn add image in galery=====================================*/
+        img_add.setOnClickListener {
+            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            startActivityForResult(gallery, pickImage)
+        }
+
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == pickImage) {
+            imageUri = data?.data
+            this.data = data!!.data
+            image_1.setImageURI(imageUri)
+        }
+    }
+
 }

@@ -75,14 +75,6 @@
                 android:layout_below="@id/txt_date"
                 android:src="@drawable/ic_delete" />
 
-            <ImageView
-                android:id="@+id/img_edit"
-                android:layout_margin="2dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txt_date"
-                android:layout_toRightOf="@id/img_del"
-                android:src="@drawable/ic_edit" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </layout>

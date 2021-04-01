@@ -85,7 +85,6 @@ class UserBannerAdapter(
             // show alert dialog
             alert.show()
         }
-        holder.itemView.img_edit.setOnClickListener { }
     }
 
     private fun calculateDate(item: String): String {
@@ -95,7 +94,7 @@ class UserBannerAdapter(
         //1440-43199  از یک روز تا 29 روز
         //43200-518339 یک ماه تا 12 ماه
         //518400 سال
-        val getDate = Integer.parseInt(date)
+        val getDate = Integer.parseInt(item)
         if (getDate <= 59) {
             if (getDate.equals("0") || getDate.equals("1"))
                 date += "همین الان"

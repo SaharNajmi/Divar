@@ -6,6 +6,8 @@ import model.AdModel
 import model.LoginModel
 import model.MSG
 import model.UserIdModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface ApiInterface {
@@ -32,18 +34,22 @@ interface ApiInterface {
         @Field("activation_key") activation_key: String
     ): Observable<LoginModel>
 
-    @FormUrlEncoded
+
+    //استفاده از Retrofit برای آپلود فایل
+    /*RequestBody:
+    به جای نوع دادای رشته ای استفاده میکنیم تا مقادیر در دیتابیس داخل "" نشان داده نشود*/
+    @Multipart
     @POST("AddBanner.php")
     fun addBanner(
-        @Field("title") title: String,
-        @Field("description") description: String,
-        @Field("price") price: String,
-        @Field("userID") userID: Int,
-        @Field("city") city: String,
-        @Field("category") category: String,
-        @Field("img1") img1: String,
-        @Field("img2") img2: String,
-        @Field("img3") img3: String
+        @Part("title") title: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("price") price: RequestBody,
+        @Part("userID") userID: Int,
+        @Part("city") city: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part postImage1: MultipartBody.Part,
+        @Part postImage2: MultipartBody.Part,
+        @Part postImage3: MultipartBody.Part
     ): Observable<MSG>
 
     @FormUrlEncoded
