@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,13 +21,10 @@ import androidx.lifecycle.ViewModelProvider
 import api.UriToUploadable
 import com.example.divar.R
 import kotlinx.android.synthetic.main.fragment_new_ad.*
-import kotlinx.android.synthetic.main.fragment_new_ad.city_layout
-import kotlinx.android.synthetic.main.fragment_new_ad.description_layout
-import kotlinx.android.synthetic.main.fragment_new_ad.price_layout
-import kotlinx.android.synthetic.main.fragment_new_ad.title_layout
 import model.ListCity
 import model.MSG
 import model.UserIdModel
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import viewmodel.BannerViewModel
 import java.util.*
@@ -44,10 +40,16 @@ class NewAdFragment : Fragment() {
     var userId: Int? = null
     private lateinit var pref: SharedPreferences
     private lateinit var viewModel: BannerViewModel
-    lateinit var imageView: ImageView
-    private val pickImage = 100
+    private val REQUEST_CODE_IMG_1 = 1
+    private val REQUEST_CODE_IMG_2 = 2
+    private val REQUEST_CODE_IMG_3 = 3
+    private var load_img_1 = false
+    private var load_img_2 = false
+    private var load_img_3 = false
     private var imageUri: Uri? = null
-    private var data: Uri? = null
+    private var post_img_1: MultipartBody.Part? = null
+    private var post_img_2: MultipartBody.Part? = null
+    private var post_img_3: MultipartBody.Part? = null
 
     private val cate_base = arrayOf(
         "لوازم الکترونیکی", "املاک", "وسایل نقلیه"
@@ -105,7 +107,7 @@ class NewAdFragment : Fragment() {
         adapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         spinner_cate.adapter = adapterCate
-        var category= RequestBody.create(okhttp3.MultipartBody.FORM, "")
+        var category = RequestBody.create(okhttp3.MultipartBody.FORM, "")
         spinner_cate.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -152,7 +154,10 @@ class NewAdFragment : Fragment() {
             selectedPositionCateSub = spinner_cate_sub.selectedItemPosition!!
             selectedPositionCateBase = selectedPositionCateBase?.plus(1)
             selectedPositionCateSub = selectedPositionCateSub?.plus(1)
-            category = RequestBody.create(okhttp3.MultipartBody.FORM,"$selectedPositionCateBase,$selectedPositionCateSub")
+            category = RequestBody.create(
+                okhttp3.MultipartBody.FORM,
+                "$selectedPositionCateBase,$selectedPositionCateSub"
+            )
 
             if (!validate1) {
                 city_layout.error = "شهر خود را انتخاب کنید"
@@ -206,11 +211,13 @@ class NewAdFragment : Fragment() {
                     RequestBody.create(okhttp3.MultipartBody.FORM, txt_price.text.toString())
                 val city =
                     RequestBody.create(okhttp3.MultipartBody.FORM, exposed_dropdown.text.toString())
-                val upload = UriToUploadable(requireActivity())
-                /*   فایل با چه اسمی آپلود شود
-                  UUID.randomUUID(): فایل با اسم تصادفی آپلود شود*/
-                val postImage = upload.getUploaderFile(data, "image1", "${UUID.randomUUID()}")
 
+                /*    val upload = UriToUploadable(requireActivity())
+                    *//*   فایل با چه اسمی آپلود شود
+                  UUID.randomUUID(): فایل با اسم تصادفی آپلود شود*//*
+
+                val postImage = upload.getUploaderFile(imageUri, "image1", "${UUID.randomUUID()}")
+*/
                 val msgAddBanner =
                     viewModel.addBanner(
                         title,
@@ -219,13 +226,29 @@ class NewAdFragment : Fragment() {
                         userId!!,
                         city,
                         category,
-                        postImage,
-                        postImage,
-                        postImage
+                        post_img_1!!,
+                        post_img_2!!,
+                        post_img_3!!
                     )
                 msgAddBanner.observe(requireActivity(), object : Observer<MSG> {
                     override fun onChanged(t: MSG?) {
                         Toast.makeText(requireContext(), t!!.msg, Toast.LENGTH_LONG).show()
+
+                        //empty text value old
+                        txt_title.text.clear()
+                        txt_description.text.clear()
+                        txt_price.text.clear()
+                        exposed_dropdown.text.clear()
+                        spinner_cate.setSelection(0)
+                        spinner_cate_sub.setSelection(0)
+
+                        delete_img_1.visibility = View.GONE
+                        delete_img_2.visibility = View.GONE
+                        delete_img_3.visibility = View.GONE
+
+                        image_1.setImageResource(R.drawable.ic_image)
+                        image_2.setImageResource(R.drawable.ic_image)
+                        image_3.setImageResource(R.drawable.ic_image)
                     }
                 })
 
@@ -236,21 +259,78 @@ class NewAdFragment : Fragment() {
 
         }
 
-        /*===============================btn add image in galery=====================================*/
+        /*===============================btn add image in gallery=====================================*/
         img_add.setOnClickListener {
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            startActivityForResult(gallery, pickImage)
+            if (!load_img_1)
+                startActivityForResult(gallery, REQUEST_CODE_IMG_1)
+            else if (!load_img_2)
+                startActivityForResult(gallery, REQUEST_CODE_IMG_2)
+            else if (!load_img_3)
+                startActivityForResult(gallery, REQUEST_CODE_IMG_3)
+            else
+                Toast.makeText(
+                    requireContext(),
+                    "مجاز به انتخاب سه عکس هستید!!!",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+
         }
 
+        /*===========================delete select image =======================================*/
+        delete_img_1.setOnClickListener {
+            delete_img_1.visibility = View.GONE
+            image_1.setImageResource(R.drawable.ic_image)
+            load_img_1 = false
+            post_img_1 = null
+        }
+        delete_img_2.setOnClickListener {
+            delete_img_2.visibility = View.GONE
+            image_2.setImageResource(R.drawable.ic_image)
+            load_img_2 = false
+            post_img_2 = null
+
+        }
+        delete_img_3.setOnClickListener {
+            delete_img_3.visibility = View.GONE
+            image_3.setImageResource(R.drawable.ic_image)
+            load_img_3 = false
+            post_img_3 = null
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == pickImage) {
+        val upload = UriToUploadable(requireActivity())
+        /*   فایل با چه اسمی آپلود شود
+          UUID.randomUUID(): فایل با اسم تصادفی آپلود شود*/
+
+        if (resultCode == RESULT_OK) {
+
             imageUri = data?.data
-            this.data = data!!.data
-            image_1.setImageURI(imageUri)
+
+            if (requestCode == REQUEST_CODE_IMG_1) {
+                post_img_1 = upload.getUploaderFile(imageUri, "image1", "${UUID.randomUUID()}")
+                image_1.setImageURI(imageUri)
+                delete_img_1.visibility = View.VISIBLE
+                load_img_1 = true
+            }
+
+            if (requestCode == REQUEST_CODE_IMG_2) {
+                post_img_2 = upload.getUploaderFile(imageUri, "image2", "${UUID.randomUUID()}")
+                image_2.setImageURI(imageUri)
+                delete_img_2.visibility = View.VISIBLE
+                load_img_2 = true
+            }
+
+            if (requestCode == REQUEST_CODE_IMG_3) {
+                post_img_3 = upload.getUploaderFile(imageUri, "image3", "${UUID.randomUUID()}")
+                image_3.setImageURI(imageUri)
+                delete_img_3.visibility = View.VISIBLE
+                load_img_3 = true
+            }
         }
     }
-
 }
