@@ -1,15 +1,20 @@
 package view
 
 import android.app.AlertDialog
+import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import api.UriToUploadable
 import com.bumptech.glide.Glide
 import com.example.divar.R
 import com.example.divar.databinding.ActivityDetailUserBannerBinding
@@ -19,7 +24,11 @@ import kotlinx.android.synthetic.main.dialog_edit.view.*
 import model.DetailModel
 import model.ListCity
 import model.MSG
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import viewmodel.BannerViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DetailUserBannerActivity : AppCompatActivity() {
     lateinit var mainBinding: ActivityDetailUserBannerBinding
@@ -36,6 +45,16 @@ class DetailUserBannerActivity : AppCompatActivity() {
     var img1: String? = null
     var img2: String? = null
     var img3: String? = null
+
+    private var post_img_1: MultipartBody.Part? = null
+    private var post_img_2: MultipartBody.Part? = null
+    private var post_img_3: MultipartBody.Part? = null
+
+    private val REQUEST_CODE_IMG_1 = 1
+    private val REQUEST_CODE_IMG_2 = 2
+    private val REQUEST_CODE_IMG_3 = 3
+
+    private var imageUri: Uri? = null
 
     private var validate1 = false
     private var validate2 = false
@@ -99,35 +118,11 @@ class DetailUserBannerActivity : AppCompatActivity() {
         mainBinding.carouselView.setImageListener(imageListener)
         mainBinding.carouselView.pageCount = sampleImages.size
 
-        mainBinding.detailAd = DetailModel(title!!,price!!, description!!, date!!)
+        mainBinding.detailAd = DetailModel(title!!, price!!, description!!, date!!)
 
         /*=================================delete banner==============================================*/
         mainBinding.layoutDelEdit.fab_del.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("آیا میخواهید این آگهی را حذف کنید؟")
-            builder.setPositiveButton(
-                "بله",
-                DialogInterface.OnClickListener { dialog, which ->
-                    val delete = viewModel.deleteBanner(id!!)
-                    delete.observe(this, object : Observer<MSG> {
-                        override fun onChanged(t: MSG?) {
-                            Toast.makeText(
-                                this@DetailUserBannerActivity,
-                                t!!.msg,
-                                Toast.LENGTH_LONG
-                            )
-                                .show()
-                            finish()
-                        }
-                    })
-                })
-            builder.setNegativeButton(
-                "خیر",
-                DialogInterface.OnClickListener { dialog, which ->
-                    dialog.cancel()
-                })
-
-            builder.create().show()
+            showDialogDelete()
         }
 
         /*=================================edit banner==============================================*/
@@ -148,7 +143,7 @@ class DetailUserBannerActivity : AppCompatActivity() {
 
     /*==============================alert dialog edit banner==============================================*/
     private fun showDialogEdit() {
-        customLayout = layoutInflater.inflate(R.layout.dialog_edit, null);
+        customLayout = layoutInflater.inflate(R.layout.dialog_edit, null)
 
         //create alert dialog
         val dialog: AlertDialog = AlertDialog.Builder(this)
@@ -157,6 +152,10 @@ class DetailUserBannerActivity : AppCompatActivity() {
             .setPositiveButton("ثبت", null)
             .setNegativeButton("انصراف", null)
             .show()
+
+        //edit image
+        editImage()
+
 
         // prevent a dialog from closing when a button is clicked
         val positiveButton: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -170,7 +169,6 @@ class DetailUserBannerActivity : AppCompatActivity() {
 
         //spinner list city
         searchListCity()
-
         positiveButton.setOnClickListener {
 
             if (customLayout.txt_edit_title.text.toString().trim().length >= 10) {
@@ -205,27 +203,49 @@ class DetailUserBannerActivity : AppCompatActivity() {
             }
 
             if (validate1 && validate2 && validate3 && validate4) {
-                title = customLayout.txt_edit_title.text.toString()
-                description = customLayout.txt_edit_description.text.toString()
-                price = customLayout.txt_edit_price.text.toString()
-                city = customLayout.exposed_dropdown_edit.text.toString()
+
+                //RequestBody  به خاطر اینکه مقادیری که به سمت سرور ارسال میشوند داخل""قرار نگیرند
+                val newTitle =
+                    RequestBody.create(
+                        okhttp3.MultipartBody.FORM,
+                        customLayout.txt_edit_title.text.toString()
+                    )
+                val newDesc =
+                    RequestBody.create(
+                        okhttp3.MultipartBody.FORM,
+                        customLayout.txt_edit_description.text.toString()
+                    )
+                val newPrice =
+                    RequestBody.create(
+                        okhttp3.MultipartBody.FORM,
+                        customLayout.txt_edit_price.text.toString()
+                    )
+                val newCity =
+                    RequestBody.create(
+                        okhttp3.MultipartBody.FORM,
+                        customLayout.exposed_dropdown_edit.text.toString()
+                    )
 
                 selectedPositionCateSub = customLayout.spinner_edit_cate_sub.selectedItemPosition!!
                 selectedPositionCateBase = selectedPositionCateBase?.plus(1)
                 selectedPositionCateSub = selectedPositionCateSub?.plus(1)
-                category = "$selectedPositionCateBase,$selectedPositionCateSub"
+                val newCate = RequestBody.create(
+                    okhttp3.MultipartBody.FORM,
+                    "$selectedPositionCateBase,$selectedPositionCateSub"
+                )
+
 
                 val msgEditBanner = viewModel.editBanner(
                     id!!,
-                    title!!,
-                    description!!,
-                    price!!,
+                    newTitle,
+                    newDesc,
+                    newPrice,
                     userId!!,
-                    city!!,
-                    category!!,
-                    "",
-                    "",
-                    ""
+                    newCity,
+                    newCate,
+                    post_img_1!!,
+                    post_img_2!!,
+                    post_img_3!!
                 )
                 msgEditBanner.observe(this, object : Observer<MSG> {
                     override fun onChanged(t: MSG?) {
@@ -247,6 +267,33 @@ class DetailUserBannerActivity : AppCompatActivity() {
 
     }
 
+    private fun showDialogDelete() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("آیا میخواهید این آگهی را حذف کنید؟")
+        builder.setPositiveButton(
+            "بله",
+            DialogInterface.OnClickListener { dialog, which ->
+                val delete = viewModel.deleteBanner(id!!)
+                delete.observe(this, object : Observer<MSG> {
+                    override fun onChanged(t: MSG?) {
+                        Toast.makeText(
+                            this@DetailUserBannerActivity,
+                            t!!.msg,
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        finish()
+                    }
+                })
+            })
+        builder.setNegativeButton(
+            "خیر",
+            DialogInterface.OnClickListener { dialog, which ->
+                dialog.cancel()
+            })
+
+        builder.create().show()
+    }
 
     /*===========================spinner category===============================**/
     private fun showSpinnerCateInDialogBox() {
@@ -341,5 +388,46 @@ class DetailUserBannerActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun editImage() {
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+
+        customLayout.image_1.setOnClickListener {
+            startActivityForResult(gallery, REQUEST_CODE_IMG_1)
+        }
+        customLayout.image_2.setOnClickListener {
+            startActivityForResult(gallery, REQUEST_CODE_IMG_2)
+        }
+        customLayout.image_3.setOnClickListener {
+            startActivityForResult(gallery, REQUEST_CODE_IMG_3)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val upload = UriToUploadable(this)
+        /*   فایل با چه اسمی آپلود شود
+          UUID.randomUUID(): فایل با اسم تصادفی آپلود شود*/
+
+        if (resultCode == RESULT_OK) {
+
+            imageUri = data?.data
+
+            if (requestCode == REQUEST_CODE_IMG_1) {
+                post_img_1 = upload.getUploaderFile(imageUri, "image1", "${UUID.randomUUID()}")
+                customLayout.image_1.setImageURI(imageUri)
+            }
+
+            if (requestCode == REQUEST_CODE_IMG_2) {
+                post_img_2 = upload.getUploaderFile(imageUri, "image2", "${UUID.randomUUID()}")
+                customLayout.image_2.setImageURI(imageUri)
+            }
+
+            if (requestCode == REQUEST_CODE_IMG_3) {
+                post_img_3 = upload.getUploaderFile(imageUri, "image3", "${UUID.randomUUID()}")
+                customLayout.image_3.setImageURI(imageUri)
+            }
+        }
     }
 }

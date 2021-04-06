@@ -52,7 +52,7 @@ interface ApiInterface {
         @Part postImage3: MultipartBody.Part
     ): Observable<MSG>
 
-    @FormUrlEncoded
+/*    @FormUrlEncoded
     @POST("EditBanner.php")
     fun editBanner(
         @Field("id") id: Int,
@@ -65,6 +65,21 @@ interface ApiInterface {
         @Field("img1") img1: String,
         @Field("img2") img2: String,
         @Field("img3") img3: String
+    ): Observable<MSG>*/
+
+    @Multipart
+    @POST("EditBanner.php")
+    fun editBanner(
+        @Part("id") id: Int,
+        @Part("title") title: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("price") price: RequestBody,
+        @Part("userID") userID: Int,
+        @Part("city") city: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part image1: MultipartBody.Part,
+        @Part image2: MultipartBody.Part,
+        @Part image3: MultipartBody.Part
     ): Observable<MSG>
 
     @GET("DeleteBanner.php")

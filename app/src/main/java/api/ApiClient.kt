@@ -63,15 +63,15 @@ class ApiClient {
 
     fun editBanner(
         id: Int,
-        title: String,
-        desc: String,
-        price: String,
+        title: RequestBody,
+        desc: RequestBody,
+        price: RequestBody,
         userId: Int,
-        city: String,
-        cate: String,
-        img1: String,
-        img2: String,
-        img3: String
+        city: RequestBody,
+        cate: RequestBody,
+        img1: MultipartBody.Part,
+        img2: MultipartBody.Part,
+        img3: MultipartBody.Part
     ): Observable<MSG> {
         return request.editBanner(id, title, desc, price, userId, city, cate, img1, img2, img3)
     }
