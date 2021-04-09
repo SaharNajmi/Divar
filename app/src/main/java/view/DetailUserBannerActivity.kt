@@ -1,7 +1,6 @@
 package view
 
 import android.app.AlertDialog
-import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.DialogInterface
 import android.content.Intent
@@ -165,6 +164,19 @@ class DetailUserBannerActivity : AppCompatActivity() {
         customLayout.txt_edit_description.setText(description)
         customLayout.txt_edit_price.setText(price)
         customLayout.exposed_dropdown_edit.setText(city)
+
+            Glide.with(this)
+                .load(img1)
+                .into(customLayout.image_1)
+
+            Glide.with(this)
+                .load(img2)
+                .into(customLayout.image_2)
+
+            Glide.with(this)
+                .load(img3)
+                .into(customLayout.image_3)
+
         showSpinnerCateInDialogBox()
 
         //spinner list city
@@ -417,16 +429,28 @@ class DetailUserBannerActivity : AppCompatActivity() {
             if (requestCode == REQUEST_CODE_IMG_1) {
                 post_img_1 = upload.getUploaderFile(imageUri, "image1", "${UUID.randomUUID()}")
                 customLayout.image_1.setImageURI(imageUri)
+
+                Glide.with(this)
+                    .load(data!!.data)
+                    .into(customLayout.image_1)
             }
 
             if (requestCode == REQUEST_CODE_IMG_2) {
                 post_img_2 = upload.getUploaderFile(imageUri, "image2", "${UUID.randomUUID()}")
                 customLayout.image_2.setImageURI(imageUri)
+
+                Glide.with(this)
+                    .load(data!!.data)
+                    .into(customLayout.image_2)
             }
 
             if (requestCode == REQUEST_CODE_IMG_3) {
                 post_img_3 = upload.getUploaderFile(imageUri, "image3", "${UUID.randomUUID()}")
                 customLayout.image_3.setImageURI(imageUri)
+
+                Glide.with(this)
+                    .load(data!!.data)
+                    .into(customLayout.image_3)
             }
         }
     }
