@@ -266,6 +266,7 @@ class DetailUserBannerActivity : AppCompatActivity() {
 
                         mainBinding.detailAd = DetailModel(title!!, price!!, description!!, date!!)
                         dialog.dismiss()
+                        finish()
                     }
                 })
             } else {

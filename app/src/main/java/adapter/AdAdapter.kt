@@ -60,7 +60,7 @@ class AdAdapter(
             if (getDate.equals("0") || getDate.equals("1"))
                 date += "همین الان"
             else
-                date = " دقیقه پیش"
+                date += " دقیقه پیش"
         } else if (getDate in 60..1439) {
             val h = (getDate / 60).toString()
             date = h + " ساعت پیش"

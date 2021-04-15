@@ -76,7 +76,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
 
     //for error 64k method
-   implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:multidex:1.0.3'
 
     /*=============================dataBaseRoom============================*/
     def room_version = "2.2.6"

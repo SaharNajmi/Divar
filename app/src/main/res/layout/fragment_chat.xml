@@ -3,17 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#cccc"
     tools:context="view.ChatFragment">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/messageRecyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="667dp"
+            android:layout_above="@+id/linearLayout"
+            android:layout_marginBottom="4dp"
+            android:paddingBottom="10dp" />
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-    <TextView
-        android:layout_below="@id/toolbar"
-        android:id="@+id/txt_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="50dp"
-        android:text="two" />
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/backColor"
+            android:orientation="horizontal">
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/addMessageImageView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:background="@drawable/ic_add" />
+
+            <EditText
+                android:id="@+id/messageEdt"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:hint="پیام خود را بفرستید"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="8"
+                android:padding="10dp"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:background="@drawable/ic_send" />
+        </LinearLayout>
+    </RelativeLayout>
