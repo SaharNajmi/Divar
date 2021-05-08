@@ -3,22 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cccc"
+    android:background="@color/backColor"
     tools:context="view.ChatFragment">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/messageRecyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="667dp"
-            android:layout_above="@+id/linearLayout"
-            android:layout_marginBottom="4dp"
-            android:paddingBottom="10dp" />
+
+   <ScrollView
+       android:layout_marginBottom="4dp"
+       android:paddingBottom="10dp"
+       android:layout_width="match_parent"
+       android:layout_height="667dp">
+
+       <LinearLayout
+           android:id="@+id/linearMessage"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"/>
+
+   </ScrollView>
 
         <LinearLayout
+            android:layout_marginRight="65dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginBottom="15dp"
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/backColor"
+            android:background="@drawable/background_radius_1"
             android:orientation="horizontal">
 
             <Button
@@ -30,7 +40,7 @@
                 android:background="@drawable/ic_add" />
 
             <EditText
-                android:id="@+id/messageEdt"
+                android:id="@+id/edt_message"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:hint="پیام خود را بفرستید"
@@ -40,8 +50,8 @@
                 android:textSize="15sp" />
 
             <Button
-                android:id="@+id/sendButton"
-                android:layout_width="30dp"
+                android:id="@+id/btn_send"
+                android:layout_width="20dp"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
