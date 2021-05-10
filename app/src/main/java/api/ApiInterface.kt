@@ -2,10 +2,7 @@ package api
 
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import model.AdModel
-import model.LoginModel
-import model.MSG
-import model.UserIdModel
+import model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -52,21 +49,6 @@ interface ApiInterface {
         @Part postImage3: MultipartBody.Part
     ): Observable<MSG>
 
-/*    @FormUrlEncoded
-    @POST("EditBanner.php")
-    fun editBanner(
-        @Field("id") id: Int,
-        @Field("title") title: String,
-        @Field("description") description: String,
-        @Field("price") price: String,
-        @Field("userID") userID: Int,
-        @Field("city") city: String,
-        @Field("category") category: String,
-        @Field("img1") img1: String,
-        @Field("img2") img2: String,
-        @Field("img3") img3: String
-    ): Observable<MSG>*/
-
     @Multipart
     @POST("EditBanner.php")
     fun editBanner(
@@ -92,4 +74,14 @@ interface ApiInterface {
     fun getUserIdFromTell(
         @Query("tell") tell: String
     ): Single<UserIdModel>
+
+
+   /*  مان پیدا کردن شماره تلفن آگهی های بقیه- چون ای دی آنها موجود است ما جدول banner داریم
+    پاما شماره موبایل آنها در  جدول user است که از طریق userId به آن میتوانیم دسترسی داشته باشیم*/
+
+    //گرفتن شماره تلفن کاربر از طریق userId
+    @GET("getPhoneNumberFromUserId.php")
+    fun getTellFromUserId(
+        @Query("userId") id: Int
+    ): Single<PhoneModel>
 }

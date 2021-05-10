@@ -3,10 +3,7 @@ package api
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import model.AdModel
-import model.LoginModel
-import model.MSG
-import model.UserIdModel
+import model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Retrofit
@@ -78,6 +75,10 @@ class ApiClient {
 
     fun getUserIdFromPhoneNumber(tell: String): Single<UserIdModel> {
         return request.getUserIdFromTell(tell)
+    }
+
+    fun getPhoneNumberFromUserId(id: Int): Single<PhoneModel> {
+        return request.getTellFromUserId(id)
     }
 
     fun deleteBanner(id: Int): Single<MSG> {

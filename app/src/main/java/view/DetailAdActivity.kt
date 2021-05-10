@@ -2,12 +2,14 @@ package view
 
 import RoomDatabase.FavoriteEntity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.divar.R
@@ -16,6 +18,8 @@ import com.synnapps.carouselview.ImageListener
 import kotlinx.android.synthetic.main.more_information_ad.*
 import kotlinx.android.synthetic.main.more_information_ad.view.*
 import model.DetailModel
+import model.PhoneModel
+import viewmodel.BannerViewModel
 import viewmodel.FavoriteViewModel
 
 
@@ -29,10 +33,14 @@ class DetailAdActivity : AppCompatActivity() {
 
     val sampleImages: ArrayList<String> = ArrayList()
     private var myFavSaved: SharedPreferences? = null
-    private var editor: SharedPreferences.Editor? = null
+    private var editorFav: SharedPreferences.Editor? = null
     private lateinit var addFavorite: FavoriteEntity
-    lateinit var viewModel: FavoriteViewModel
+    lateinit var viewModelFav: FavoriteViewModel
     private var favorite = false
+    private lateinit var viewModelBanner: BannerViewModel
+    private var tellSaved: SharedPreferences? = null
+    var editorTell: SharedPreferences.Editor? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +52,12 @@ class DetailAdActivity : AppCompatActivity() {
         val price = intent.getStringExtra("price")
         val description = intent.getStringExtra("description")
         val city = intent.getStringExtra("city")
-        val userId = intent.getIntExtra("userID",0)
+        var userId = intent.getIntExtra("userID", 0)
         val category = intent.getStringExtra("category")
         val date = intent.getStringExtra("date")
         val status = intent.getStringExtra("status")
+        //  Toast.makeText(this, userId.toString(), Toast.LENGTH_LONG).show()
+
 
         img1 = intent.getStringExtra("img1")
         img2 = intent.getStringExtra("img2")
@@ -72,7 +82,7 @@ class DetailAdActivity : AppCompatActivity() {
 
         /*===================================favorite=========================================*/
 /*================= add and remove favorite use room database and SharedPreferences================*/
-        viewModel = ViewModelProvider(
+        viewModelFav = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory(application)
         ).get(FavoriteViewModel::class.java)
@@ -89,9 +99,9 @@ class DetailAdActivity : AppCompatActivity() {
         mainBinding.moreLayout.fab_fav.setOnClickListener {
 
             if (favorite) {
-                editor = myFavSaved?.edit()
-                editor?.putBoolean(title, true)
-                editor?.apply()
+                editorFav = myFavSaved?.edit()
+                editorFav?.putBoolean(title, true)
+                editorFav?.apply()
 
                 fab_fav.setImageResource(R.drawable.ic_bookmark_on)
                 addFavorite = FavoriteEntity(
@@ -108,26 +118,48 @@ class DetailAdActivity : AppCompatActivity() {
                     img2.toString(),
                     img3.toString()
                 )
-                viewModel.insertInformation(addFavorite, this)
+                viewModelFav.insertInformation(addFavorite, this)
 
                 Toast.makeText(this, "به لیست علاقه مندی اضافه شد", Toast.LENGTH_SHORT).show()
                 favorite = false
 
             } else {
-                editor = myFavSaved?.edit()
-                editor?.putBoolean(title, false)
-                editor?.apply()
+                editorFav = myFavSaved?.edit()
+                editorFav?.putBoolean(title, false)
+                editorFav?.apply()
 
                 fab_fav.setImageResource(R.drawable.ic_bookmark_off)
 
                 val deleteFavorite: FavoriteEntity = FavoriteEntity(id, favorite)
 
-                viewModel.deleteInformation(deleteFavorite, this)
+                viewModelFav.deleteInformation(deleteFavorite, this)
                 Toast.makeText(this, "از لیست علاقه مندی حذف شد", Toast.LENGTH_SHORT).show()
 
                 favorite = true
             }
         }
+        /*=================================chat message======================================*/
+        mainBinding.moreLayout.fab_chat.setOnClickListener {
+            val goSendMessage = Intent(this, SendMessageActivity::class.java)
+            startActivity(goSendMessage)
+        }
+
+        viewModelBanner = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory(application)
+        ).get(BannerViewModel::class.java)
+
+
+        val tellUser = viewModelBanner.getMutableLiveDataTell(userId)
+        tellUser.observe(this, object : Observer<PhoneModel> {
+            override fun onChanged(t: PhoneModel?) {
+
+                tellSaved = getSharedPreferences("PHONE_NAME", Context.MODE_PRIVATE)
+                editorTell = tellSaved?.edit()
+                editorTell?.putString("to", t!!.tell)
+                editorTell?.apply()
+            }
+        })
 
     }
 

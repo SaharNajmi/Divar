@@ -1,5 +1,7 @@
 package view
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.marginRight
 import androidx.fragment.app.Fragment
 import com.example.divar.R
@@ -26,6 +29,7 @@ class ChatFragment : Fragment() {
 
     var socket: Socket? = null
     var handler: Handler? = null
+    private lateinit var pref: SharedPreferences
     var from = ""
     var to = ""
 
@@ -41,7 +45,11 @@ class ChatFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        from = "10"
+        pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+        from= pref.getString("tell", "").toString()
+
+        Toast.makeText(requireContext(),from,Toast.LENGTH_LONG).show()
+
         to = "3"
 
         handler = Handler()
@@ -49,13 +57,12 @@ class ChatFragment : Fragment() {
         try {
             //creating socket instance
             //این سوکت به کدوم آدرس وصل شه-برقراری اتصال به سرور
-            socket = IO.socket("http://192.168.43.144:3000")
+            socket = IO.socket("http://192.168.1.103:3000")
 
         } catch (e: URISyntaxException) {
             e.printStackTrace()
             Log.d("fail", "Failed to connect")
         }
-
 
 /* هر سوکتی که به سورو وصل بشه یک id میگیرد با هر کانکنت و دیس کانکت عوض میشه
        پس ذخیره کردن ایدی فایده ندارد پس باید با اسم سوکت کار کنیم socket nick name*/

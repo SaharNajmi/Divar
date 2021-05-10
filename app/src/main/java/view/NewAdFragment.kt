@@ -140,7 +140,7 @@ class NewAdFragment : Fragment() {
         pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
         val phone = pref.getString("tell", "")
 
-        val idUser = viewModel.getMutableLiveDataTell(phone!!)
+        val idUser = viewModel.getMutableLiveDataId(phone!!)
         idUser.observe(requireActivity(), object : Observer<UserIdModel> {
             override fun onChanged(t: UserIdModel?) {
                 userId = t!!.id

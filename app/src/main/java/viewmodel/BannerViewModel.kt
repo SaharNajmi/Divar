@@ -8,10 +8,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
-import model.AdModel
-import model.LoginModel
-import model.MSG
-import model.UserIdModel
+import model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
@@ -26,7 +23,8 @@ class BannerViewModel : ViewModel() {
     private var mutableLiveDataApplyActivation = MutableLiveData<LoginModel>()
     private var mutableLiveDataSendActivation = MutableLiveData<LoginModel>()
     private var mutableLiveDataUserBanner = MutableLiveData<MSG>()
-    private var mutableLiveDataPhoneNumber = MutableLiveData<UserIdModel>()
+    private var mutableLiveDataId = MutableLiveData<UserIdModel>()
+   private var mutableLiveDataPhoneNumber = MutableLiveData<PhoneModel>()
 
     //مدیریت درخواست رکوست به سمت سرور compositeDisposable
     private val compositeDisposable = CompositeDisposable()
@@ -172,8 +170,8 @@ class BannerViewModel : ViewModel() {
     }
 
     /*==================گرفتن id کاربر از طریق گرفتن شماره موبایل========================*/
-    fun getMutableLiveDataTell(tell: String): MutableLiveData<UserIdModel> {
-        mutableLiveDataPhoneNumber = MutableLiveData()
+    fun getMutableLiveDataId(tell: String): MutableLiveData<UserIdModel> {
+        mutableLiveDataId = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
             api.getUserIdFromPhoneNumber(tell)
@@ -181,6 +179,27 @@ class BannerViewModel : ViewModel() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<UserIdModel>() {
                     override fun onSuccess(t: UserIdModel?) {
+                        mutableLiveDataId.value = t
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        Log.d("error live data!!!", e.toString())
+                    }
+                })
+        )
+        return mutableLiveDataId
+    }
+
+    /*==================گرفتن شماره موبایل کاربر از طریق id آن========================*/
+    fun getMutableLiveDataTell(id: Int): MutableLiveData<PhoneModel> {
+        mutableLiveDataPhoneNumber = MutableLiveData()
+        api = ApiClient()
+        compositeDisposable.add(
+            api.getPhoneNumberFromUserId(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<PhoneModel>() {
+                    override fun onSuccess(t: PhoneModel?) {
                         mutableLiveDataPhoneNumber.value = t
                     }
 
