@@ -1,13 +1,16 @@
 package api
 
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.Observable
+import io.reactivex.Single
 import model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface ApiInterface {
+    //در تمام اپ های اندرویدی نوع رکوست ریسپانس اندرویدی single محسوب میشه یعنی اونایی که از نوع api تعریف میشن از این نوعن
+    // Single  چون فقط یک ریسپانس از سرور برمیگرده( که یا موفقیت آمیز بوده یا نه) استفاده میکنیم
+    //Observable اگر چند ریسپانس داشته باشیم به جای سینگل استفاده میکنیم: مثلا موقع دانلود فایل چون بخش خش دانلود میشه از این نوعه
     @GET("GetBanner.php")
     fun getAllBanner(
         @Query("city") city: String, @Query("category") cate: String
@@ -22,14 +25,14 @@ interface ApiInterface {
     @POST("SendActivationKey.php")
     fun sendActivationKey(
         @Field("mobile") mobile: String
-    ): Observable<LoginModel>
+    ): Single<LoginModel>
 
     @FormUrlEncoded
     @POST("ApplyActivationKey.php")
     fun applyActivationKey(
         @Field("mobile") mobile: String,
         @Field("activation_key") activation_key: String
-    ): Observable<LoginModel>
+    ): Single<LoginModel>
 
 
     //استفاده از Retrofit برای آپلود فایل
@@ -47,7 +50,7 @@ interface ApiInterface {
         @Part postImage1: MultipartBody.Part,
         @Part postImage2: MultipartBody.Part,
         @Part postImage3: MultipartBody.Part
-    ): Observable<MSG>
+    ): Single<MSG>
 
     @Multipart
     @POST("EditBanner.php")
@@ -62,7 +65,7 @@ interface ApiInterface {
         @Part image1: MultipartBody.Part,
         @Part image2: MultipartBody.Part,
         @Part image3: MultipartBody.Part
-    ): Observable<MSG>
+    ): Single<MSG>
 
     @GET("DeleteBanner.php")
     fun deleteBanner(
@@ -76,8 +79,8 @@ interface ApiInterface {
     ): Single<UserIdModel>
 
 
-   /*  مان پیدا کردن شماره تلفن آگهی های بقیه- چون ای دی آنها موجود است ما جدول banner داریم
-    پاما شماره موبایل آنها در  جدول user است که از طریق userId به آن میتوانیم دسترسی داشته باشیم*/
+    /*  مان پیدا کردن شماره تلفن آگهی های بقیه- چون ای دی آنها موجود است ما جدول banner داریم
+     پاما شماره موبایل آنها در  جدول user است که از طریق userId به آن میتوانیم دسترسی داشته باشیم*/
 
     //گرفتن شماره تلفن کاربر از طریق userId
     @GET("getPhoneNumberFromUserId.php")

@@ -1,12 +1,11 @@
 package api
 
-import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.Single
 import model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
@@ -22,17 +21,17 @@ class ApiClient {
         retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
 
         request = retrofit!!.create(ApiInterface::class.java)
     }
 
-    fun sendActivationKey(mobile: String): Observable<LoginModel> {
+    fun sendActivationKey(mobile: String): Single<LoginModel> {
         return request.sendActivationKey(mobile)
     }
 
-    fun applyActivationKey(mobile: String, code: String): Observable<LoginModel> {
+    fun applyActivationKey(mobile: String, code: String): Single<LoginModel> {
         return request.applyActivationKey(mobile, code)
     }
 
@@ -54,7 +53,7 @@ class ApiClient {
         img1: MultipartBody.Part,
         img2: MultipartBody.Part,
         img3: MultipartBody.Part
-    ): Observable<MSG> {
+    ): Single<MSG> {
         return request.addBanner(title, desc, price, userId, city, cate, img1, img2, img3)
     }
 
@@ -69,7 +68,7 @@ class ApiClient {
         img1: MultipartBody.Part,
         img2: MultipartBody.Part,
         img3: MultipartBody.Part
-    ): Observable<MSG> {
+    ): Single<MSG> {
         return request.editBanner(id, title, desc, price, userId, city, cate, img1, img2, img3)
     }
 

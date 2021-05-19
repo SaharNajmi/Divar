@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import api.ApiClient
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.observers.DisposableSingleObserver
-import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
 import model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -24,7 +24,7 @@ class BannerViewModel : ViewModel() {
     private var mutableLiveDataSendActivation = MutableLiveData<LoginModel>()
     private var mutableLiveDataUserBanner = MutableLiveData<MSG>()
     private var mutableLiveDataId = MutableLiveData<UserIdModel>()
-   private var mutableLiveDataPhoneNumber = MutableLiveData<PhoneModel>()
+    private var mutableLiveDataPhoneNumber = MutableLiveData<PhoneModel>()
 
     //مدیریت درخواست رکوست به سمت سرور compositeDisposable
     private val compositeDisposable = CompositeDisposable()
@@ -34,16 +34,21 @@ class BannerViewModel : ViewModel() {
         listMutableLiveData = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
+            //Schedulers: مدیریت ترد ها
+            //newThread  روی ترد اصلی انجام نشه(در یک ترد جدید کار مورد نظر را انجام دهد )چون ترد اصلی بلاک میشه و اپ هنگ میکنه
+            //mainThread نتیجه روی کدوم ترد برگردونه
+            //روی یک ترد جدید نتیجه را روی ترد اصلی نشون میده
             api.getAllBanners(city, cate)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<ArrayList<AdModel>>() {
-                    override fun onSuccess(banner: ArrayList<AdModel>?) {
+
+                    override fun onSuccess(banner: ArrayList<AdModel>) {
                         listMutableLiveData.value = banner
                     }
 
-                    override fun onError(e: Throwable?) {
-                        Log.d("error live data!!!", e.toString())
+                    override fun onError(e: Throwable) {
+                        Log.d("error getAllBanners!!!", e.toString())
                     }
                 })
         )
@@ -53,18 +58,18 @@ class BannerViewModel : ViewModel() {
     fun getListMutableLiveDataUserBanner(tell: String): MutableLiveData<ArrayList<AdModel>> {
         listMutableLiveData = MutableLiveData()
         api = ApiClient()
-        //Schedulers: مدیریت ترد ها
         compositeDisposable.add(
             api.getUserBanners(tell)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<ArrayList<AdModel>>() {
-                    override fun onSuccess(banner: ArrayList<AdModel>?) {
+
+                    override fun onSuccess(banner: ArrayList<AdModel>) {
                         listMutableLiveData.value = banner
                     }
 
-                    override fun onError(e: Throwable?) {
-                        Log.d("error live data!!!", e.toString())
+                    override fun onError(e: Throwable) {
+                        Log.d("error getUserBanners!!!", e.toString())
                     }
                 })
         )
@@ -80,23 +85,41 @@ class BannerViewModel : ViewModel() {
             api.sendActivationKey(mobile)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe {
-                    mutableLiveDataSendActivation.value = it
+                .subscribeWith(object : DisposableSingleObserver<LoginModel>() {
+                    override fun onSuccess(t: LoginModel) {
+                        mutableLiveDataSendActivation.value = t
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d("error send activeKey!!!", e.toString())
+                    }
                 })
+        )
         return mutableLiveDataSendActivation
     }
 
     /*=========================لاگین کردن با ورود کد تایید=================================*/
     fun applyActivationKey(mobile: String, code: String): MutableLiveData<LoginModel> {
         mutableLiveDataApplyActivation = MutableLiveData()
+
         api = ApiClient()
         compositeDisposable.add(
             api.applyActivationKey(mobile, code)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    mutableLiveDataApplyActivation.value = it
+                .subscribeWith(object : DisposableSingleObserver<LoginModel>() {
+                    override fun onSuccess(t: LoginModel) {
+                        mutableLiveDataApplyActivation.value = t
+                    }
+
+                    override fun onError(e: Throwable) {
+
+                        Log.d("error ActivationKey!!!", e.toString())
+                    }
+
+
                 })
+        )
         return mutableLiveDataApplyActivation
     }
 
@@ -108,9 +131,9 @@ class BannerViewModel : ViewModel() {
         userId: Int,
         city: RequestBody,
         cate: RequestBody,
-        img1:  MultipartBody.Part,
-        img2:  MultipartBody.Part,
-        img3:  MultipartBody.Part
+        img1: MultipartBody.Part,
+        img2: MultipartBody.Part,
+        img3: MultipartBody.Part
     ): MutableLiveData<MSG> {
         mutableLiveDataUserBanner = MutableLiveData()
         api = ApiClient()
@@ -125,10 +148,19 @@ class BannerViewModel : ViewModel() {
                 img1,
                 img2,
                 img3
+
             ).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe() {
-                    mutableLiveDataUserBanner.value = it
-                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<MSG>() {
+                    override fun onSuccess(t: MSG) {
+                        mutableLiveDataUserBanner.value = t
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d("error add banner!!!", e.toString())
+                    }
+
+                })
         )
         return mutableLiveDataUserBanner
     }
@@ -162,9 +194,16 @@ class BannerViewModel : ViewModel() {
                 img2,
                 img3
             ).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe() {
-                    mutableLiveDataUserBanner.value = it
-                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<MSG>() {
+                    override fun onSuccess(t: MSG) {
+                        mutableLiveDataUserBanner.value = t
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d("error edit banner!!!", e.toString())
+                    }
+                })
         )
         return mutableLiveDataUserBanner
     }
@@ -178,12 +217,12 @@ class BannerViewModel : ViewModel() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<UserIdModel>() {
-                    override fun onSuccess(t: UserIdModel?) {
+                    override fun onSuccess(t: UserIdModel) {
                         mutableLiveDataId.value = t
                     }
 
-                    override fun onError(e: Throwable?) {
-                        Log.d("error live data!!!", e.toString())
+                    override fun onError(e: Throwable) {
+                        Log.d("error get user id!!!", e.toString())
                     }
                 })
         )
@@ -199,11 +238,11 @@ class BannerViewModel : ViewModel() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<PhoneModel>() {
-                    override fun onSuccess(t: PhoneModel?) {
+                    override fun onSuccess(t: PhoneModel) {
                         mutableLiveDataPhoneNumber.value = t
                     }
 
-                    override fun onError(e: Throwable?) {
+                    override fun onError(e: Throwable) {
                         Log.d("error live data!!!", e.toString())
                     }
                 })
@@ -219,11 +258,11 @@ class BannerViewModel : ViewModel() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<MSG>() {
-                    override fun onSuccess(t: MSG?) {
+                    override fun onSuccess(t: MSG) {
                         mutableLiveDataUserBanner.value = t
                     }
 
-                    override fun onError(e: Throwable?) {
+                    override fun onError(e: Throwable) {
                         Log.d("error delete!!!", e.toString())
                     }
                 })
