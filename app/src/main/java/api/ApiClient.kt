@@ -8,10 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-
 class ApiClient {
     companion object {
-        const val BASE_URL = "http://192.168.1.103/divar/"
+        const val BASE_URL = "http://192.168.1.102/divar/"
     }
 
     private var retrofit: Retrofit? = null

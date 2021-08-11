@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Divar">
-        <activity android:name="view.SendMessageActivity"></activity>
+        <activity android:name="view.SendMessageActivity" />
         <activity android:name="view.DetailUserBannerActivity" />
         <activity android:name="view.AccountActivity" />
         <activity android:name="view.CategoryActivity" />

@@ -2,7 +2,6 @@ package view
 
 import adapter.AdAdapter
 import adapter.ItemOnClickListener
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -13,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_ad_list.*
 import kotlinx.android.synthetic.main.toolbar.*
 import model.AdModel
 import viewmodel.BannerViewModel
+import viewmodel.MainViewModelFactory
 
 class AdListFragment : Fragment(), ItemOnClickListener {
 
@@ -44,21 +43,19 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         var myDataSaved = activity?.getSharedPreferences("myCity", Context.MODE_PRIVATE)
         val cityName = myDataSaved?.getString("CityName", "all")
 
-        val viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
-            .create(BannerViewModel::class.java)
+        /*  val viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+              .create(BannerViewModel::class.java)
+  */
+        val viewModel =
+            ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
-        val listMutableLiveData: MutableLiveData<ArrayList<AdModel>> =
-            viewModel.getListMutableLiveData(cityName!!, "all")
-
-        listMutableLiveData.observe(requireActivity(), object : Observer<ArrayList<AdModel>> {
-            override fun onChanged(t: ArrayList<AdModel>?) {
-
-                val adapter = AdAdapter(requireContext(), t!!, this@AdListFragment)
+        viewModel.getListLiveData("تهران", "all").observe(requireActivity(),
+            Observer<ArrayList<AdModel>> { banners ->
+                val adapter = AdAdapter(requireContext(), banners!!, this@AdListFragment)
                 val manager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
                 rec_ad.layoutManager = manager
                 rec_ad.adapter = adapter
-            }
-        })
+            })
 
         /*==================================spinner city======================================*/
         val adapterCity = ArrayAdapter<String>(

@@ -1,6 +1,7 @@
 package viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import api.ApiClient
@@ -13,7 +14,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 class BannerViewModel : ViewModel() {
-
     companion object {
         const val STATUS_LOGIN = true
     }
@@ -30,16 +30,20 @@ class BannerViewModel : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     lateinit var api: ApiClient
 
-    fun getListMutableLiveData(city: String, cate: String): MutableLiveData<ArrayList<AdModel>> {
+    //LiveData برای اینکه ویو نتونه تغیری توی این لیست ایجاد کنه
+    //MutableLiveData ویو بتونه مقادیر را تغییر دهد
+    fun getListLiveData(city: String, cate: String): LiveData<ArrayList<AdModel>> {
         listMutableLiveData = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
             //Schedulers: مدیریت ترد ها
-            //newThread  روی ترد اصلی انجام نشه(در یک ترد جدید کار مورد نظر را انجام دهد )چون ترد اصلی بلاک میشه و اپ هنگ میکنه
+            //Schedulers.io()  بهترین گزینه واسه ارسال درخواست به سرور- با یک ترد اول شروع میکند اگه ترد بیکار وجود نداشته یک ترد جدید ایجاد میشه و کارها را انجام میده
+            // Schedulers.computation()  تعداد تردهایی که میسازه برابره با تعداد کورهای سی پی یو دستگاه-اگر درخواست زیاد باشه ترد جدید ایجاد نمیشه باید منتظر باشه تا تردهای دیگر آزاد شوند
+            //Schedulers.newThread()  روی ترد اصلی انجام نشه(در یک ترد جدید کار مورد نظر را انجام دهد )چون ترد اصلی بلاک میشه و اپ هنگ میکنه
             //mainThread نتیجه روی کدوم ترد برگردونه
             //روی یک ترد جدید نتیجه را روی ترد اصلی نشون میده
             api.getAllBanners(city, cate)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<ArrayList<AdModel>>() {
 
@@ -55,12 +59,12 @@ class BannerViewModel : ViewModel() {
         return listMutableLiveData
     }
 
-    fun getListMutableLiveDataUserBanner(tell: String): MutableLiveData<ArrayList<AdModel>> {
+    fun getListLiveDataUserBanner(tell: String): LiveData<ArrayList<AdModel>> {
         listMutableLiveData = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
             api.getUserBanners(tell)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<ArrayList<AdModel>>() {
 
@@ -76,9 +80,8 @@ class BannerViewModel : ViewModel() {
         return listMutableLiveData
     }
 
-
     /*====================ارسال کد فعال سازی به شماره موبایل=================================*/
-    fun sendActivationKey(mobile: String): MutableLiveData<LoginModel> {
+    fun sendActivationKey(mobile: String): LiveData<LoginModel> {
         mutableLiveDataSendActivation = MutableLiveData()
         api = ApiClient()
         compositeDisposable.add(
@@ -99,7 +102,7 @@ class BannerViewModel : ViewModel() {
     }
 
     /*=========================لاگین کردن با ورود کد تایید=================================*/
-    fun applyActivationKey(mobile: String, code: String): MutableLiveData<LoginModel> {
+    fun applyActivationKey(mobile: String, code: String): LiveData<LoginModel> {
         mutableLiveDataApplyActivation = MutableLiveData()
 
         api = ApiClient()
@@ -270,6 +273,9 @@ class BannerViewModel : ViewModel() {
         return mutableLiveDataUserBanner
     }
 
+
+    //ویو مدل به اتفاقات چرخه حیات اکتیویتی کاری  نداره فقط یک متد onCleared داره زمانی صدا زده میشه که اکتیوتی کلا finished یا از یبن بره- زمانی که ویو از بین بره صدا زده میشه
+    // باید داخل متد onCleared کل درخواست هایی که به سرور فرستادیم کنسل کنیم و ویو توی حافطه نگهداری نشه چون ویو از بین رفته و نبیاد اینستنسی ازش ساخته بشه
     override fun onCleared() {
         compositeDisposable.clear()
         super.onCleared()

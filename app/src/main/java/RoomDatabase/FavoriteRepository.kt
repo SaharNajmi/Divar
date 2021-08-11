@@ -1,28 +1,27 @@
 package RoomDatabase
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 
-class FavoriteRepository(val context: Context) {
-    private val favoriteRoomDB = initializeDB(context)
-    private var allFavorite: LiveData<List<FavoriteEntity>>? = null
+class FavoriteRepository {
+    var favoriteDao: FavoriteDao
+
+    constructor(_data: FavoriteDao) {
+        favoriteDao = _data
+    }
 
     private fun initializeDB(context: Context): FavoriteRoomDB? {
         return FavoriteRoomDB.getAppDatabase(context)
     }
 
-    fun getAllFav(): LiveData<List<FavoriteEntity>>? {
-        allFavorite = favoriteRoomDB!!.favoriteDao().getAllFavorite()
-        return allFavorite
-    }
+    //در  لیست علاقه مندی در دیتابیس چه جود داشت چه نداشت در هز صورت نمایش بده- دریافت لیست های آپدیت
+    fun refreshListFavorite() {}
+
+    fun getAllFav(): LiveData<List<FavoriteEntity>> = favoriteDao.getAllFavorite()
 
 
-    fun insertFav(favorite: FavoriteEntity) {
-        favoriteRoomDB!!.favoriteDao().addFavorite(favorite)
-    }
+    fun insertFav(favorite: FavoriteEntity) = favoriteDao.addFavorite(favorite)
 
-    fun deleteFav(favorite: FavoriteEntity) {
-        favoriteRoomDB!!.favoriteDao().deleteFavorite(favorite)
-    }
+
+    fun deleteFav(favorite: FavoriteEntity) = favoriteDao.deleteFavorite(favorite)
 }

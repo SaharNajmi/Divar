@@ -2,12 +2,10 @@ package view
 
 import adapter.AdAdapter
 import adapter.ItemOnClickListener
-import android.app.Application
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.MutableLiveData
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -33,23 +31,24 @@ class CategoryActivity : AppCompatActivity(), ItemOnClickListener {
         val myDataSaved = getSharedPreferences("myCity", Context.MODE_PRIVATE)
         val cityName = myDataSaved?.getString("CityName", "all")
 
-        val viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
-            .create(BannerViewModel::class.java)
+/*            val viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+            .create(BannerViewModel::class.java)*/
+        //  val viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)viewModel.applyActivationKey(txtTell, txtCode)
 
-        val listMutableLiveData: MutableLiveData<ArrayList<AdModel>> =
-            viewModel.getListMutableLiveData(cityName!!, category!!)
+        val viewModel = ViewModelProvider(this).get(BannerViewModel::class.java)
 
-        listMutableLiveData.observe(this, object : Observer<ArrayList<AdModel>> {
-            override fun onChanged(t: ArrayList<AdModel>?) {
+        viewModel.getListLiveData(cityName!!, category!!)
+            .observe(this, object : Observer<ArrayList<AdModel>> {
+                override fun onChanged(t: ArrayList<AdModel>?) {
 
-                val adapter = AdAdapter(this@CategoryActivity, t!!, this@CategoryActivity)
-                val manager =
-                    GridLayoutManager(this@CategoryActivity, 2, RecyclerView.VERTICAL, false)
-                rec_cate.layoutManager = manager
-                adapter.updateList(t)
-                rec_cate.adapter = adapter
-            }
-        })
+                    val adapter = AdAdapter(this@CategoryActivity, t!!, this@CategoryActivity)
+                    val manager =
+                        GridLayoutManager(this@CategoryActivity, 2, RecyclerView.VERTICAL, false)
+                    rec_cate.layoutManager = manager
+                    adapter.updateList(t)
+                    rec_cate.adapter = adapter
+                }
+            })
 
     }
 

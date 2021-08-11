@@ -1,6 +1,6 @@
 package model
 
-class PhoneModel (val tell: String?)
+class PhoneModel(val tell: String?)
 
 /*
 JSON

@@ -1,6 +1,5 @@
 package api
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import model.*
 import okhttp3.MultipartBody

@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.squareup.picasso.Picasso
 
-class AdModel{
+class AdModel {
     companion object {
         @BindingAdapter("android:loadImage")
         @JvmStatic
@@ -16,6 +16,7 @@ class AdModel{
                 .into(view)
         }
     }
+
     @SerializedName("id")
     @Expose
     var id: Int = 0

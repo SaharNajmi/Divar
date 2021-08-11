@@ -2,25 +2,25 @@ package viewmodel
 
 import RoomDatabase.FavoriteEntity
 import RoomDatabase.FavoriteRepository
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 
-class FavoriteViewModel : ViewModel() {
+class FavoriteViewModel : ViewModel {
+    var favoriteRepository: FavoriteRepository
 
-    private var liveDataFav: LiveData<List<FavoriteEntity>>? = null
-
-    fun getAllFavorite(context: Context): LiveData<List<FavoriteEntity>>? {
-        liveDataFav = FavoriteRepository(context).getAllFav()
-
-        return liveDataFav
+    constructor(_data: FavoriteRepository) {
+        favoriteRepository = _data
     }
 
-    fun insertInformation(favorite: FavoriteEntity, context: Context) {
-        FavoriteRepository(context).insertFav(favorite)
+    fun getAllFavorite(): LiveData<List<FavoriteEntity>>? {
+        return favoriteRepository.getAllFav()
     }
 
-    fun deleteInformation(favorite: FavoriteEntity, context: Context) {
-        FavoriteRepository(context).deleteFav(favorite)
+    fun insertInformation(favorite: FavoriteEntity) {
+        favoriteRepository.insertFav(favorite)
+    }
+
+    fun deleteInformation(favorite: FavoriteEntity) {
+        favoriteRepository.deleteFav(favorite)
     }
 }

@@ -1,6 +1,9 @@
 package view
 
 import RoomDatabase.FavoriteEntity
+import RoomDatabase.FavoriteRepository
+import RoomDatabase.FavoriteRoomDB
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,6 +24,8 @@ import model.DetailModel
 import model.PhoneModel
 import viewmodel.BannerViewModel
 import viewmodel.FavoriteViewModel
+import viewmodel.MainViewModelFactory
+import viewmodel.MainViewModelFactory2
 
 
 class DetailAdActivity : AppCompatActivity() {
@@ -82,9 +87,18 @@ class DetailAdActivity : AppCompatActivity() {
 
         /*===================================favorite=========================================*/
 /*================= add and remove favorite use room database and SharedPreferences================*/
+        /*  viewModelFav = ViewModelProvider(
+              this,
+              ViewModelProvider.AndroidViewModelFactory(application)
+          ).get(FavoriteViewModel::class.java)*/
         viewModelFav = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory(application)
+            this, MainViewModelFactory2(
+                FavoriteRepository(
+                    FavoriteRoomDB.getAppDatabase(
+                        Application()
+                    )!!.favoriteDao()
+                )
+            )
         ).get(FavoriteViewModel::class.java)
 
         myFavSaved = getSharedPreferences("myFav", Context.MODE_PRIVATE)
@@ -118,7 +132,7 @@ class DetailAdActivity : AppCompatActivity() {
                     img2.toString(),
                     img3.toString()
                 )
-                viewModelFav.insertInformation(addFavorite, this)
+                viewModelFav.insertInformation(addFavorite)
 
                 Toast.makeText(this, "به لیست علاقه مندی اضافه شد", Toast.LENGTH_SHORT).show()
                 favorite = false
@@ -132,7 +146,7 @@ class DetailAdActivity : AppCompatActivity() {
 
                 val deleteFavorite: FavoriteEntity = FavoriteEntity(id, favorite)
 
-                viewModelFav.deleteInformation(deleteFavorite, this)
+                viewModelFav.deleteInformation(deleteFavorite)
                 Toast.makeText(this, "از لیست علاقه مندی حذف شد", Toast.LENGTH_SHORT).show()
 
                 favorite = true
@@ -144,14 +158,15 @@ class DetailAdActivity : AppCompatActivity() {
             startActivity(goSendMessage)
         }
 
-        viewModelBanner = ViewModelProvider(
+/*        viewModelBanner = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory(application)
-        ).get(BannerViewModel::class.java)
+        ).get(BannerViewModel::class.java)*/
 
+        viewModelBanner =
+            ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
-        val tellUser = viewModelBanner.getMutableLiveDataTell(userId)
-        tellUser.observe(this, object : Observer<PhoneModel> {
+        viewModelBanner.getMutableLiveDataTell(userId).observe(this, object : Observer<PhoneModel> {
             override fun onChanged(t: PhoneModel?) {
 
                 tellSaved = getSharedPreferences("PHONE_NAME", Context.MODE_PRIVATE)

@@ -73,7 +73,7 @@ class UserBannerAdapter(
                     viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
                         .create(BannerViewModel::class.java)
                     deleteBanner(list[position].id)
-                //    updateList(list)
+                    //    updateList(list)
                 })
                 // negative button text and action
                 .setNegativeButton("خیر", DialogInterface.OnClickListener { dialog, id ->
@@ -118,8 +118,7 @@ class UserBannerAdapter(
 
 
     private fun deleteBanner(id: Int) {
-        val delete = viewModel.deleteBanner(id)
-        delete.observe((context as AppCompatActivity), object : Observer<MSG> {
+        viewModel.deleteBanner(id).observe((context as AppCompatActivity), object : Observer<MSG> {
             override fun onChanged(t: MSG?) {
                 Toast.makeText(context, t!!.msg, Toast.LENGTH_LONG).show()
             }

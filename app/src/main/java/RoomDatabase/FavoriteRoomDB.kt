@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [FavoriteEntity::class], version = 2)
+@Database(entities = [FavoriteEntity::class], version = 1)
 abstract class FavoriteRoomDB : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
 

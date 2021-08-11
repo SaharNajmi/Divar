@@ -2,7 +2,6 @@ package view
 
 import adapter.ItemOnClickListener
 import adapter.UserBannerAdapter
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,17 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.fragment_login.rec_my_ad
 import model.AdModel
 import model.LoginModel
 import viewmodel.BannerViewModel
+import viewmodel.MainViewModelFactory
 
 class LoginFragment : Fragment(), ItemOnClickListener {
 
@@ -42,8 +40,10 @@ class LoginFragment : Fragment(), ItemOnClickListener {
 
         pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
 
-        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
-            .create(BannerViewModel::class.java)
+        /*   viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+               .create(BannerViewModel::class.java)*/
+
+        viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
         /*================اگر کاربر از قبل لاگین کرده بود آگهی های کاربر با همین شماره را نشان دهد============*/
         checkLogin()
@@ -66,9 +66,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
             }
 
             if (isValid) {
-                val listMutableLiveData = viewModel.sendActivationKey(mobile_text.text.toString())
-
-                listMutableLiveData.observe(
+                viewModel.sendActivationKey(mobile_text.text.toString()).observe(
                     requireActivity(),
                     object : Observer<LoginModel> {
                         override fun onChanged(data: LoginModel?) {
@@ -101,8 +99,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
             editor?.apply()
 
             if (txtCode.length == 4) {
-                val listMutableLiveData = viewModel.applyActivationKey(txtTell, txtCode)
-                listMutableLiveData.observe(
+                viewModel.applyActivationKey(txtTell, txtCode).observe(
                     requireActivity(),
                     object : Observer<LoginModel> {
                         override fun onChanged(data: LoginModel?) {
@@ -143,18 +140,17 @@ class LoginFragment : Fragment(), ItemOnClickListener {
 
         rec_my_ad.visibility = View.VISIBLE
 
-        val listMutableLiveData: MutableLiveData<ArrayList<AdModel>> =
-            viewModel.getListMutableLiveDataUserBanner(phone!!)
-
-        listMutableLiveData.observe(requireActivity(), object : Observer<ArrayList<AdModel>> {
-            override fun onChanged(t: ArrayList<AdModel>?) {
-                val adapter = UserBannerAdapter(requireContext(), t!!, this@LoginFragment)
-                val manager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
-                rec_my_ad.layoutManager = manager
-              //  adapter.updateList(t)
-                rec_my_ad.adapter = adapter
-            }
-        })
+        viewModel.getListLiveDataUserBanner(phone!!)
+            .observe(requireActivity(), object : Observer<ArrayList<AdModel>> {
+                override fun onChanged(t: ArrayList<AdModel>?) {
+                    val adapter = UserBannerAdapter(requireContext(), t!!, this@LoginFragment)
+                    val manager =
+                        GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+                    rec_my_ad.layoutManager = manager
+                    //  adapter.updateList(t)
+                    rec_my_ad.adapter = adapter
+                }
+            })
     }
 
     private fun checkLogin() {

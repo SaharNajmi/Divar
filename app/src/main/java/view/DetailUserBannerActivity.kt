@@ -1,7 +1,6 @@
 package view
 
 import android.app.AlertDialog
-import android.app.Application
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -26,6 +25,7 @@ import model.MSG
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import viewmodel.BannerViewModel
+import viewmodel.MainViewModelFactory
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -85,8 +85,9 @@ class DetailUserBannerActivity : AppCompatActivity() {
         // setContentView(R.layout.activity_detail_user_banner)
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail_user_banner)
 
-        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
-            .create(BannerViewModel::class.java)
+        /*    viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+                .create(BannerViewModel::class.java)*/
+        viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
         id = intent.getIntExtra("id", 0)
         userId = intent.getIntExtra("userID", 0)
@@ -165,17 +166,17 @@ class DetailUserBannerActivity : AppCompatActivity() {
         customLayout.txt_edit_price.setText(price)
         customLayout.exposed_dropdown_edit.setText(city)
 
-            Glide.with(this)
-                .load(img1)
-                .into(customLayout.image_1)
+        Glide.with(this)
+            .load(img1)
+            .into(customLayout.image_1)
 
-            Glide.with(this)
-                .load(img2)
-                .into(customLayout.image_2)
+        Glide.with(this)
+            .load(img2)
+            .into(customLayout.image_2)
 
-            Glide.with(this)
-                .load(img3)
-                .into(customLayout.image_3)
+        Glide.with(this)
+            .load(img3)
+            .into(customLayout.image_3)
 
         showSpinnerCateInDialogBox()
 

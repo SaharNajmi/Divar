@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.util.Log
 import android.view.Gravity
 import android.widget.LinearLayout
@@ -80,7 +79,6 @@ class SendMessageActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         socket!!.disconnect()
-
     }
 
     private fun sendMessage(message: String) {
@@ -98,7 +96,7 @@ class SendMessageActivity : AppCompatActivity() {
                 try {
                     //این کلید message را در سمت سرور در جیسان میگیرد
                     message = jsonObject.getString("message")
-                   // userId = jsonObject.getString("from")
+                    // userId = jsonObject.getString("from")
 
                     userId = "09187171026"
 
@@ -148,7 +146,6 @@ class SendMessageActivity : AppCompatActivity() {
             }
         })
     }
-
 
 
     //گوش بده هر موقع پیامی بیاد از طرف سوکت ببین پیغامی میاد یا نه اگه اومد اونو نشون بده

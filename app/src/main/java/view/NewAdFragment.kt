@@ -1,7 +1,6 @@
 package view
 
 import android.app.Activity.RESULT_OK
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -27,6 +26,7 @@ import model.UserIdModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import viewmodel.BannerViewModel
+import viewmodel.MainViewModelFactory
 import java.util.*
 
 class NewAdFragment : Fragment() {
@@ -75,8 +75,10 @@ class NewAdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
-            .create(BannerViewModel::class.java)
+/*        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+            .create(BannerViewModel::class.java)*/
+
+        viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
         /*==============use AutoCompleteTextView for search list city=====================*/
         menuItems = ListCity()
@@ -140,13 +142,13 @@ class NewAdFragment : Fragment() {
         pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
         val phone = pref.getString("tell", "")
 
-        val idUser = viewModel.getMutableLiveDataId(phone!!)
-        idUser.observe(requireActivity(), object : Observer<UserIdModel> {
-            override fun onChanged(t: UserIdModel?) {
-                userId = t!!.id
+        viewModel.getMutableLiveDataId(phone!!)
+            .observe(requireActivity(), object : Observer<UserIdModel> {
+                override fun onChanged(t: UserIdModel?) {
+                    userId = t!!.id
 
-            }
-        })
+                }
+            })
 
         /*===============================button submit add banner======================================*/
         btn_add_banner.setOnClickListener {

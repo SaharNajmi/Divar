@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 /*json
   {"msg":"ورود با موفقیت انجام شد","status":true}*/
-data class LoginModel (
+data class LoginModel(
     @SerializedName("msg")
     @Expose
     var msg: String,

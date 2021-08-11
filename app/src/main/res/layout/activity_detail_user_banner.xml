@@ -103,7 +103,8 @@
             </LinearLayout>
 
 
-             </ScrollView>
+        </ScrollView>
+
         <include
             android:id="@+id/layout_del_edit"
             layout="@layout/delete_and_edit_layout" />

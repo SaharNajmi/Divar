@@ -1,11 +1,12 @@
 package com.example.divar
 
 import adapter.ExpandableListCategoryAdapter
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.*
+import android.widget.ExpandableListAdapter
+import android.widget.ExpandableListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
@@ -26,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
     private var myDataSaved: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
-
     private val data: HashMap<String, List<String>>
         get() {
             val cate_0 = ArrayList<String>()
@@ -54,8 +54,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //بک گراند fab خالی میشه -> زیر fab روی باتن نویگیشن به حالت نیم دایره درمیاد
-        bottomNavigationView.background = null
+
 
         /*===================================== Navigation Drawer ==================================*/
         image_filter.setOnClickListener {
@@ -136,7 +135,8 @@ class MainActivity : AppCompatActivity() {
            }*/
 
         /*=====================Switch between Fragments in BottomNavigationView==================*/
-
+        //بک گراند fab خالی میشه -> زیر fab روی باتن نویگیشن به حالت نیم دایره درمیاد
+        bottomNavigationView.background = null
         //show default fragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.switch_fragment, AdListFragment())
@@ -178,15 +178,15 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.switch_fragment, FavoriteFragment())
                         .commit()
                 }
+                R.id.add -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.switch_fragment, NewAdFragment())
+                        .commit()
+                }
             }
             true
         }
 
-        floatingAdd.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.switch_fragment, NewAdFragment())
-                .commit()
-        }
 
         /*======================Sub Open FloatingActionButton =================================*/
         fab.setOnClickListener {

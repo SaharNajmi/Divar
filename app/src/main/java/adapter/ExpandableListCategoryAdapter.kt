@@ -87,6 +87,10 @@ class ExpandableListCategoryAdapter internal constructor(
     }
 
     override fun onGroupExpanded(groupPosition: Int) {
-        Toast.makeText(context, (titleList as ArrayList<String>)[groupPosition] + " List Expanded.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            context,
+            (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
