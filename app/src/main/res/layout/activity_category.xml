@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:background="@color/backColor"
     android:layout_height="match_parent"
-    tools:context="view.CategoryActivity">
+    tools:context="feature.home.CategoryActivity">
 
     <TextView
         android:id="@+id/txt_cate"

@@ -1,6 +1,5 @@
 package com.example.divar
 
-import adapter.ExpandableListCategoryAdapter
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -8,11 +7,17 @@ import android.widget.ExpandableListAdapter
 import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import commom.ExpandableListCategoryAdapter
+import feature.add.NewAdFragment
+import feature.auth.LoginFragment
+import feature.favorite.FavoriteFragment
+import feature.home.AdListFragment
+import feature.home.CategoryActivity
+import feature.message.ChatFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
 import kotlinx.android.synthetic.main.nav_header.view.*
-import view.*
 
 
 class MainActivity : AppCompatActivity() {

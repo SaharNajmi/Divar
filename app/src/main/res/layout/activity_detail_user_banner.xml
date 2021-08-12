@@ -6,13 +6,13 @@
 
         <variable
             name="detailAd"
-            type="model.DetailModel" />
+            type="data.model.DetailModel" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="view.DetailUserBannerActivity">
+        tools:context="feature.auth.DetailUserBannerActivity">
 
         <ScrollView
             android:layout_width="match_parent"
