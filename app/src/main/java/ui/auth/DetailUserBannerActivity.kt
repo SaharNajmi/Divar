@@ -1,4 +1,4 @@
-package feature.auth
+package ui.auth
 
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -11,21 +11,19 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.divar.R
 import com.example.divar.databinding.ActivityDetailUserBannerBinding
 import com.synnapps.carouselview.ImageListener
-import commom.MainViewModelFactory
 import data.model.DetailModel
 import data.model.ListCity
 import data.model.MSG
-import feature.home.BannerViewModel
 import kotlinx.android.synthetic.main.delete_and_edit_layout.view.*
 import kotlinx.android.synthetic.main.dialog_edit.view.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import service.UriToUploadable
+import ui.home.BannerViewModel
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -85,8 +83,8 @@ class DetailUserBannerActivity : AppCompatActivity() {
         // setContentView(R.layout.activity_detail_user_banner)
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail_user_banner)
 
-        /*    viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
-                .create(BannerViewModel::class.java)*/
+        /*     *//*    viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
+                .create(BannerViewModel::class.java)*//*
         viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
         id = intent.getIntExtra("id", 0)
@@ -101,7 +99,7 @@ class DetailUserBannerActivity : AppCompatActivity() {
 
         img1 = intent.getStringExtra("img1")
         img2 = intent.getStringExtra("img2")
-        img3 = intent.getStringExtra("img3")
+        img3 = intent.getStringExtra("img3")*/
 
         /*===============================image slider with CarouselView=====================*/
 

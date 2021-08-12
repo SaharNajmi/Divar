@@ -1,19 +1,59 @@
-package feature.home
+package ui.home
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import commom.MyViewModel
 import data.model.*
+import data.repository.BannerDataRepository
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import service.ApiClient
+import timber.log.Timber
 
-class BannerViewModel : ViewModel() {
+class BannerViewModel(
+    val bannerDataRepository: BannerDataRepository,
+    var city: String,
+    val cate: String
+) : MyViewModel() {
+
+    //get Banner
+    val bannerLiveData = MutableLiveData<List<AdModel>>()
+
+    init {
+        getBanner()
+    }
+
+    fun getBanner() {
+        bannerDataRepository.getAllBanner(city, cate)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<List<AdModel>> {
+                override fun onSubscribe(d: Disposable) {
+                    compositeDisposable.add(d)
+                }
+
+                override fun onSuccess(t: List<AdModel>) {
+                    bannerLiveData.value = t
+                }
+
+                override fun onError(e: Throwable) {
+                    Timber.e(e)
+                }
+            })
+    }
+
+    fun changeCity(city: String) {
+        this.city = city
+        getBanner()
+    }
+
+
     companion object {
         const val STATUS_LOGIN = true
     }
@@ -26,8 +66,9 @@ class BannerViewModel : ViewModel() {
     private var mutableLiveDataId = MutableLiveData<UserIdModel>()
     private var mutableLiveDataPhoneNumber = MutableLiveData<PhoneModel>()
 
-    //مدیریت درخواست رکوست به سمت سرور compositeDisposable
-    private val compositeDisposable = CompositeDisposable()
+    /*
+        //مدیریت درخواست رکوست به سمت سرور compositeDisposable
+        private val compositeDisposable = CompositeDisposable()*/
     lateinit var api: ApiClient
 
     //LiveData برای اینکه ویو نتونه تغیری توی این لیست ایجاد کنه

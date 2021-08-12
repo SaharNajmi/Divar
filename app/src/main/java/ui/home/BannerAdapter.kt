@@ -1,25 +1,25 @@
-package feature.home
+package ui.home
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.databinding.AdListItemBinding
 import commom.ItemOnClickListener
 import data.model.AdModel
 
-
-class AdAdapter(
-    val context: Context,
+class BannerAdapter(
     private var list: ArrayList<AdModel>,
     private val click: ItemOnClickListener
-) : RecyclerView.Adapter<AdAdapter.Holder>() {
+) : RecyclerView.Adapter<BannerAdapter.Holder>(), Filterable {
 
     lateinit var date: String
-    var listFilter = ArrayList<AdModel>()
 
-    fun updateList(list: ArrayList<AdModel>?) {
-        this.listFilter = list!!
+    var filterList = ArrayList<AdModel>()
+
+    fun setData(list: ArrayList<AdModel>) {
+        this.filterList = list!!
         notifyDataSetChanged()
     }
 
@@ -30,7 +30,7 @@ class AdAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val layoutInflater = LayoutInflater.from(context)
+        val layoutInflater = LayoutInflater.from(parent.context)
         val binding = AdListItemBinding.inflate(layoutInflater, parent, false)
         return Holder(binding)
     }
@@ -42,9 +42,9 @@ class AdAdapter(
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(list[position])
 
-        date = list[position].date
-        list[position].date = calculateDate(date)
-
+        /*      date = list[position].date
+              list[position].date = calculateDate(date)
+      */
         holder.itemView.setOnClickListener {
             click.onItemClick(list[position])
         }
@@ -77,5 +77,32 @@ class AdAdapter(
             date = hhhh + " سال پیش"
         }
         return date
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(charSequence: CharSequence?): FilterResults? {
+                val filterResult = FilterResults()
+                if (charSequence == null) {
+                    filterList = list
+                } else {
+                    val searChar = charSequence.toString().toLowerCase()
+                    val itemModel = ArrayList<AdModel>()
+                    for (item in filterList) {
+                        if (item.title!!.contains(searChar)) {
+                            itemModel.add(item)
+                        }
+                    }
+                    filterResult.count = itemModel.size
+                    filterResult.values = itemModel
+                }
+                return filterResult
+            }
+
+            override fun publishResults(constraint: CharSequence?, filterResults: FilterResults?) {
+                list = filterResults!!.values as ArrayList<AdModel>
+                notifyDataSetChanged()
+            }
+        }
     }
 }

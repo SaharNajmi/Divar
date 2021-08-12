@@ -1,4 +1,4 @@
-package feature.favorite
+package ui.favorite
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

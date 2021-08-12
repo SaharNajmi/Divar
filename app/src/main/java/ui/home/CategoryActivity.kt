@@ -1,13 +1,10 @@
-package feature.home
+package ui.home
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
 import commom.ItemOnClickListener
 import data.model.AdModel
@@ -35,18 +32,18 @@ class CategoryActivity : AppCompatActivity(), ItemOnClickListener {
 
         val viewModel = ViewModelProvider(this).get(BannerViewModel::class.java)
 
-        viewModel.getListLiveData(cityName!!, category!!)
-            .observe(this, object : Observer<ArrayList<AdModel>> {
-                override fun onChanged(t: ArrayList<AdModel>?) {
+        /*     viewModel.getListLiveData(cityName!!, category!!)
+                 .observe(this, object : Observer<ArrayList<AdModel>> {
+                     override fun onChanged(t: ArrayList<AdModel>?) {
 
-                    val adapter = AdAdapter(this@CategoryActivity, t!!, this@CategoryActivity)
-                    val manager =
-                        GridLayoutManager(this@CategoryActivity, 2, RecyclerView.VERTICAL, false)
-                    rec_cate.layoutManager = manager
-                    adapter.updateList(t)
-                    rec_cate.adapter = adapter
-                }
-            })
+                         val adapter = AdAdapter(this@CategoryActivity, t!!, this@CategoryActivity)
+                         val manager =
+                             GridLayoutManager(this@CategoryActivity, 2, RecyclerView.VERTICAL, false)
+                         rec_cate.layoutManager = manager
+                         adapter.updateList(t)
+                         rec_cate.adapter = adapter
+                     }
+                 })*/
 
     }
 

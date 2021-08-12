@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="feature.home.DetailAdActivity">
+        tools:context="ui.home.DetailAdActivity">
 
         <ScrollView
             android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package feature.favorite
+package ui.favorite
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package feature.auth
+package ui.auth
 
 import android.content.Context
 import android.content.Intent
@@ -10,16 +10,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
 import commom.ItemOnClickListener
-import commom.MainViewModelFactory
 import data.model.AdModel
 import data.model.LoginModel
-import feature.home.BannerViewModel
 import kotlinx.android.synthetic.main.fragment_login.*
+import ui.home.BannerViewModel
 
 class LoginFragment : Fragment(), ItemOnClickListener {
 
@@ -42,7 +40,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
         /*   viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
                .create(BannerViewModel::class.java)*/
 
-        viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
+        // viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
         /*================اگر کاربر از قبل لاگین کرده بود آگهی های کاربر با همین شماره را نشان دهد============*/
         checkLogin()

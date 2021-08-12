@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backColor"
-    tools:context="feature.auth.LoginFragment">
+    tools:context="ui.auth.LoginFragment">
 
     <ScrollView
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package feature.add
+package ui.add
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
@@ -16,17 +16,15 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.divar.R
-import commom.MainViewModelFactory
 import data.model.ListCity
 import data.model.MSG
 import data.model.UserIdModel
-import feature.home.BannerViewModel
 import kotlinx.android.synthetic.main.fragment_new_ad.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import service.UriToUploadable
+import ui.home.BannerViewModel
 import java.util.*
 
 class NewAdFragment : Fragment() {
@@ -78,7 +76,7 @@ class NewAdFragment : Fragment() {
 /*        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(Application())
             .create(BannerViewModel::class.java)*/
 
-        viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
+        // viewModel = ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
 
         /*==============use AutoCompleteTextView for search list city=====================*/
         menuItems = ListCity()

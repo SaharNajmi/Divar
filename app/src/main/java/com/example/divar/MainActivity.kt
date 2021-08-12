@@ -8,16 +8,16 @@ import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import commom.ExpandableListCategoryAdapter
-import feature.add.NewAdFragment
-import feature.auth.LoginFragment
-import feature.favorite.FavoriteFragment
-import feature.home.AdListFragment
-import feature.home.CategoryActivity
-import feature.message.ChatFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
 import kotlinx.android.synthetic.main.nav_header.view.*
+import ui.add.NewAdFragment
+import ui.auth.LoginFragment
+import ui.favorite.FavoriteFragment
+import ui.home.AdListFragment
+import ui.home.CategoryActivity
+import ui.message.ChatFragment
 
 
 class MainActivity : AppCompatActivity() {

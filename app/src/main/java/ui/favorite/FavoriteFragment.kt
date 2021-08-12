@@ -1,4 +1,4 @@
-package feature.favorite
+package ui.favorite
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
 import data.db.RoomDatabase.FavoriteEntity
 import data.db.RoomDatabase.RowClickListener
-import feature.home.DetailAdActivity
 import kotlinx.android.synthetic.main.fragment_favorite.*
+import ui.home.DetailAdActivity
 
 class FavoriteFragment : Fragment(), RowClickListener {
     lateinit var viewModel: FavoriteViewModel

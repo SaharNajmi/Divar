@@ -105,4 +105,6 @@ dependencies {
     // Fresco
     implementation 'com.facebook.fresco:fresco:2.4.0'
 
+    //Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }

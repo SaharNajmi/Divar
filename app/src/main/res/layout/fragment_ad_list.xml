@@ -2,17 +2,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backColor"
-    tools:context="feature.home.AdListFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/backColor">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+    <LinearLayout
+        android:id="@+id/linearToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_weight="2.25"
+            app:queryHint="جستجو"
+            app:searchIcon="@drawable/ic_search"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textCursorDrawable="@null"
+            app:iconifiedByDefault="false"
+            android:padding="10dp" />
+
+        <AutoCompleteTextView
+            android:backgroundTint="@android:color/transparent"
+            android:layout_weight="0.75"
+            android:id="@+id/exposed_dropdown_city"
+            android:text="همه شهر ها"
+
+            android:textColor="@color/myColor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:targetApi="lollipop" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rec_ad"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar" />
+        android:layout_below="@id/linearToolbar" />
 
 </RelativeLayout>

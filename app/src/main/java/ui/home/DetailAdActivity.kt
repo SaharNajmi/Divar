@@ -1,4 +1,4 @@
-package feature.home
+package ui.home
 
 import android.app.Application
 import android.content.Context
@@ -15,17 +15,16 @@ import com.bumptech.glide.Glide
 import com.example.divar.R
 import com.example.divar.databinding.ActivityDetailAdBinding
 import com.synnapps.carouselview.ImageListener
-import commom.MainViewModelFactory
 import commom.MainViewModelFactory2
 import data.db.RoomDatabase.FavoriteEntity
 import data.db.RoomDatabase.FavoriteRepository
 import data.db.RoomDatabase.FavoriteRoomDB
 import data.model.DetailModel
 import data.model.PhoneModel
-import feature.favorite.FavoriteViewModel
-import feature.message.SendMessageActivity
 import kotlinx.android.synthetic.main.more_information_ad.*
 import kotlinx.android.synthetic.main.more_information_ad.view.*
+import ui.favorite.FavoriteViewModel
+import ui.message.SendMessageActivity
 
 
 class DetailAdActivity : AppCompatActivity() {
@@ -163,9 +162,9 @@ class DetailAdActivity : AppCompatActivity() {
             ViewModelProvider.AndroidViewModelFactory(application)
         ).get(BannerViewModel::class.java)*/
 
-        viewModelBanner =
-            ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
-
+        /*    viewModelBanner =
+                ViewModelProvider(this, MainViewModelFactory()).get(BannerViewModel::class.java)
+    */
         viewModelBanner.getMutableLiveDataTell(userId).observe(this, object : Observer<PhoneModel> {
             override fun onChanged(t: PhoneModel?) {
 

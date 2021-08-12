@@ -1,4 +1,4 @@
-package feature.message
+package ui.message
 
 import android.content.Context
 import android.content.SharedPreferences

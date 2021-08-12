@@ -3,7 +3,7 @@ package commom
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import data.db.RoomDatabase.FavoriteRepository
-import feature.favorite.FavoriteViewModel
+import ui.favorite.FavoriteViewModel
 
 class MainViewModelFactory2(private val repository: FavoriteRepository) :
     ViewModelProvider.Factory {

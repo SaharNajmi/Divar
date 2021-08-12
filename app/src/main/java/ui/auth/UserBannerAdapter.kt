@@ -1,4 +1,4 @@
-package feature.auth
+package ui.auth
 
 import android.app.AlertDialog
 import android.app.Application
@@ -15,8 +15,8 @@ import com.example.divar.databinding.UserBannerBinding
 import commom.ItemOnClickListener
 import data.model.AdModel
 import data.model.MSG
-import feature.home.BannerViewModel
 import kotlinx.android.synthetic.main.user_banner.view.*
+import ui.home.BannerViewModel
 
 
 class UserBannerAdapter(
