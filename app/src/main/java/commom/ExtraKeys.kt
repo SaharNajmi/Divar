@@ -2,7 +2,7 @@ package commom
 
 val BASE_URL = "http://192.168.1.102/divar/"
 var MY_CITY = "all"
-val MY_CATEGORY = "all"
+var MY_CATEGORY = "all"
 const val EXTRA_KEY_DATA = "data"
 
 val LIST_CITY = listOf(

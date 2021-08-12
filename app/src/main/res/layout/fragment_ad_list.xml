@@ -1,46 +1,74 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/backColor">
+    android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:id="@+id/linearToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
-            android:layout_weight="2.25"
-            app:queryHint="جستجو"
-            app:searchIcon="@drawable/ic_search"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:textCursorDrawable="@null"
-            app:iconifiedByDefault="false"
-            android:padding="10dp" />
-
-        <AutoCompleteTextView
-            android:backgroundTint="@android:color/transparent"
-            android:layout_weight="0.75"
-            android:id="@+id/exposed_dropdown_city"
-            android:text="همه شهر ها"
-
-            android:textColor="@color/myColor"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            tools:targetApi="lollipop" />
-
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rec_ad"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/linearToolbar" />
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/imageFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:gravity="right|center"
+            android:layoutDirection="rtl"
+            android:text="فیلتر دسته بندی"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_filter" />
+
+        <LinearLayout
+            android:id="@+id/linearToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="2.25"
+                android:padding="10dp"
+                android:textCursorDrawable="@null"
+                app:iconifiedByDefault="false"
+                app:queryHint="جستجو"
+                app:searchIcon="@drawable/ic_search" />
+
+            <AutoCompleteTextView
+                android:id="@+id/exposed_dropdown_city"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:backgroundTint="@android:color/transparent"
+                android:text="همه شهر ها"
+                android:textColor="@color/myColor"
+                tools:targetApi="lollipop" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_ad"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/linearToolbar" />
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navView"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:layout_gravity="right"
+        android:layout_marginTop="15dp"
+        app:headerLayout="@layout/nav_header" />
+</androidx.drawerlayout.widget.DrawerLayout>

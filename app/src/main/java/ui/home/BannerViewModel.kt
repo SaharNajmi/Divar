@@ -19,7 +19,7 @@ import timber.log.Timber
 class BannerViewModel(
     val bannerDataRepository: BannerDataRepository,
     var city: String,
-    val cate: String
+    var cate: String
 ) : MyViewModel() {
 
     //get Banner
@@ -53,6 +53,10 @@ class BannerViewModel(
         getBanner()
     }
 
+    fun chaneCategory(category: String) {
+        this.cate = category
+        getBanner()
+    }
 
     companion object {
         const val STATUS_LOGIN = true

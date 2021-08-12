@@ -1,22 +1,14 @@
 package ui.home
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
-import com.bumptech.glide.Glide
 import com.example.divar.R
-import com.synnapps.carouselview.ImageListener
-import data.db.RoomDatabase.FavoriteEntity
 import kotlinx.android.synthetic.main.activity_detail_ad.*
 import kotlinx.android.synthetic.main.more_information_ad.*
-import kotlinx.android.synthetic.main.more_information_ad.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import ui.favorite.FavoriteViewModel
 import ui.message.SendMessageActivity
 
 
