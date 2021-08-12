@@ -13,10 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
-import commom.ItemOnClickListener
-import commom.LIST_CITY
-import commom.MY_CATEGORY
-import commom.MY_CITY
+import commom.*
 import data.model.AdModel
 import kotlinx.android.synthetic.main.fragment_ad_list.*
 import kotlinx.android.synthetic.main.fragment_new_ad.*
@@ -126,19 +123,8 @@ class AdListFragment : Fragment(), ItemOnClickListener {
     }
 
     override fun onItemClick(item: AdModel) {
-        val go = Intent(context, DetailAdActivity::class.java)
-        go.putExtra("id", item.id)
-        go.putExtra("title", item.title)
-        go.putExtra("description", item.description)
-        go.putExtra("price", item.price)
-        go.putExtra("city", item.city)
-        go.putExtra("userID", item.userID)
-        go.putExtra("category", item.category)
-        go.putExtra("date", item.date)
-        go.putExtra("status", item.status)
-        go.putExtra("img1", item.img1)
-        go.putExtra("img2", item.img2)
-        go.putExtra("img3", item.img3)
-        startActivity(go)
+        startActivity(Intent(requireContext(), DetailAdActivity::class.java).apply {
+            putExtra(EXTRA_KEY_DATA, item)
+        })
     }
 }

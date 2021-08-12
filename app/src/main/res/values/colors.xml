@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="myColor">#E91E63</color>
-    <color name="backColor">#C1E4E4E4</color>
+    <color name="backColor">#DDF6F6F6</color>
     <color name="colorChatReceive">#C1070A33</color>
     <color name="green">#C2168E16</color>
 </resources>
