@@ -18,17 +18,17 @@ import commom.*
 import data.model.AdModel
 import kotlinx.android.synthetic.main.fragment_ad_list.*
 import kotlinx.android.synthetic.main.fragment_new_ad.*
+import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
+import java.util.Collections.emptyList
 
 
 class AdListFragment : Fragment(), ItemOnClickListener {
 
     lateinit var bannerAdapter: BannerAdapter
-
-    lateinit var mdrawerlayout: DrawerLayout
 
     //instance viewModel use koin
     val bannerViewModel: BannerViewModel by viewModel<BannerViewModel>() {
@@ -97,16 +97,26 @@ class AdListFragment : Fragment(), ItemOnClickListener {
                 override fun onChanged(banners: List<AdModel>?) {
                     Timber.i("my list " + banners.toString())
 
-                    bannerAdapter =
-                        BannerAdapter(banners as ArrayList<AdModel>, this@AdListFragment)
-                    val manager =
-                        GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+                    if (banners!!.isNotEmpty()) {
+                        bannerAdapter =
+                            BannerAdapter(banners as ArrayList<AdModel>, this@AdListFragment)
+                        val manager =
+                            GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
 
-                    rec_ad.layoutManager = manager
-                    rec_ad.adapter = bannerAdapter
+                        rec_ad.layoutManager = manager
+                        rec_ad.adapter = bannerAdapter
 
-                    //ست کردن آرایه جدید بعد از هر بار جستجو
-                    bannerAdapter.setData(banners)
+                        //ست کردن آرایه جدید بعد از هر بار جستجو
+                        bannerAdapter.setData(banners as ArrayList<AdModel>)
+
+                        rec_ad.visibility = View.VISIBLE
+                        emptyLayout.visibility = View.GONE
+
+                    } else {
+                        emptyLayout.visibility = View.VISIBLE
+                        emptyLayout.txtEmpty.text = getString(R.string.emptyList)
+                    }
+
                 }
             })
     }
@@ -135,7 +145,6 @@ class AdListFragment : Fragment(), ItemOnClickListener {
             MY_CITY = exposed_dropdown_city.text.toString().trim()
             chaneCity()
         })
-
     }
 
     fun chaneCity() {
@@ -184,6 +193,24 @@ class AdListFragment : Fragment(), ItemOnClickListener {
                 val groupP = groupPosition + 1
                 val childP = childPosition + 1
                 MY_CATEGORY = "$groupP,$childP"
+
+                //show title category in textView
+                val titleCate =
+                    listData[(titleList as ArrayList<String>)[groupPosition]]!![childPosition]
+                imageFilter.text = titleCate
+
+                //delete filter
+                if (imageFilter.text.equals(R.string.filterName))
+                    cancel_filter.visibility = View.GONE
+                else
+                    cancel_filter.visibility = View.VISIBLE
+
+                cancel_filter.setOnClickListener {
+                    cancel_filter.visibility = View.GONE
+                    imageFilter.setText(R.string.filterName)
+                    MY_CATEGORY = "all"
+                    chaneCategory()
+                }
 
                 //آپدیت لیست با تغیر دسته بندی
                 chaneCategory()
