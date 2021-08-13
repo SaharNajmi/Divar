@@ -3,14 +3,18 @@ package data.model
 import android.os.Parcelable
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.squareup.picasso.Picasso
 import kotlinx.android.parcel.Parcelize
 
+@Entity(tableName = "banner")
 //Parcelize برای اینکه بتونیم مقادیر را ارسال کنیم
 @Parcelize
 data class AdModel(
+    @PrimaryKey(autoGenerate = false)
     @SerializedName("id")
     @Expose
     var id: Int = 0,
@@ -56,7 +60,9 @@ data class AdModel(
 
     @SerializedName("status")
     @Expose
-    var status: String = ""
+    var status: String = "",
+
+    var favorite: Boolean = false
 ) : Parcelable {
     companion object {
         @BindingAdapter("android:loadImage")

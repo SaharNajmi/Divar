@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_detail_ad.*
 import kotlinx.android.synthetic.main.more_information_ad.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import ui.favorite.FavoriteViewModel
 import ui.message.SendMessageActivity
 
 
@@ -24,9 +25,10 @@ class DetailAdActivity : AppCompatActivity() {
     var img1: String? = null
     var img2: String? = null
     var img3: String? = null
+    var favorite: Boolean = false
 
     val bannerDetailViewModel: BannerDetailViewModel by viewModel { (parametersOf(intent.extras)) }
-
+    val favoriteViewModel: FavoriteViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +69,31 @@ class DetailAdActivity : AppCompatActivity() {
             date_detail.text = date
             description_detail.text = description
             location_detail.text = city
+
+            //favorite
+            favorite = it.favorite
+            checkFavorite(favorite)
+
+            val favbanner = it
+            fab_fav.setOnClickListener {
+                if (favorite) {
+                    fab_fav.setImageResource(R.drawable.ic_bookmark_off)
+                    favoriteViewModel.deleteFavorite(favbanner)
+                    favorite = false
+
+                } else {
+                    fab_fav.setImageResource(R.drawable.ic_bookmark_on)
+                    favoriteViewModel.addFavorite(favbanner)
+                    favorite = true
+                }
+            }
         }
+    }
+
+    fun checkFavorite(favorite: Boolean) {
+        if (favorite)
+            fab_fav.setImageResource(R.drawable.ic_bookmark_on)
+        else
+            fab_fav.setImageResource(R.drawable.ic_bookmark_off)
     }
 }

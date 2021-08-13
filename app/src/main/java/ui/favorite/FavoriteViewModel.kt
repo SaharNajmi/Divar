@@ -1,26 +1,82 @@
 package ui.favorite
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import data.db.RoomDatabase.FavoriteEntity
-import data.db.RoomDatabase.FavoriteRepository
+import androidx.lifecycle.MutableLiveData
+import commom.MyViewModel
+import data.model.AdModel
+import data.repository.BannerDataRepository
+import io.reactivex.CompletableObserver
+import io.reactivex.SingleObserver
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
-class FavoriteViewModel : ViewModel {
-    var favoriteRepository: FavoriteRepository
+class FavoriteViewModel(val bannerDataRepository: BannerDataRepository) : MyViewModel() {
+    val favoritebannerLiveData = MutableLiveData<List<AdModel>>()
 
-    constructor(_data: FavoriteRepository) {
-        favoriteRepository = _data
+    init {
+        getFavorite()
     }
 
-    fun getAllFavorite(): LiveData<List<FavoriteEntity>>? {
-        return favoriteRepository.getAllFav()
+    fun getFavorite() {
+        bannerDataRepository.getFavorite()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<List<AdModel>> {
+                override fun onSubscribe(d: Disposable) {
+                    compositeDisposable.add(d)
+                }
+
+                override fun onSuccess(t: List<AdModel>) {
+                    favoritebannerLiveData.postValue(t)
+                }
+
+                override fun onError(e: Throwable) {
+                    Timber.e(e)
+                }
+            })
     }
 
-    fun insertInformation(favorite: FavoriteEntity) {
-        favoriteRepository.insertFav(favorite)
+    fun refresh() {
+        getFavorite()
     }
 
-    fun deleteInformation(favorite: FavoriteEntity) {
-        favoriteRepository.deleteFav(favorite)
+    fun deleteFavorite(banner: AdModel) {
+        bannerDataRepository.deleteFromFavorites(banner)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : CompletableObserver {
+                override fun onSubscribe(d: Disposable) {
+                    compositeDisposable.add(d)
+                }
+
+                override fun onComplete() {
+                    Timber.i("success delete from favorite")
+                }
+
+                override fun onError(e: Throwable) {
+                    Timber.e(e)
+                }
+            })
+
+    }
+
+    fun addFavorite(banner: AdModel) {
+        bannerDataRepository.addToFavorites(banner)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : CompletableObserver {
+                override fun onSubscribe(d: Disposable) {
+                    compositeDisposable.add(d)
+                }
+
+                override fun onComplete() {
+                    Timber.i("success add to favorite")
+                }
+
+                override fun onError(e: Throwable) {
+                    Timber.e(e)
+                }
+            })
     }
 }
