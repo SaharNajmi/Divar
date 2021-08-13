@@ -6,7 +6,6 @@ import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
 import ui.add.NewAdFragment
 import ui.auth.LoginFragment
-import ui.favorite.FavoriteFragment
 import ui.home.AdListFragment
 import ui.message.ChatFragment
 
@@ -71,11 +70,11 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.switch_fragment, AdListFragment())
                         .commit()
                 }
-                R.id.favorite -> {
+             /*   R.id.favorite -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.switch_fragment, FavoriteFragment())
                         .commit()
-                }
+                }*/
                 R.id.add -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.switch_fragment, NewAdFragment())
