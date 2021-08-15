@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.squareup.picasso.Picasso
+import commom.BASE_URL
 import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "banner")
@@ -34,6 +35,9 @@ data class AdModel(
     @Expose
     var userID: Int = 0,
 
+    @SerializedName("tell")
+    @Expose
+    var tell: String = "",
     @SerializedName("city")
     @Expose
     var city: String = "",
@@ -69,7 +73,7 @@ data class AdModel(
         @JvmStatic
         fun loadImage(view: ImageView, imageUrl: String) {
             Picasso.with(view.context)
-                .load(imageUrl)
+                .load("$BASE_URL${imageUrl}")
                 .into(view)
         }
     }

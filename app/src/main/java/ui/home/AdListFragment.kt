@@ -225,4 +225,10 @@ class AdListFragment : Fragment(), ItemOnClickListener {
             putExtra(EXTRA_KEY_DATA, item)
         })
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        bannerViewModel.refresh()
+    }
 }

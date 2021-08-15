@@ -15,9 +15,9 @@
         android:layout_margin="5dp">
 
         <RelativeLayout
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
 
             <ImageView
                 android:id="@+id/img_ad"
@@ -68,11 +68,11 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:layout_margin="2dp"
                 android:id="@+id/img_del"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_date"
+                android:layout_margin="2dp"
                 android:src="@drawable/ic_delete" />
 
         </RelativeLayout>

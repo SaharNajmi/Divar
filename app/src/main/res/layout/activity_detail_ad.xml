@@ -102,5 +102,11 @@
 
     <include
         android:id="@+id/more_layout"
+        android:visibility="gone"
         layout="@layout/more_information_ad" />
+
+    <include
+        android:id="@+id/layout_del_edit"
+        layout="@layout/delete_and_edit_layout"
+        android:visibility="gone" />
 </RelativeLayout>

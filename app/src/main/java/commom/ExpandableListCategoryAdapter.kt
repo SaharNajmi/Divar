@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
-import android.widget.Toast
 import com.example.divar.R
 
 class ExpandableListCategoryAdapter internal constructor(
@@ -87,10 +86,10 @@ class ExpandableListCategoryAdapter internal constructor(
     }
 
     override fun onGroupExpanded(groupPosition: Int) {
-      /*  Toast.makeText(
-            context,
-            (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
-            Toast.LENGTH_SHORT
-        ).show()*/
+        /*  Toast.makeText(
+              context,
+              (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
+              Toast.LENGTH_SHORT
+          ).show()*/
     }
 }

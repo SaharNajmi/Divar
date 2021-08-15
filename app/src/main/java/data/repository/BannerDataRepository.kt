@@ -28,7 +28,6 @@ class BannerDataRepository(
                         banner.favorite = true
                 }
             }
-
         }
 
     override fun getFavorite(): Single<List<AdModel>> = bannerLocalDataSource.getFavorite()
