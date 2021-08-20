@@ -1,9 +1,6 @@
 package data.repository.source.remote
 
-import data.model.AdModel
-import data.model.LoginModel
-import data.model.MSG
-import data.model.UserIdModel
+import data.model.*
 import data.repository.source.UserDataSource
 import io.reactivex.Single
 import okhttp3.MultipartBody
@@ -89,4 +86,8 @@ class UserRemoteDataSource(val apiService: ApiService) : UserDataSource {
     override fun deleteBanner(id: Int): Single<MSG> = apiService.deleteBanner(id)
 
     override fun getUserId(tell: String): Single<UserIdModel> = apiService.getUserId(tell)
+
+    override fun getMessage(myPhone: String, bannerId: Int): Single<List<ChatList>> =
+        apiService.getMessages(myPhone, bannerId)
+
 }

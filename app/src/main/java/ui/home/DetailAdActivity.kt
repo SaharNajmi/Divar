@@ -99,9 +99,14 @@ class DetailAdActivity : AppCompatActivity() {
             finish()
         }
 
-        //chat message
+        //go activity send message
         fab_chat.setOnClickListener {
             val goSendMessage = Intent(this, SendMessageActivity::class.java)
+            goSendMessage.putExtra("RECEIVER", phone)
+            goSendMessage.putExtra("SENDER", userViewModel.phoneNumber)
+            goSendMessage.putExtra("BANNER_IMAGE", img1)
+            goSendMessage.putExtra("BANNER_ID", id)
+            goSendMessage.putExtra("BANNER_TITLE", title)
             startActivity(goSendMessage)
         }
 
@@ -122,7 +127,7 @@ class DetailAdActivity : AppCompatActivity() {
     }
 
     private fun deleteBanner() {
-         userViewModel.deleteBanner(id)
+        userViewModel.deleteBanner(id)
             .observeOn(Schedulers.newThread())
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(object : SingleObserver<MSG> {
@@ -230,7 +235,7 @@ class DetailAdActivity : AppCompatActivity() {
         customLayout = layoutInflater.inflate(R.layout.dialog_edit, null)
 
         //create alert dialog
-       val dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("ویرایش آگهی")
             .setView(customLayout)
             .setPositiveButton("ثبت", null)
@@ -358,6 +363,7 @@ class DetailAdActivity : AppCompatActivity() {
             }
             .show()
     }
+
     //spinner category
     private fun showSpinnerCateInDialogBox() {
         //split string category

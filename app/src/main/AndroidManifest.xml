@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Divar">
         <activity android:name="ui.message.SendMessageActivity" />
-        <activity android:name="ui.auth.DetailUserBannerActivity" />
         <activity android:name="ui.home.CategoryActivity" />
         <activity android:name="ui.home.DetailAdActivity" />
         <activity android:name=".MainActivity">

@@ -1,10 +1,7 @@
 package service
 
 import commom.BASE_URL
-import data.model.AdModel
-import data.model.LoginModel
-import data.model.MSG
-import data.model.UserIdModel
+import data.model.*
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -81,6 +78,13 @@ interface ApiService {
         @Query("tell") tell: String
     ): Single<UserIdModel>
 
+    //(صفحه چت شخصی- پیام های پی وی) پیام هایی که کاربر به این ای دی( منحصر بفرد )فرستاده است یا پیام هایی که به کاربر ارسال شده: sender=09105559933&bannerID=3
+    //sender=09187171026&bannerID=0: لیست چت های که به آگهی های مختلف فرستادیم ) پیام هایی که کاربر به آیدی های مختلف(ای دی بنرآی دی برابر 0) فرستاده است )
+    @GET("GetMessages.php")
+    fun getMessages(
+        @Query("MyPhone") myPhone: String,
+        @Query("bannerID") bannerID: Int
+    ): Single<List<ChatList>>
 }
 
 fun createApiServiceInstance(): ApiService {

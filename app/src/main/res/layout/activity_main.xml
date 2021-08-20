@@ -27,7 +27,9 @@
             android:id="@+id/btn_nav"
             layout="@layout/bottom_navigation_with_fab" />
 
-        <include layout="@layout/fab_subfab_menu" />
+        <include
+            layout="@layout/fab_subfab_menu"
+            android:visibility="gone" />
 
 
         <ExpandableListView

@@ -1,10 +1,7 @@
 package data.repository.source.local
 
 import android.content.SharedPreferences
-import data.model.AdModel
-import data.model.LoginModel
-import data.model.MSG
-import data.model.UserIdModel
+import data.model.*
 import data.repository.LoginUpdate
 import data.repository.source.UserDataSource
 import io.reactivex.Single
@@ -78,6 +75,10 @@ class UserLocalDataSource(val sharedPreferences: SharedPreferences) : UserDataSo
     }
 
     override fun getUserId(tell: String): Single<UserIdModel> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMessage(myPhone: String, bannerId: Int): Single<List<ChatList>> {
         TODO("Not yet implemented")
     }
 }

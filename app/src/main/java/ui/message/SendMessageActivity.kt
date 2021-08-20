@@ -1,7 +1,5 @@
 package ui.message
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -9,80 +7,162 @@ import android.util.Log
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.observe
 import com.example.divar.R
+import commom.*
+import data.model.ChatList
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_send_message.*
 import org.json.JSONException
 import org.json.JSONObject
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+import ui.auth.UserViewModel
 import java.net.URISyntaxException
 
 class SendMessageActivity : AppCompatActivity() {
 
-    private lateinit var prefFrom: SharedPreferences
-    private lateinit var prefTo: SharedPreferences
     var socket: Socket? = null
     var handler: Handler? = null
-    var from = ""
-    var to = ""
+    lateinit var from: String
+    lateinit var to: String
+    var bannerID: Int = 0
+    lateinit var bannerTitle: String
+    lateinit var bannerImage: String
+    val userViewModel: UserViewModel by viewModel()
+    lateinit var chatList: ArrayList<ChatList>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_message)
 
+        //گرفتن مقادیر موقعی که از صفحه جزیات یا از لیست چت ها وارد این صفحه(صفحه ارسال پیام) میشیم
+        from = intent.getStringExtra("SENDER")
+        to = intent.getStringExtra("RECEIVER")
+        bannerImage = intent.getStringExtra("BANNER_IMAGE")
+        bannerTitle = intent.getStringExtra("BANNER_TITLE")
+        bannerID = intent.getIntExtra("BANNER_ID", 0)
 
-        /*===========================get phone number myself and phone number to send message ====================*/
-        prefFrom = getSharedPreferences("pref", Context.MODE_PRIVATE)
-        from = prefFrom.getString("tell", "").toString()
+        //view model message
+        val messageViewModel: MessageViewModel by viewModel { parametersOf(from, bannerID) }
 
-        prefTo = getSharedPreferences("PHONE_NAME", Context.MODE_PRIVATE)
-        to = prefTo.getString("to", "")!!
-        Toast.makeText(this, "from: " + from + " to: " + to, Toast.LENGTH_LONG).show()
 
-        /*========================socket.io==============================*/
+        //show all messages
+        messageViewModel.userMessage.observe(this) {
+            chatList = it as ArrayList<ChatList>
+
+            showAllMessages()
+        }
+
+
+        //back button
+        backBtn.setOnClickListener {
+            finish()
+        }
+
+        //show title
+        chat_title.text = bannerTitle
+
+        //socket.io
         handler = Handler()
 
         try {
             //creating socket instance
             //این سوکت به کدوم آدرس وصل شه-برقراری اتصال به سرور
-            socket = IO.socket("http://192.168.1.103:3000")
+            socket = IO.socket("http://192.168.1.102:3000")
 
         } catch (e: URISyntaxException) {
             e.printStackTrace()
             Log.d("fail", "Failed to connect")
         }
 
-        /* هر سوکتی که به سورو وصل بشه یک id میگیرد با هر کانکنت و دیس کانکت عوض میشه
-       پس ذخیره کردن ایدی فایده ندارد پس باید با اسم سوکت کار کنیم socket nick name*/
-        socket!!.emit("nickname", from)
-        // socket!!.emit("nickname", to)
-
-
         socket!!.connect()
 
+        //on  ما به اطلاعات سوکت گوش میدیم - سوکت به ما پیام میده
+        //emit سوکت به اطلاعات ما گوش میده - ما به سوکت پیام میدیم
         socket!!.on("chat message", onConnect)
-        socket!!.on("online", saveMessage)
 
+        /* هر سوکتی که به سورو وصل بشه یک id میگیرد با هر کانکنت و دیس کانکت عوض میشه
+        پس ذخیره کردن ایدی فایده ندارد پس باید با اسم سوکت کار کنیم socket nick name*/
+        // socket!!.emit("nickname", from)
+
+        //send message
         btn_send.setOnClickListener {
             if (edt_message.text.toString().trim() != "") {
-                sendMessage(edt_message.text.toString().trim())
+                sendMessage(
+                    from,
+                    to,
+                    edt_message.text.toString().trim(),
+                    bannerID,
+                    bannerTitle,
+                    bannerImage
+                )
                 edt_message.setText("")
             }
         }
 
     }
 
-    //وقتی برنامه بسته بشه یا بیایم بیرون
-    override fun onDestroy() {
-        super.onDestroy()
-        socket!!.disconnect()
+    private fun showAllMessages() {
+        var counter = 0
+        for (item in counter until chatList.size) {
+            //اگر فرستنده خودم باشم
+            if (chatList[counter].sender == userViewModel.phoneNumber) {
+
+                val textView = TextView(this@SendMessageActivity)
+
+                //show message in textView
+                textView.text = chatList[counter].message
+
+                textView.setTextColor(Color.WHITE)
+                textView.setBackgroundResource(R.drawable.sendchat)
+
+                var layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams.gravity = Gravity.RIGHT
+                layoutParams.setMargins(10, 7, 10, 7)
+
+                textView.layoutParams = layoutParams
+                linearMessage.addView(textView)
+            } else {
+                val textView = TextView(this@SendMessageActivity)
+                textView.text = chatList[counter].message
+                textView.setTextColor(resources.getColor(R.color.myColor))
+                textView.setBackgroundResource(R.drawable.recivechat)
+
+                var layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams.gravity = Gravity.LEFT
+                layoutParams.setMargins(10, 7, 10, 7)
+
+                textView.layoutParams = layoutParams
+                linearMessage.addView(textView)
+            }
+            counter++
+        }
     }
 
-    private fun sendMessage(message: String) {
+
+    private fun sendMessage(
+        sender: String,
+        receiver: String,
+        message: String,
+        bannerID: Int,
+        bannerTitle: String,
+        bannerImage: String
+    ) {
         //ارسال پیام به سمت سرور  با این کلید
+        socket!!.emit(
+            "data",
+            sender + "," + receiver + "," + message + "," + bannerID + "," + bannerTitle + "," + bannerImage
+        )
         socket!!.emit("chat message", message)
     }
 
@@ -96,7 +176,7 @@ class SendMessageActivity : AppCompatActivity() {
                 try {
                     //این کلید message را در سمت سرور در جیسان میگیرد
                     message = jsonObject.getString("message")
-                    // userId = jsonObject.getString("from")
+                    //   userId = jsonObject.getString("from")
 
                     userId = "09187171026"
 
@@ -122,11 +202,9 @@ class SendMessageActivity : AppCompatActivity() {
 
                         val textView = TextView(this@SendMessageActivity)
                         textView.text = message
-                        //textView.setTextColor(Color.BLUE)
                         textView.setTextColor(resources.getColor(R.color.myColor))
                         textView.setBackgroundResource(R.drawable.recivechat)
 
-                        //از لحاظ عرضی و از لحاظ ارتفاع به اندازه خودش جا بگیره
                         var layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -138,7 +216,6 @@ class SendMessageActivity : AppCompatActivity() {
                         linearMessage.addView(textView)
                     }
 
-
                 } catch (e: JSONException) {
                     e.printStackTrace()
                     Log.d("GET MESSAGE", "ERROR")
@@ -148,42 +225,9 @@ class SendMessageActivity : AppCompatActivity() {
     }
 
 
-    //گوش بده هر موقع پیامی بیاد از طرف سوکت ببین پیغامی میاد یا نه اگه اومد اونو نشون بده
-    private var saveMessage: Emitter.Listener? = Emitter.Listener { args ->
-        handler!!.post(object : Runnable {
-            override fun run() {
-                val jsonObject = args[0] as JSONObject
-                var message = ""
-                var userId = ""
-                try {
-                    //این کلید message را در سمت سرور در جیسان میگیرد
-                    message = jsonObject.getString("message")
-                    // userId = jsonObject.getString("from")
-
-                    userId = "09187171026"
-
-                    val textView = TextView(this@SendMessageActivity)
-                    textView.text = message
-                    textView.setTextColor(Color.WHITE)
-                    textView.setBackgroundResource(R.drawable.sendchat)
-
-                    //از لحاظ عرضی و از لحاظ ارتفاع به اندازه خودش جا بگیره
-                    var layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    layoutParams.gravity = Gravity.RIGHT
-                    layoutParams.setMargins(10, 7, 10, 7)
-
-                    textView.layoutParams = layoutParams
-                    linearMessage.addView(textView)
-
-
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                    Log.d("GET MESSAGE", "ERROR")
-                }
-            }
-        })
+    //وقتی برنامه بسته بشه یا بیایم بیرون
+    override fun onDestroy() {
+        super.onDestroy()
+        socket!!.disconnect()
     }
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.room.Room
+import com.facebook.drawee.backends.pipeline.Fresco
 import data.db.AppDataBase
 import data.repository.BannerDataRepository
 import data.repository.UserDataRepository
@@ -16,12 +17,15 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import service.ApiService
+import service.FrescoImageLoadingService
+import service.ImageLoadingService
 import service.createApiServiceInstance
 import timber.log.Timber
 import ui.auth.UserViewModel
 import ui.favorite.FavoriteViewModel
 import ui.home.BannerDetailViewModel
 import ui.home.BannerViewModel
+import ui.message.MessageViewModel
 
 class App : Application() {
 
@@ -30,13 +34,16 @@ class App : Application() {
 
         Timber.plant(Timber.DebugTree())
 
+        //use Fresco for load imageView
+        Fresco.initialize(this)
+
         val myModule = module {
             single<ApiService> { createApiServiceInstance() }
 
             //add dao room
             single { Room.databaseBuilder(this@App, AppDataBase::class.java, "db").build() }
 
-            single<BannerDataRepository> {
+            factory<BannerDataRepository> {
                 BannerDataRepository(
                     get<AppDataBase>().bannerDao(),
                     BannerRemoteDataSource(get())
@@ -52,10 +59,20 @@ class App : Application() {
                 )
             }
 
+            //یعنی اینکه برای لود تصاویر از Fresco استفاده میکنیم
+            single<ImageLoadingService> { FrescoImageLoadingService() }
+
             viewModel { (city: String, category: String) -> BannerViewModel(get(), city, category) }
             viewModel { (bundle: Bundle) -> BannerDetailViewModel(bundle) }
             viewModel { FavoriteViewModel(get()) }
             viewModel { UserViewModel(get()) }
+            viewModel { (myPhone: String, bannerId: Int) ->
+                MessageViewModel(
+                    get(),
+                    myPhone,
+                    bannerId
+                )
+            }
         }
         startKoin {
             androidContext(this@App)

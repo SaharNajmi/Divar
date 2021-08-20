@@ -1,9 +1,6 @@
 package data.repository
 
-import data.model.AdModel
-import data.model.LoginModel
-import data.model.MSG
-import data.model.UserIdModel
+import data.model.*
 import data.repository.source.UserDataSource
 import data.repository.source.local.UserLocalDataSource
 import data.repository.source.remote.UserRemoteDataSource
@@ -110,5 +107,8 @@ class UserDataRepository(
         userRemoteDataSource.getUserId(tell).doOnSuccess {
             Timber.i("user id: " + it.id)
         }
+
+    override fun getMessage(myPhone: String, bannerId: Int): Single<List<ChatList>> =
+        userRemoteDataSource.getMessage(myPhone, bannerId).doOnSuccess { Timber.i("my chat") }
 
 }

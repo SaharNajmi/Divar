@@ -1,9 +1,6 @@
 package data.repository.source
 
-import data.model.AdModel
-import data.model.LoginModel
-import data.model.MSG
-import data.model.UserIdModel
+import data.model.*
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -56,4 +53,7 @@ interface UserDataSource {
     ): Single<MSG>
 
     fun getUserId(tell: String): Single<UserIdModel>
+
+    fun getMessage(myPhone: String, bannerId: Int): Single<List<ChatList>>
+
 }
