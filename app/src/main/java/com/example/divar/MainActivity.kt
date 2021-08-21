@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.bottom_navigation_with_fab.*
 import kotlinx.android.synthetic.main.fab_subfab_menu.*
-import ui.add.NewAdFragment
+import ui.add.AddFragment
 import ui.auth.LoginFragment
 import ui.favorite.FavoriteFragment
 import ui.home.AdListFragment
@@ -49,16 +49,6 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.switch_fragment, LoginFragment())
                         .commit()
-                    /*     val pref = this.getSharedPreferences("pref", Context.MODE_PRIVATE)
-                         if (pref.getBoolean("login", false)) {
-                             supportFragmentManager.beginTransaction()
-                                 .replace(R.id.switch_fragment, ProfileFragment())
-                                 .commit()
-                         } else {
-                             supportFragmentManager.beginTransaction()
-                                 .replace(R.id.switch_fragment, LoginFragment())
-                                 .commit()
-                         }*/
                 }
                 R.id.chat -> {
                     supportFragmentManager
@@ -78,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.add -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.switch_fragment, NewAdFragment())
+                        .replace(R.id.switch_fragment, AddFragment())
                         .commit()
                 }
             }

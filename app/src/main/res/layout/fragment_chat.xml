@@ -5,6 +5,22 @@
     android:layout_height="match_parent"
     tools:context="ui.message.ChatFragment">
 
+    <TextView
+        android:id="@+id/alertGoToLogin"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="5dp"
+        android:text="برای نمایش لیست پیام ها باید وارد حساب کاربری خود شوید!"
+        android:textColor="@color/myColor"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/emptyLayout"
+        layout="@layout/layout_empty_view"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rec_chat_list"
         android:layout_width="match_parent"

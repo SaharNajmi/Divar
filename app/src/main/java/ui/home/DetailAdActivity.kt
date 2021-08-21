@@ -6,14 +6,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.example.divar.R
+import com.synnapps.carouselview.ImageListener
+import commom.BASE_URL
 import data.model.ListCity
 import data.model.MSG
 import io.reactivex.SingleObserver
@@ -70,6 +69,7 @@ class DetailAdActivity : AppCompatActivity() {
     private var menuItems: ListCity? = null
     private var selectedPositionCateBase: Int? = null
     private var selectedPositionCateSub: Int? = null
+    var sampleImages: ArrayList<String> = ArrayList()
 
     private val cate_base = arrayOf(
         "لوازم الکترونیکی", "املاک", "وسایل نقلیه"
@@ -99,17 +99,56 @@ class DetailAdActivity : AppCompatActivity() {
             finish()
         }
 
-        //go activity send message
-        fab_chat.setOnClickListener {
-            val goSendMessage = Intent(this, SendMessageActivity::class.java)
-            goSendMessage.putExtra("RECEIVER", phone)
-            goSendMessage.putExtra("SENDER", userViewModel.phoneNumber)
-            goSendMessage.putExtra("BANNER_IMAGE", img1)
-            goSendMessage.putExtra("BANNER_ID", id)
-            goSendMessage.putExtra("BANNER_TITLE", title)
-            startActivity(goSendMessage)
+        //call phone number
+        fab_call.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:$phone")
+            startActivity(intent)
         }
 
+        //go activity send message
+        fab_chat.setOnClickListener {
+            //اگر کاربر لاگین کرده بود بتونه پیام بفرسته
+            if (userViewModel.isSignIn) {
+                val goSendMessage = Intent(this, SendMessageActivity::class.java)
+                goSendMessage.putExtra("RECEIVER", phone)
+                goSendMessage.putExtra("SENDER", userViewModel.phoneNumber)
+                goSendMessage.putExtra("BANNER_IMAGE", img1)
+                goSendMessage.putExtra("BANNER_ID", id)
+                goSendMessage.putExtra("BANNER_TITLE", title)
+                startActivity(goSendMessage)
+            } else
+                Toast.makeText(this, "ابتدا وارد حساب خود شوید!", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    private fun imageSlider() {
+        if (!img1.equals(""))
+            sampleImages.add(img1!!)
+
+        if (!img2.equals(""))
+            sampleImages.add(img2!!)
+
+        if (!img3.equals(""))
+            sampleImages.add(img3!!)
+
+        carouselView.pageCount = sampleImages!!.size
+        carouselView.stopCarousel()
+        carouselView.setImageListener(imageListener)
+
+    }
+
+    private var imageListener: ImageListener = object : ImageListener {
+        override fun setImageForPosition(position: Int, imageView: ImageView) {
+
+            imageView.scaleType = ImageView.ScaleType.FIT_XY
+
+            Glide.with(imageView.context)
+                .load("${BASE_URL}${sampleImages[position]}")
+                .into(imageView)
+
+        }
     }
 
     private fun showEditOrDeleteLayout() {
@@ -192,12 +231,14 @@ class DetailAdActivity : AppCompatActivity() {
             img1 = it.img1
             img2 = it.img2
             img3 = it.img3
-
             title_detail.text = title
             price_detail.text = price
             date_detail.text = date
             description_detail.text = description
             location_detail.text = city
+
+            //image slider
+            imageSlider()
 
             //show layout edit or layout
             showEditOrDeleteLayout()

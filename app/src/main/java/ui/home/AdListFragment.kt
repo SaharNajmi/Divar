@@ -16,7 +16,6 @@ import com.example.divar.R
 import commom.*
 import data.model.AdModel
 import kotlinx.android.synthetic.main.fragment_ad_list.*
-import kotlinx.android.synthetic.main.fragment_new_ad.*
 import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -73,8 +72,6 @@ class AdListFragment : Fragment(), ItemOnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /*     var myDataSaved = activity?.getSharedPreferences("myCity", Context.MODE_PRIVATE)
-               val cityName = myDataSaved?.getString("CityName", "all")*/
 
         //show banner
         getBanner()
@@ -123,14 +120,19 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         //آگهی ها را بر اساس شهر انتخاب شده نمایش دهد
         val list = LIST_CITY
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu, list)
-        exposed_dropdown_city.setAdapter(adapter)
-        exposed_dropdown_city.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+        auto_complete_textView.setAdapter(adapter)
+        auto_complete_textView.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(view: View?, hasFocus: Boolean) {
+
+                //empty text in auto_complete_textView when click and equals text=all city
+                if (!auto_complete_textView.equals(R.string.all_city)) {
+                    auto_complete_textView.setText("")
+                }
 
                 //موقعی که هیچ شهری انتخاب نکند یا مقدار ورودی اشتباه باشد(داخل لیست نباشد)
                 if (!hasFocus) {
-                    if (!list.contains(exposed_dropdown_city.text.toString())) {
-                        exposed_dropdown_city.setText("همه شهر ها")
+                    if (!list.contains(auto_complete_textView.text.toString())) {
+                        auto_complete_textView.setText(R.string.all_city)
                         MY_CITY = "all"
                         chaneCity()
                     }
@@ -139,8 +141,8 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         })
 
         //موقعی که روی شهر مورد نظر کلیک کرد مقدار را بگیرد-> برای آپدیت آگهی ها ب اساس شهر
-        exposed_dropdown_city.setOnItemClickListener(OnItemClickListener { arg0, arg1, arg2, arg3 ->
-            MY_CITY = exposed_dropdown_city.text.toString().trim()
+        auto_complete_textView.setOnItemClickListener(OnItemClickListener { arg0, arg1, arg2, arg3 ->
+            MY_CITY = auto_complete_textView.text.toString().trim()
             chaneCity()
         })
     }
@@ -225,7 +227,6 @@ class AdListFragment : Fragment(), ItemOnClickListener {
             putExtra(EXTRA_KEY_DATA, item)
         })
     }
-
 
     override fun onResume() {
         super.onResume()

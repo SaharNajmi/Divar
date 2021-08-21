@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backColor"
     tools:context="ui.auth.LoginFragment">
 
     <ScrollView
@@ -31,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:gravity="center"
-                    android:text="برای ارسال آگهی حتما باید وارد حساب کاربری شوید\n لطفا شماره موبایل خود را وارد کنید ."
+                    android:text=" شماره موبایل خود را وارد کنید "
                     android:textSize="18dp" />
 
                 <EditText

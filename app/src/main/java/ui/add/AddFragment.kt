@@ -23,7 +23,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_new_ad.*
+import kotlinx.android.synthetic.main.fragment_add.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -33,7 +33,7 @@ import ui.auth.UserViewModel
 import ui.home.BannerViewModel
 import java.util.*
 
-class NewAdFragment : Fragment() {
+class AddFragment : Fragment() {
     val userViewModel: UserViewModel by viewModel()
     val compositeDisposable = CompositeDisposable()
     private var validate1 = false
@@ -79,7 +79,7 @@ class NewAdFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_ad, container, false)
+        return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -154,7 +154,7 @@ class NewAdFragment : Fragment() {
             post_img_2 = null
 
         }
-        delete_img_3.setOnClickListener {
+        delete_img_1.setOnClickListener {
             delete_img_3.visibility = View.GONE
             image_3.setImageResource(R.drawable.ic_image)
             load_img_3 = false

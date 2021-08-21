@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
 import data.model.ChatList
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import org.koin.android.ext.android.get
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -39,12 +40,31 @@ class ChatFragment : Fragment(), ChatClickListener {
         val messageViewModel: MessageViewModel by viewModel { parametersOf(myPhone, 0) }
         viewModel = messageViewModel
 
+        //check login for show list chat
+        checkLoginState()
+
         //get list my chat
         messageViewModel.userMessage.observe(viewLifecycleOwner) {
-            rec_chat_list.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            rec_chat_list.adapter = ChatListAdapter(get(), it as ArrayList<ChatList>, this)
+            if (it.isNotEmpty()) {
+                rec_chat_list.layoutManager =
+                    LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                rec_chat_list.adapter = ChatListAdapter(get(), it as ArrayList<ChatList>, this)
+                rec_chat_list.visibility = View.VISIBLE
+                emptyLayout.visibility = View.GONE
+            } else {
+                //اگر لیست چت خالی بود لیوت خالی بودن را نشان دهد
+                emptyLayout.visibility = View.VISIBLE
+                rec_chat_list.visibility = View.GONE
+                emptyLayout.txtEmpty.text = getString(R.string.emptyChat)
+            }
         }
+    }
+
+    private fun checkLoginState() {
+        if (userViewModel.isSignIn)
+            alertGoToLogin.visibility = View.GONE
+        else
+            alertGoToLogin.visibility = View.VISIBLE
     }
 
     override fun onBannerClick(chatList: ChatList) {

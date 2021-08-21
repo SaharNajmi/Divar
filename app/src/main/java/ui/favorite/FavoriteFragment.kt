@@ -65,6 +65,6 @@ class FavoriteFragment : Fragment(), FavoriteBannerClickListener {
 
     override fun onResume() {
         super.onResume()
-        favoriteViewModel.refresh()
+        favoriteViewModel.getFavorite()
     }
 }
