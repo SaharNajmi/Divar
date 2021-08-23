@@ -2,7 +2,6 @@ package ui.add
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -30,7 +29,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import service.UriToUploadable
 import timber.log.Timber
 import ui.auth.UserViewModel
-import ui.home.BannerViewModel
 import java.util.*
 
 class AddFragment : Fragment() {
@@ -44,8 +42,6 @@ class AddFragment : Fragment() {
     private var selectedPositionCateBase: Int? = null
     private var selectedPositionCateSub: Int? = null
     var userId: Int? = null
-    private lateinit var pref: SharedPreferences
-    private lateinit var viewModel: BannerViewModel
     private val REQUEST_CODE_IMG_1 = 1
     private val REQUEST_CODE_IMG_2 = 2
     private val REQUEST_CODE_IMG_3 = 3
@@ -106,7 +102,7 @@ class AddFragment : Fragment() {
         deleteImage()
 
         //submit add banner
-        btn_add_banner.setOnClickListener {
+        btn_done_add.setOnClickListener {
             submitAddBanner()
         }
     }

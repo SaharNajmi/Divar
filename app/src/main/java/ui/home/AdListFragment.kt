@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
@@ -23,7 +23,7 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 
-class AdListFragment : Fragment(), ItemOnClickListener {
+class AdListFragment : MyFragment(), ItemOnClickListener {
 
     lateinit var bannerAdapter: BannerAdapter
 
@@ -76,6 +76,7 @@ class AdListFragment : Fragment(), ItemOnClickListener {
         //show banner
         getBanner()
 
+
         //search list city with AutoCompleteTextView
         searchCity()
 
@@ -84,13 +85,18 @@ class AdListFragment : Fragment(), ItemOnClickListener {
 
         //change category and list update
         selectSubCategory()
+
+        //show or not show ProgressBar
+        bannerViewModel.progressLiveData.observe(viewLifecycleOwner) {
+            setProgress(it)
+        }
     }
 
     fun getBanner() {
         bannerViewModel.bannerLiveData.observe(viewLifecycleOwner,
             object : Observer<List<AdModel>> {
                 override fun onChanged(banners: List<AdModel>?) {
-                    Timber.i("my list " + banners.toString())
+                  //  Timber.i("my list " + banners.toString())
 
                     if (banners!!.isNotEmpty()) {
                         bannerAdapter =

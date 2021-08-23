@@ -20,6 +20,7 @@ class MessageViewModel(
 
 
     init {
+        progressLiveData.value = true
         getMessage()
     }
 
@@ -27,6 +28,7 @@ class MessageViewModel(
         userDataRepository.getMessage(myPhone, bannerId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doFinally { progressLiveData.value = false }
             .subscribe(object : SingleObserver<List<ChatList>> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)

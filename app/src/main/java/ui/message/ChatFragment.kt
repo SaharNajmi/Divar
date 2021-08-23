@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
+import commom.MyFragment
 import data.model.ChatList
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_empty_view.view.*
@@ -19,7 +19,7 @@ import org.koin.core.parameter.parametersOf
 import ui.auth.UserViewModel
 
 
-class ChatFragment : Fragment(), ChatClickListener {
+class ChatFragment : MyFragment(), ChatClickListener {
 
     //get my phone number
     val userViewModel: UserViewModel by viewModel()
@@ -57,6 +57,11 @@ class ChatFragment : Fragment(), ChatClickListener {
                 rec_chat_list.visibility = View.GONE
                 emptyLayout.txtEmpty.text = getString(R.string.emptyChat)
             }
+        }
+
+        //show or not show ProgressBar
+        messageViewModel.progressLiveData.observe(viewLifecycleOwner) {
+            setProgress(it)
         }
     }
 

@@ -21,14 +21,14 @@ class MainActivity : AppCompatActivity() {
         //Switch between Fragments in BottomNavigationView
         buttonNavigation()
 
-        //Sub Open FloatingActionButton
-        fab.setOnClickListener {
-            if (!isFABOpen) {
-                showFABMenu()
-            } else {
-                closeFABMenu()
-            }
-        }
+        /*    //Sub Open FloatingActionButton
+            fab.setOnClickListener {
+                if (!isFABOpen) {
+                    showFABMenu()
+                } else {
+                    closeFABMenu()
+                }
+            }*/
 
     }
 

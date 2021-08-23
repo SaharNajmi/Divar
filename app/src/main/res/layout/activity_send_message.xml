@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="25dp"
     android:background="@color/backColor"
     tools:context="ui.message.SendMessageActivity">
 
@@ -60,10 +59,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginRight="8dp"
         android:maxHeight="100dp"
-        android:layout_marginBottom="12sp"
+        android:layout_marginBottom="30dp"
         android:layout_toStartOf="@id/btn_send"
         android:layout_toLeftOf="@id/btn_send"
         android:background="@drawable/background_radius_2"
@@ -78,8 +77,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="33dp"
         android:background="@drawable/ic_send" />
 </RelativeLayout>

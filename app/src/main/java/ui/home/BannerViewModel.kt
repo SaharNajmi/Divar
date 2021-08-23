@@ -20,6 +20,7 @@ class BannerViewModel(
     val bannerLiveData = MutableLiveData<List<AdModel>>()
 
     init {
+        progressLiveData.value = true
         getBanner()
     }
 
@@ -27,6 +28,7 @@ class BannerViewModel(
         bannerDataRepository.getAllBanner(city, cate)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doFinally { progressLiveData.value = false }
             .subscribe(object : SingleObserver<List<AdModel>> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)

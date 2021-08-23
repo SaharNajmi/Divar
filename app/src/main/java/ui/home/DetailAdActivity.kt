@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.view.View
 import android.widget.*
@@ -92,6 +93,10 @@ class DetailAdActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_ad)
 
+        //ui blocked (error->AndroidBlockGuardPolicy)
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
         //get value banner and show it
         detailBanner()
 
@@ -107,7 +112,7 @@ class DetailAdActivity : AppCompatActivity() {
         }
 
         //go activity send message
-        fab_chat.setOnClickListener {
+        img_chat.setOnClickListener {
             //اگر کاربر لاگین کرده بود بتونه پیام بفرسته
             if (userViewModel.isSignIn) {
                 val goSendMessage = Intent(this, SendMessageActivity::class.java)
@@ -157,8 +162,8 @@ class DetailAdActivity : AppCompatActivity() {
         if (userViewModel.phoneNumber == phone) {
             layout_del_edit.visibility = View.VISIBLE
             more_layout.visibility = View.GONE
-            fab_del.setOnClickListener { showDialogDelete() }
-            fab_edit.setOnClickListener { showDialogEdit() }
+            img_delete.setOnClickListener { showDialogDelete() }
+            img_edit.setOnClickListener { showDialogEdit() }
         } else {
             layout_del_edit.visibility = View.GONE
             more_layout.visibility = View.VISIBLE
@@ -175,7 +180,7 @@ class DetailAdActivity : AppCompatActivity() {
                 }
 
                 override fun onSuccess(t: MSG) {
-                    Toast.makeText(this@DetailAdActivity, t.msg, Toast.LENGTH_SHORT).show()
+                    //  Toast.makeText(this@DetailAdActivity, t.msg.toString(), Toast.LENGTH_SHORT).show()
                     finish()
                 }
 
@@ -248,14 +253,14 @@ class DetailAdActivity : AppCompatActivity() {
             checkFavorite(favorite)
 
             val favbanner = it
-            fab_fav.setOnClickListener {
+            img_fav.setOnClickListener {
                 if (favorite) {
-                    fab_fav.setImageResource(R.drawable.ic_bookmark_off)
+                    img_fav.setImageResource(R.drawable.ic_dont_favorite)
                     favoriteViewModel.deleteFavorite(favbanner)
                     favorite = false
 
                 } else {
-                    fab_fav.setImageResource(R.drawable.ic_bookmark_on)
+                    img_fav.setImageResource(R.drawable.ic_favorite)
                     favoriteViewModel.addFavorite(favbanner)
                     favorite = true
                 }
@@ -266,9 +271,9 @@ class DetailAdActivity : AppCompatActivity() {
 
     fun checkFavorite(favorite: Boolean) {
         if (favorite)
-            fab_fav.setImageResource(R.drawable.ic_bookmark_on)
+            img_fav.setImageResource(R.drawable.ic_favorite)
         else
-            fab_fav.setImageResource(R.drawable.ic_bookmark_off)
+            img_fav.setImageResource(R.drawable.ic_dont_favorite)
     }
 
     //alert dialog edit banner

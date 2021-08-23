@@ -6,19 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
 import commom.EXTRA_KEY_DATA
+import commom.MyFragment
 import data.model.AdModel
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import ui.home.DetailAdActivity
 
-class FavoriteFragment : Fragment(), FavoriteBannerClickListener {
+class FavoriteFragment : MyFragment(), FavoriteBannerClickListener {
 
     val favoriteViewModel: FavoriteViewModel by viewModel()
 
@@ -50,6 +50,10 @@ class FavoriteFragment : Fragment(), FavoriteBannerClickListener {
             }
         }
 
+        //show or not show ProgressBar
+        favoriteViewModel.progressLiveData.observe(viewLifecycleOwner) {
+            setProgress(it)
+        }
     }
 
     override fun onClick(banner: AdModel) {
