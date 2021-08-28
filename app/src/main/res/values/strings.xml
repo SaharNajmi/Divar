@@ -4,6 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="emptyList">نتیجه ای یافت نشد!</string>
     <string name="emptyFavorite">هیچ آیتمی به علاقه مندی اضافه نشده است!</string>
+    <string name="emptyBanner">هیچ آگهی ثبت نشده است!</string>
     <string name="filterName">فیلتر دسته بندی</string>
     <string name="emptyChat">لیست پیام ها خالی است!</string>
     <string name="all_city">همه شهر ها</string>

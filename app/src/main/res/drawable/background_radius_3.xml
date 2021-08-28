@@ -7,6 +7,6 @@
         android:endColor="@color/myColor" />
     <corners android:radius="5dp" />
     <stroke
-        android:color="@color/backColor"
+        android:color="@color/background"
         android:width="2dp" />
 </shape>

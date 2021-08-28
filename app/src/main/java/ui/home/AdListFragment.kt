@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 
 class AdListFragment : MyFragment(), ItemOnClickListener {
@@ -96,7 +95,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
         bannerViewModel.bannerLiveData.observe(viewLifecycleOwner,
             object : Observer<List<AdModel>> {
                 override fun onChanged(banners: List<AdModel>?) {
-                  //  Timber.i("my list " + banners.toString())
+                    //  Timber.i("my list " + banners.toString())
 
                     if (banners!!.isNotEmpty()) {
                         bannerAdapter =
@@ -203,17 +202,17 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
                 //show title category in textView
                 val titleCate =
                     listData[(titleList as ArrayList<String>)[groupPosition]]!![childPosition]
-                imageFilter.text = titleCate
+                textFilter.text = titleCate
 
                 //delete filter
-                if (imageFilter.text.equals(R.string.filterName))
+                if (textFilter.text.equals(R.string.filterName))
                     cancel_filter.visibility = View.GONE
                 else
                     cancel_filter.visibility = View.VISIBLE
 
                 cancel_filter.setOnClickListener {
                     cancel_filter.visibility = View.GONE
-                    imageFilter.setText(R.string.filterName)
+                    textFilter.setText(R.string.filterName)
                     MY_CATEGORY = "all"
                     chaneCategory()
                 }

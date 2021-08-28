@@ -21,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import ui.home.BannerAdapter
@@ -149,12 +150,20 @@ class LoginFragment : Fragment(), ItemOnClickListener {
 
         userViewModel.getUserBanner(userViewModel.phoneNumber)
             .observe(viewLifecycleOwner) {
-                rec_my_ad.visibility = View.VISIBLE
-                rec_my_ad.adapter = BannerAdapter(it as ArrayList<AdModel>, this)
-                rec_my_ad.layoutManager =
-                    GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
-            }
+                if (it.isNotEmpty()) {
+                    rec_my_ad.adapter = BannerAdapter(it as ArrayList<AdModel>, this)
+                    rec_my_ad.layoutManager =
+                        GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
 
+                    rec_my_ad.visibility = View.VISIBLE
+                    emptyLayout.visibility = View.GONE
+
+                } else {
+                    rec_my_ad.visibility = View.GONE
+                    emptyLayout.visibility = View.VISIBLE
+                    emptyLayout.txtEmpty.text = getString(R.string.emptyBanner)
+                }
+            }
     }
 
     private fun checkLogin() {

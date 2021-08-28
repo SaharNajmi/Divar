@@ -201,7 +201,7 @@ class AddFragment : Fragment() {
             validate2 = true
 
         } else {
-            title_layout.error = "عنوان آگهی باید حداقل 10 کلمه باشد"
+            title_layout.error = "عنوان آگهی باید حداقل 10 حرف باشد"
             title_layout.isErrorEnabled = true
             validate2 = false
         }
@@ -211,15 +211,13 @@ class AddFragment : Fragment() {
             validate3 = true
 
         } else {
-            description_layout.error = "توضیحات آگهی باید حداقل 30 کلمه باشد";
+            description_layout.error = "توضیحات آگهی باید حداقل 30 حرف باشد";
             description_layout.isErrorEnabled = true
             validate3 = false
         }
 
-        if (txt_price.text.toString().trim()
-                .isEmpty() || Integer.parseInt(txt_price.text.toString()) <= 0
-        ) {
-            price_layout.error = "قیمت وارد شده اشتباه است"
+        if (txt_price.text.toString().trim().isEmpty()) {
+            price_layout.error = "قیمت را وارد کنید"
             price_layout.isErrorEnabled = true
             validate4 = false
         } else {

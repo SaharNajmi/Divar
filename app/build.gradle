@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.divar"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -101,4 +101,13 @@ dependencies {
 
     //Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    //Dynamic Size application in all devices
+    // implementation 'com.github.MrNouri:DynamicSizes:1.0'
+
+    //rounded imageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //neumorphism
+    implementation 'com.github.fornewid:neumorphism:0.3.0'
 }

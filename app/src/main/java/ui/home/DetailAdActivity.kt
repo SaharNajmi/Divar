@@ -24,6 +24,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_detail_ad.*
 import kotlinx.android.synthetic.main.delete_and_edit_layout.*
 import kotlinx.android.synthetic.main.dialog_edit.view.*
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.more_information_ad.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -302,15 +303,15 @@ class DetailAdActivity : AppCompatActivity() {
         customLayout.exposed_dropdown_edit.setText(city)
 
         Glide.with(this)
-            .load(img1)
+            .load("${BASE_URL}${img1}")
             .into(customLayout.image_1)
 
         Glide.with(this)
-            .load(img2)
+            .load("${BASE_URL}${img2}")
             .into(customLayout.image_2)
 
         Glide.with(this)
-            .load(img3)
+            .load("${BASE_URL}${img3}")
             .into(customLayout.image_3)
 
         showSpinnerCateInDialogBox()
@@ -324,7 +325,7 @@ class DetailAdActivity : AppCompatActivity() {
                 validate2 = true
 
             } else {
-                customLayout.title_layout.error = "عنوان آگهی باید حداقل 10 کلمه باشد"
+                customLayout.title_layout.error = "عنوان آگهی باید حداقل 10 حرف باشد"
                 customLayout.title_layout.isErrorEnabled = true
                 validate2 = false
             }
@@ -334,15 +335,13 @@ class DetailAdActivity : AppCompatActivity() {
                 validate3 = true
 
             } else {
-                customLayout.description_layout.error = "توضیحات آگهی باید حداقل 30 کلمه باشد";
+                customLayout.description_layout.error = "توضیحات آگهی باید حداقل 30 حرف باشد";
                 customLayout.description_layout.isErrorEnabled = true
                 validate3 = false
             }
 
-            if (customLayout.txt_edit_price.text.toString().trim()
-                    .isEmpty() || Integer.parseInt(customLayout.txt_edit_price.text.toString()) <= 0
-            ) {
-                customLayout.price_layout.error = "قیمت وارد شده اشتباه است"
+            if (customLayout.txt_edit_price.text.toString().trim().isEmpty()) {
+                customLayout.price_layout.error = "قیمت را وارد کنید"
                 customLayout.price_layout.isErrorEnabled = true
                 validate4 = false
             } else {

@@ -92,6 +92,13 @@ class SendMessageActivity : AppCompatActivity() {
         //send message
         btn_send.setOnClickListener {
             if (edt_message.text.toString().trim() != "") {
+
+                //جای ارسال کننده و فرستنده عوض بشه در غیر این صورت همیشه فرستنده ثابت می ماند.
+                if (from != userViewModel.phoneNumber) {
+                    to = from
+                    from = userViewModel.phoneNumber
+                }
+
                 sendMessage(
                     from,
                     to,
@@ -172,17 +179,14 @@ class SendMessageActivity : AppCompatActivity() {
             override fun run() {
                 val jsonObject = args[0] as JSONObject
                 var message = ""
-                var userId = ""
                 try {
                     //این کلید message را در سمت سرور در جیسان میگیرد
                     message = jsonObject.getString("message")
-                    //   userId = jsonObject.getString("from")
-
-                    userId = "09187171026"
-
+                    val getFrom = jsonObject.getString("from")
+                    //getFrom==1    sender
+                    //getFrom==2     receiver
                     //اگر پیام ارسالی خودم باشد
-                    if (userId == from) {
-
+                    if (getFrom == "1") {
                         val textView = TextView(this@SendMessageActivity)
                         textView.text = message
                         textView.setTextColor(Color.WHITE)

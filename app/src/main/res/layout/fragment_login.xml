@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     tools:context="ui.auth.LoginFragment">
 
+    <include
+        android:id="@+id/emptyLayout"
+        layout="@layout/layout_empty_view"
+        android:visibility="gone" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -108,12 +113,14 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="خروج از حساب"
+                android:textColor="@color/darkBlue"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rec_my_ad"
+                android:layoutDirection="rtl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/txt_log_out"
