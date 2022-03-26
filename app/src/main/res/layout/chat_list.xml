@@ -6,7 +6,7 @@
     android:layout_height="70dp">
 
 
-    <ui.view.MyImageView
+    <com.example.divar.ui.view.MyImageView
         android:id="@+id/msg_img_banner"
         android:layout_width="70dp"
         android:layout_height="70dp"

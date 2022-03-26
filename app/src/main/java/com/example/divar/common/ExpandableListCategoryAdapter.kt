@@ -1,4 +1,4 @@
-package com.example.divar.commom
+package com.example.divar.common
 
 import android.content.Context
 import android.graphics.Typeface

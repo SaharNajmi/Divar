@@ -1,19 +1,24 @@
 package com.example.divar.data.repository.source.local
 
 import android.content.SharedPreferences
-import com.example.divar.data.model.*
+import com.example.divar.data.db.dao.entities.Advertise
+import com.example.divar.data.model.Chat
+import com.example.divar.data.model.Login
+import com.example.divar.data.model.Message
+import com.example.divar.data.model.UserID
 import com.example.divar.data.repository.LoginUpdate
 import com.example.divar.data.repository.source.UserDataSource
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
-class UserLocalDataSource(val sharedPreferences: SharedPreferences) : UserDataSource {
-    override fun sendActivationKey(mobile: String): Single<LoginModel> {
+class UserLocalDataSource(private val sharedPreferences: SharedPreferences) : UserDataSource {
+
+    override fun sendActivationKey(mobile: String): Single<Login> {
         TODO("Not yet implemented")
     }
 
-    override fun applyActivationKey(mobile: String, activation_key: String): Single<LoginModel> {
+    override fun applyActivationKey(mobile: String, activation_key: String): Single<Login> {
         TODO("Not yet implemented")
     }
 
@@ -37,7 +42,7 @@ class UserLocalDataSource(val sharedPreferences: SharedPreferences) : UserDataSo
 
     override fun getPhoneNumber(): String = sharedPreferences.getString("tell", "") ?: ""
 
-    override fun getUserBanner(phoneNumber: String): Single<List<AdModel>> {
+    override fun getUserBanner(phoneNumber: String): Single<List<Advertise>> {
         TODO("Not yet implemented")
     }
 
@@ -51,7 +56,7 @@ class UserLocalDataSource(val sharedPreferences: SharedPreferences) : UserDataSo
         postImage1: MultipartBody.Part,
         postImage2: MultipartBody.Part,
         postImage3: MultipartBody.Part
-    ): Single<MSG> {
+    ): Single<Message> {
         TODO("Not yet implemented")
     }
 
@@ -66,19 +71,19 @@ class UserLocalDataSource(val sharedPreferences: SharedPreferences) : UserDataSo
         image1: MultipartBody.Part,
         image2: MultipartBody.Part,
         image3: MultipartBody.Part
-    ): Single<MSG> {
+    ): Single<Message> {
         TODO("Not yet implemented")
     }
 
-    override fun deleteBanner(id: Int): Single<MSG> {
+    override fun deleteBanner(id: Int): Single<Message> {
         TODO("Not yet implemented")
     }
 
-    override fun getUserId(tell: String): Single<UserIdModel> {
+    override fun getUserId(tell: String): Single<UserID> {
         TODO("Not yet implemented")
     }
 
-    override fun getMessage(myPhone: String, bannerId: Int): Single<List<ChatList>> {
+    override fun getMessage(myPhone: String, bannerId: Int): Single<List<Chat>> {
         TODO("Not yet implemented")
     }
 }

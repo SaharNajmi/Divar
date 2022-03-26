@@ -10,17 +10,17 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
-import com.example.divar.commom.EXTRA_KEY_DATA
-import com.example.divar.commom.MyFragment
-import com.example.divar.data.model.AdModel
+import com.example.divar.common.Constants.EXTRA_KEY_DATA
+import com.example.divar.common.MyFragment
+import com.example.divar.data.db.dao.entities.Advertise
 import com.example.divar.ui.home.DetailAdActivity
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class FavoriteFragment : MyFragment(), FavoriteBannerClickListener {
+class FavoriteFragment : MyFragment(), FavoriteAdapter.FavoriteBannerClickListener {
 
-    val favoriteViewModel: FavoriteViewModel by viewModel()
+    private val favoriteViewModel: FavoriteViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,35 +34,35 @@ class FavoriteFragment : MyFragment(), FavoriteBannerClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         //show favorite list
-        favoriteViewModel.favoritebannerLiveData.observe(viewLifecycleOwner) {
+        favoriteViewModel.banners.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 rec_favorite.layoutManager =
                     LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
                 rec_favorite.adapter =
-                    FavoriteAdapter(requireContext(), it as ArrayList<AdModel>, this)
+                    FavoriteAdapter(requireContext(), it as ArrayList<Advertise>, this)
                 rec_favorite.visibility = View.VISIBLE
                 emptyLayout.visibility = View.GONE
 
             } else {
-                //اگر لیست عاقه مندی خالی بود لیوت خالی بودن را نشان دهد
+                //show  empty layout
                 emptyLayout.visibility = View.VISIBLE
                 emptyLayout.txtEmpty.text = getString(R.string.emptyFavorite)
             }
         }
 
         //show or not show ProgressBar
-        favoriteViewModel.progressLiveData.observe(viewLifecycleOwner) {
+        favoriteViewModel.progress.observe(viewLifecycleOwner) {
             setProgress(it)
         }
     }
 
-    override fun onClick(banner: AdModel) {
+    override fun onClick(banner: Advertise) {
         startActivity(Intent(requireContext(), DetailAdActivity::class.java).apply {
             putExtra(EXTRA_KEY_DATA, banner)
         })
     }
 
-    override fun deleteItemClick(banner: AdModel) {
+    override fun deleteItemClick(banner: Advertise) {
         favoriteViewModel.deleteFavorite(banner)
         Toast.makeText(requireContext(), "آیتم از لیست علاقمندی حذف شد!", Toast.LENGTH_SHORT).show()
     }

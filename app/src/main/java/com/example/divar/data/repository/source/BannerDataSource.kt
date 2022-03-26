@@ -1,15 +1,15 @@
 package com.example.divar.data.repository.source
 
-import com.example.divar.data.model.AdModel
+import com.example.divar.data.db.dao.entities.Advertise
 import io.reactivex.Completable
 import io.reactivex.Single
 
 interface BannerDataSource {
-    fun getAllBanner(city: String, category: String): Single<List<AdModel>>
+    fun getBanners(city: String, category: String): Single<List<Advertise>>
 
-    fun getFavorite(): Single<List<AdModel>>
+    fun getFavorites(): Single<List<Advertise>>
 
-    fun addToFavorites(banner: AdModel): Completable
+    fun addToFavorites(banner: Advertise): Completable
 
-    fun deleteFromFavorites(banner: AdModel): Completable
+    fun deleteFromFavorites(banner: Advertise): Completable
 }

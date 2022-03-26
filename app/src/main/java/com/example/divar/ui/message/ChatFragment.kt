@@ -9,8 +9,9 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
-import com.example.divar.commom.MyFragment
-import com.example.divar.data.model.ChatList
+import com.example.divar.common.Constants
+import com.example.divar.common.MyFragment
+import com.example.divar.data.model.Chat
 import com.example.divar.ui.auth.UserViewModel
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_empty_view.view.*
@@ -18,11 +19,11 @@ import org.koin.android.ext.android.get
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class ChatFragment : MyFragment(), ChatClickListener {
+class ChatFragment : MyFragment(), ChatListAdapter.ChatClickListener {
 
     //get my phone number
-    val userViewModel: UserViewModel by viewModel()
-    lateinit var viewModel: MessageViewModel
+    private val userViewModel: UserViewModel by viewModel()
+    private lateinit var viewModel: MessageViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,11 +48,11 @@ class ChatFragment : MyFragment(), ChatClickListener {
             if (it.isNotEmpty()) {
                 rec_chat_list.layoutManager =
                     LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-                rec_chat_list.adapter = ChatListAdapter(get(), it as ArrayList<ChatList>, this)
+                rec_chat_list.adapter = ChatListAdapter(get(), it as ArrayList<Chat>, this)
                 rec_chat_list.visibility = View.VISIBLE
                 emptyLayout.visibility = View.GONE
             } else {
-                //اگر لیست چت خالی بود لیوت خالی بودن را نشان دهد
+                //show empty layout
                 emptyLayout.visibility = View.VISIBLE
                 rec_chat_list.visibility = View.GONE
                 emptyLayout.txtEmpty.text = getString(R.string.emptyChat)
@@ -59,7 +60,7 @@ class ChatFragment : MyFragment(), ChatClickListener {
         }
 
         //show or not show ProgressBar
-        messageViewModel.progressLiveData.observe(viewLifecycleOwner) {
+        messageViewModel.progress.observe(viewLifecycleOwner) {
             setProgress(it)
         }
     }
@@ -71,19 +72,19 @@ class ChatFragment : MyFragment(), ChatClickListener {
             alertGoToLogin.visibility = View.VISIBLE
     }
 
-    override fun onBannerClick(chatList: ChatList) {
+    override fun onBannerClick(chat: Chat) {
         val goSendMessage = Intent(requireContext(), SendMessageActivity::class.java)
-        goSendMessage.putExtra("BANNER_ID", chatList.bannerID)
-        goSendMessage.putExtra("BANNER_TITLE", chatList.bannerTitle)
-        goSendMessage.putExtra("BANNER_IMAGE", chatList.bannerImage)
-        goSendMessage.putExtra("SENDER", chatList.sender)
-        goSendMessage.putExtra("RECEIVER", chatList.receiver)
+        goSendMessage.putExtra(Constants.BANNER_ID, chat.bannerID)
+        goSendMessage.putExtra(Constants.BANNER_TITLE, chat.bannerTitle)
+        goSendMessage.putExtra(Constants.BANNER_IMAGE, chat.bannerImage)
+        goSendMessage.putExtra(Constants.SENDER, chat.sender)
+        goSendMessage.putExtra(Constants.RECEIVER, chat.receiver)
         startActivity(goSendMessage)
     }
 
     override fun onResume() {
         super.onResume()
-        //موقعی که برمیگردیم به لیست چت ها آخرین پیام ارسال شده آپدیت بشه
+        //update messages
         viewModel.getMessage()
     }
 }

@@ -1,5 +1,6 @@
 package com.example.divar.ui.auth
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,10 +12,10 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
-import com.example.divar.commom.EXTRA_KEY_DATA
-import com.example.divar.commom.ItemOnClickListener
-import com.example.divar.data.model.AdModel
-import com.example.divar.data.model.LoginModel
+import com.example.divar.common.Constants.EXTRA_KEY_DATA
+import com.example.divar.common.ItemOnClickListener
+import com.example.divar.data.db.dao.entities.Advertise
+import com.example.divar.data.model.Login
 import com.example.divar.ui.home.BannerAdapter
 import com.example.divar.ui.home.DetailAdActivity
 import io.reactivex.SingleObserver
@@ -29,7 +30,7 @@ import timber.log.Timber
 
 class LoginFragment : Fragment(), ItemOnClickListener {
 
-    val userViewModel: UserViewModel by viewModel()
+    private val userViewModel: UserViewModel by viewModel()
     val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
@@ -42,14 +43,13 @@ class LoginFragment : Fragment(), ItemOnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //  اگر کاربر از قبل لاگین کرده بود آگهی های کاربر با همین شماره را نشان دهد
+        //check logged in
         checkLogin()
 
-        //نمایش آگهی های کاربر
+        //show advertise user
         showAdUser()
 
-        //خروج از حساب
+        //log out
         txt_log_out.setOnClickListener {
             rec_my_ad.visibility = View.GONE
             txt_log_out.visibility = View.GONE
@@ -57,7 +57,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
             userViewModel.signOut()
         }
 
-        //ارسال کد چهار رقمی به شماره موبایل
+        //send ActivationKey to phoneNumber
         submit_bt.setOnClickListener {
             var isValid = true
             if (!mobile_text.text.toString().trim()
@@ -70,12 +70,12 @@ class LoginFragment : Fragment(), ItemOnClickListener {
                 userViewModel.sendActivationKey(mobile_text.text.toString())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : SingleObserver<LoginModel> {
+                    .subscribe(object : SingleObserver<Login> {
                         override fun onSubscribe(d: Disposable) {
                             compositeDisposable.add(d)
                         }
 
-                        override fun onSuccess(t: LoginModel) {
+                        override fun onSuccess(t: Login) {
                             Toast.makeText(
                                 requireContext(),
                                 t.msg,
@@ -99,7 +99,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
             }
         }
 
-        //وارد کردن کد فعال سازی ارسال شده به شماره همراه
+        //enter activation code send to phoneNumber
         submit2_bt.setOnClickListener {
             val txtCode = activation_code.text.toString().trim()
             val txtTell = mobile_text.text.toString().trim()
@@ -109,12 +109,12 @@ class LoginFragment : Fragment(), ItemOnClickListener {
                 userViewModel.applyActivationKey(txtTell, txtCode)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : SingleObserver<LoginModel> {
+                    .subscribe(object : SingleObserver<Login> {
                         override fun onSubscribe(d: Disposable) {
                             compositeDisposable.add(d)
                         }
 
-                        override fun onSuccess(t: LoginModel) {
+                        override fun onSuccess(t: Login) {
                             Toast.makeText(
                                 requireContext(),
                                 t.msg,
@@ -127,7 +127,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
                                 txt_log_out.visibility = View.VISIBLE
                                 activation_layout.visibility = View.GONE
 
-                                //نمایش آگهی های کاربر
+                                //show advertise user
                                 showAdUser()
                             }
                         }
@@ -145,13 +145,14 @@ class LoginFragment : Fragment(), ItemOnClickListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun showAdUser() {
-        txt_log_out.text = "خروج از حساب  " + userViewModel.phoneNumber
+        txt_log_out.text = " خروج از حساب ${userViewModel.phoneNumber}"
 
-        userViewModel.getUserBanner(userViewModel.phoneNumber)
+        userViewModel.getUserBanners(userViewModel.phoneNumber)
             .observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {
-                    rec_my_ad.adapter = BannerAdapter(it as ArrayList<AdModel>, this)
+                    rec_my_ad.adapter = BannerAdapter(it as ArrayList<Advertise>, this)
                     rec_my_ad.layoutManager =
                         GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
 
@@ -174,7 +175,7 @@ class LoginFragment : Fragment(), ItemOnClickListener {
         }
     }
 
-    override fun onItemClick(item: AdModel) {
+    override fun onItemClick(item: Advertise) {
         startActivity(Intent(requireContext(), DetailAdActivity::class.java).apply {
             putExtra(EXTRA_KEY_DATA, item)
         })

@@ -1,9 +1,9 @@
 package com.example.divar.ui.message
 
 import androidx.lifecycle.MutableLiveData
-import com.example.divar.commom.MyViewModel
-import com.example.divar.data.model.ChatList
-import com.example.divar.data.repository.UserDataRepository
+import com.example.divar.common.MyViewModel
+import com.example.divar.data.model.Chat
+import com.example.divar.data.repository.UserRepository
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -11,30 +11,30 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class MessageViewModel(
-    val userDataRepository: UserDataRepository,
-    val myPhone: String,
-    val bannerId: Int
+    private val userRepository: UserRepository,
+    private val myPhone: String,
+    private val bannerId: Int
 ) : MyViewModel() {
 
-    val userMessage = MutableLiveData<List<ChatList>>()
+    val userMessage = MutableLiveData<List<Chat>>()
 
 
     init {
-        progressLiveData.value = true
+        progress.value = true
         getMessage()
     }
 
     fun getMessage() {
-        userDataRepository.getMessage(myPhone, bannerId)
+        userRepository.getMessage(myPhone, bannerId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doFinally { progressLiveData.value = false }
-            .subscribe(object : SingleObserver<List<ChatList>> {
+            .doFinally { progress.value = false }
+            .subscribe(object : SingleObserver<List<Chat>> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
                 }
 
-                override fun onSuccess(t: List<ChatList>) {
+                override fun onSuccess(t: List<Chat>) {
                     userMessage.value = t
                 }
 

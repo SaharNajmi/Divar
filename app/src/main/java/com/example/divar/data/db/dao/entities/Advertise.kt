@@ -1,20 +1,20 @@
-package com.example.divar.data.model
+package com.example.divar.data.db.dao.entities
 
 import android.os.Parcelable
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.divar.commom.BASE_URL
+import com.bumptech.glide.Glide
+import com.example.divar.R
+import com.example.divar.common.Constants.BASE_URL
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.squareup.picasso.Picasso
 import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "banner")
-//Parcelize برای اینکه بتونیم مقادیر را ارسال کنیم
 @Parcelize
-data class AdModel(
+data class Advertise(
     @PrimaryKey(autoGenerate = false)
     @SerializedName("id")
     @Expose
@@ -72,8 +72,9 @@ data class AdModel(
         @BindingAdapter("android:loadImage")
         @JvmStatic
         fun loadImage(view: ImageView, imageUrl: String) {
-            Picasso.with(view.context)
+            Glide.with(view.context)
                 .load("$BASE_URL${imageUrl}")
+                .error(R.drawable.ic_image)
                 .into(view)
         }
     }

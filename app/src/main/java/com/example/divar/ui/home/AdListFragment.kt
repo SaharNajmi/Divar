@@ -13,8 +13,12 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.divar.R
-import com.example.divar.commom.*
-import com.example.divar.data.model.AdModel
+import com.example.divar.common.*
+import com.example.divar.common.Constants.EXTRA_KEY_DATA
+import com.example.divar.common.Constants.LIST_CITY
+import com.example.divar.common.Constants.MY_CATEGORY
+import com.example.divar.common.Constants.MY_CITY
+import com.example.divar.data.db.dao.entities.Advertise
 import kotlinx.android.synthetic.main.fragment_ad_list.*
 import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
@@ -26,8 +30,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
 
     lateinit var bannerAdapter: BannerAdapter
 
-    //instance viewModel use koin
-    val bannerViewModel: BannerViewModel by viewModel<BannerViewModel>() {
+    private val bannerViewModel: BannerViewModel by viewModel<BannerViewModel>() {
         parametersOf(
             MY_CITY,
             MY_CATEGORY
@@ -35,7 +38,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
     }
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
-    private var titleList: List<String>? = null
+    private var titles: List<String>? = null
     private val cate_base = HashMap<String, List<String>>()
     private val cate_sub: HashMap<String, List<String>>
         get() {
@@ -73,8 +76,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         //show banner
-        getBanner()
-
+        getBanners()
 
         //search list city with AutoCompleteTextView
         searchCity()
@@ -86,28 +88,28 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
         selectSubCategory()
 
         //show or not show ProgressBar
-        bannerViewModel.progressLiveData.observe(viewLifecycleOwner) {
+        bannerViewModel.progress.observe(viewLifecycleOwner) {
             setProgress(it)
         }
     }
 
-    fun getBanner() {
-        bannerViewModel.bannerLiveData.observe(viewLifecycleOwner,
-            object : Observer<List<AdModel>> {
-                override fun onChanged(banners: List<AdModel>?) {
+    private fun getBanners() {
+        bannerViewModel.banners.observe(viewLifecycleOwner,
+            object : Observer<List<Advertise>> {
+                override fun onChanged(banners: List<Advertise>?) {
                     //  Timber.i("my list " + banners.toString())
 
                     if (banners!!.isNotEmpty()) {
                         bannerAdapter =
-                            BannerAdapter(banners as ArrayList<AdModel>, this@AdListFragment)
+                            BannerAdapter(banners as ArrayList<Advertise>, this@AdListFragment)
                         val manager =
                             GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
 
                         rec_ad.layoutManager = manager
                         rec_ad.adapter = bannerAdapter
 
-                        //ست کردن آرایه جدید بعد از هر بار جستجو
-                        bannerAdapter.setData(banners as ArrayList<AdModel>)
+                        //update list
+                        bannerAdapter.setData(banners as ArrayList<Advertise>)
 
                         rec_ad.visibility = View.VISIBLE
                         emptyLayout.visibility = View.GONE
@@ -121,8 +123,8 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
             })
     }
 
-    fun searchCity() {
-        //آگهی ها را بر اساس شهر انتخاب شده نمایش دهد
+    private fun searchCity() {
+        //filter advertise by city
         val list = LIST_CITY
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu, list)
         auto_complete_textView.setAdapter(adapter)
@@ -134,7 +136,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
                     auto_complete_textView.setText("")
                 }
 
-                //موقعی که هیچ شهری انتخاب نکند یا مقدار ورودی اشتباه باشد(داخل لیست نباشد)
+                //do not select city or enter wrong city
                 if (!hasFocus) {
                     if (!list.contains(auto_complete_textView.text.toString())) {
                         auto_complete_textView.setText(R.string.all_city)
@@ -145,24 +147,24 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
             }
         })
 
-        //موقعی که روی شهر مورد نظر کلیک کرد مقدار را بگیرد-> برای آپدیت آگهی ها ب اساس شهر
+        //update list advertise by city selected
         auto_complete_textView.setOnItemClickListener(OnItemClickListener { arg0, arg1, arg2, arg3 ->
             MY_CITY = auto_complete_textView.text.toString().trim()
             chaneCity()
         })
     }
 
-    fun chaneCity() {
-        //هر سری که شهر عوض شد دوباره یست آگهی ها را بگیرد
+    private fun chaneCity() {
+        //update list
         bannerViewModel.changeCity(MY_CITY)
     }
 
-    fun chaneCategory() {
-        //هر سری که دسته بندی عوض شد دوباره آگهی ها را بگیرد
+    private fun chaneCategory() {
+        //update list
         bannerViewModel.chaneCategory(MY_CATEGORY)
     }
 
-    fun searchView() {
+    private fun searchView() {
         search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -186,10 +188,10 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
 
         if (expandableListView != null) {
             val listData = cate_sub
-            titleList = ArrayList(listData.keys)
+            titles = ArrayList(listData.keys)
             adapter = ExpandableListCategoryAdapter(
                 requireContext(),
-                titleList as ArrayList<String>,
+                titles as ArrayList<String>,
                 listData
             )
             expandableListView!!.setAdapter(adapter)
@@ -201,7 +203,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
 
                 //show title category in textView
                 val titleCate =
-                    listData[(titleList as ArrayList<String>)[groupPosition]]!![childPosition]
+                    listData[(titles as ArrayList<String>)[groupPosition]]!![childPosition]
                 textFilter.text = titleCate
 
                 //delete filter
@@ -217,7 +219,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
                     chaneCategory()
                 }
 
-                //آپدیت لیست با تغیر دسته بندی
+                //update list by category
                 chaneCategory()
 
                 drawerLayout.closeDrawer(navView)
@@ -227,7 +229,7 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
         }
     }
 
-    override fun onItemClick(item: AdModel) {
+    override fun onItemClick(item: Advertise) {
         startActivity(Intent(requireContext(), DetailAdActivity::class.java).apply {
             putExtra(EXTRA_KEY_DATA, item)
         })

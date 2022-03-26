@@ -12,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.example.divar.R
-import com.example.divar.commom.BASE_URL
-import com.example.divar.data.model.ListCity
-import com.example.divar.data.model.MSG
+import com.example.divar.common.Constants
+import com.example.divar.common.Constants.BASE_URL
+import com.example.divar.data.model.Message
 import com.example.divar.service.UriToUploadable
 import com.example.divar.ui.auth.UserViewModel
 import com.example.divar.ui.favorite.FavoriteViewModel
@@ -68,7 +68,6 @@ class DetailAdActivity : AppCompatActivity() {
     lateinit var newPrice: RequestBody
     lateinit var newCity: RequestBody
     lateinit var newCate: RequestBody
-    private var menuItems: ListCity? = null
     private var selectedPositionCateBase: Int? = null
     private var selectedPositionCateSub: Int? = null
     var sampleImages: ArrayList<String> = ArrayList()
@@ -76,25 +75,25 @@ class DetailAdActivity : AppCompatActivity() {
     private val cate_base = arrayOf(
         "لوازم الکترونیکی", "املاک", "وسایل نقلیه"
     )
-    val cate_0 = arrayOf(
+    private val cate_0 = arrayOf(
         "موبایل", "تبلت", "لپ تاپ"
     )
-    val cate_1 = arrayOf(
+    private val cate_1 = arrayOf(
         "رهن و اجاره", "خرید و فروش"
     )
-    val cate_2 = arrayOf(
+    private val cate_2 = arrayOf(
         "خودرو", "موتور سیکلت", "اجاره خودرو", "کشاورزی"
     )
     val compositeDisposable = CompositeDisposable()
-    val bannerDetailViewModel: BannerDetailViewModel by viewModel { (parametersOf(intent.extras)) }
-    val favoriteViewModel: FavoriteViewModel by viewModel()
-    val userViewModel: UserViewModel by viewModel()
+    private val bannerDetailViewModel: BannerDetailViewModel by viewModel { (parametersOf(intent.extras)) }
+    private val favoriteViewModel: FavoriteViewModel by viewModel()
+    private val userViewModel: UserViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_ad)
 
-        //com.example.divar.ui blocked (error->AndroidBlockGuardPolicy)
+        //ui blocked (error->AndroidBlockGuardPolicy)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
@@ -114,14 +113,15 @@ class DetailAdActivity : AppCompatActivity() {
 
         //go activity send message
         img_chat.setOnClickListener {
-            //اگر کاربر لاگین کرده بود بتونه پیام بفرسته
+
+            //if logged in -> can send message
             if (userViewModel.isSignIn) {
                 val goSendMessage = Intent(this, SendMessageActivity::class.java)
-                goSendMessage.putExtra("RECEIVER", phone)
-                goSendMessage.putExtra("SENDER", userViewModel.phoneNumber)
-                goSendMessage.putExtra("BANNER_IMAGE", img1)
-                goSendMessage.putExtra("BANNER_ID", id)
-                goSendMessage.putExtra("BANNER_TITLE", title)
+                goSendMessage.putExtra(Constants.RECEIVER, phone)
+                goSendMessage.putExtra(Constants.SENDER, userViewModel.phoneNumber)
+                goSendMessage.putExtra(Constants.BANNER_IMAGE, img1)
+                goSendMessage.putExtra(Constants.BANNER_ID, id)
+                goSendMessage.putExtra(Constants.BANNER_TITLE, title)
                 startActivity(goSendMessage)
             } else
                 Toast.makeText(this, "ابتدا وارد حساب خود شوید!", Toast.LENGTH_SHORT).show()
@@ -139,7 +139,7 @@ class DetailAdActivity : AppCompatActivity() {
         if (!img3.equals(""))
             sampleImages.add(img3!!)
 
-        carouselView.pageCount = sampleImages!!.size
+        carouselView.pageCount = sampleImages.size
         carouselView.stopCarousel()
         carouselView.setImageListener(imageListener)
 
@@ -158,8 +158,7 @@ class DetailAdActivity : AppCompatActivity() {
     }
 
     private fun showEditOrDeleteLayout() {
-        /* اگه شماره موبایل این آگهی با شماره موبایل کاربری که لاگین کرده یکی  باشه یعنی
-         این آگهی مال اونه پس باید بتونه ویرایش و حذف را انجام دهد*/
+        //banner's phoneNumber  == user's PhoneNumber  ->can edit\delete banner
         if (userViewModel.phoneNumber == phone) {
             layout_del_edit.visibility = View.VISIBLE
             more_layout.visibility = View.GONE
@@ -175,22 +174,19 @@ class DetailAdActivity : AppCompatActivity() {
         userViewModel.deleteBanner(id)
             .observeOn(Schedulers.newThread())
             .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<MSG> {
+            .subscribe(object : SingleObserver<Message> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
                 }
 
-                override fun onSuccess(t: MSG) {
-                    //  Toast.makeText(this@DetailAdActivity, t.msg.toString(), Toast.LENGTH_SHORT).show()
+                override fun onSuccess(t: Message) {
                     finish()
                 }
 
                 override fun onError(e: Throwable) {
                     Timber.e(e)
                 }
-
             })
-
     }
 
     private fun editBanner() {
@@ -207,12 +203,12 @@ class DetailAdActivity : AppCompatActivity() {
             postImage3!!
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<MSG> {
+            .subscribe(object : SingleObserver<Message> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
                 }
 
-                override fun onSuccess(t: MSG) {
+                override fun onSuccess(t: Message) {
                     Toast.makeText(this@DetailAdActivity, t.msg, Toast.LENGTH_SHORT).show()
                     finish()
                 }
@@ -223,8 +219,8 @@ class DetailAdActivity : AppCompatActivity() {
             })
     }
 
-    fun detailBanner() {
-        bannerDetailViewModel.bannerLiveData.observe(this) {
+    private fun detailBanner() {
+        bannerDetailViewModel.banners.observe(this) {
             id = it.id
             title = it.title
             price = it.price
@@ -253,16 +249,15 @@ class DetailAdActivity : AppCompatActivity() {
             favorite = it.favorite
             checkFavorite(favorite)
 
-            val favbanner = it
+            val favoriteBanner = it
             img_fav.setOnClickListener {
                 if (favorite) {
                     img_fav.setImageResource(R.drawable.ic_dont_favorite)
-                    favoriteViewModel.deleteFavorite(favbanner)
+                    favoriteViewModel.deleteFavorite(favoriteBanner)
                     favorite = false
-
                 } else {
                     img_fav.setImageResource(R.drawable.ic_favorite)
-                    favoriteViewModel.addFavorite(favbanner)
+                    favoriteViewModel.addFavorite(favoriteBanner)
                     favorite = true
                 }
             }
@@ -270,7 +265,7 @@ class DetailAdActivity : AppCompatActivity() {
         }
     }
 
-    fun checkFavorite(favorite: Boolean) {
+    private fun checkFavorite(favorite: Boolean) {
         if (favorite)
             img_fav.setImageResource(R.drawable.ic_favorite)
         else
@@ -351,7 +346,6 @@ class DetailAdActivity : AppCompatActivity() {
 
             if (validate1 && validate2 && validate3 && validate4) {
 
-                //RequestBody  به خاطر اینکه مقادیری که به سمت سرور ارسال میشوند داخل""قرار نگیرند
                 newTitle =
                     RequestBody.create(
                         okhttp3.MultipartBody.FORM,
@@ -482,15 +476,13 @@ class DetailAdActivity : AppCompatActivity() {
 
     //spinner list city
     private fun searchListCity() {
-        menuItems = ListCity()
-        val list = menuItems!!.arrayListCity()
-        val adapter = ArrayAdapter(this, R.layout.dropdown_menu, list)
+        val adapter = ArrayAdapter(this, R.layout.dropdown_menu, Constants.LIST_CITY)
         customLayout.exposed_dropdown_edit.setAdapter(adapter)
         customLayout.exposed_dropdown_edit.setOnFocusChangeListener(object :
             View.OnFocusChangeListener {
             override fun onFocusChange(view: View?, hasFocus: Boolean) {
                 if (!hasFocus) {
-                    if (!list.contains(customLayout.exposed_dropdown_edit.text.toString())) {
+                    if (!Constants.LIST_CITY.contains(customLayout.exposed_dropdown_edit.text.toString())) {
                         customLayout.exposed_dropdown_edit.setText("")
                         customLayout.city_layout.error = "شهر خود را انتخاب کنید"
                         customLayout.city_layout.isErrorEnabled = true
@@ -521,8 +513,6 @@ class DetailAdActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val upload = UriToUploadable(this)
-        /*   فایل با چه اسمی آپلود شود
-          UUID.randomUUID(): فایل با اسم تصادفی آپلود شود*/
 
         if (resultCode == RESULT_OK) {
 

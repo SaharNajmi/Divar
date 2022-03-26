@@ -1,7 +1,11 @@
 package com.example.divar.service
 
-import com.example.divar.commom.BASE_URL
-import com.example.divar.data.model.*
+import com.example.divar.common.Constants.BASE_URL
+import com.example.divar.data.db.dao.entities.Advertise
+import com.example.divar.data.model.Chat
+import com.example.divar.data.model.Login
+import com.example.divar.data.model.Message
+import com.example.divar.data.model.UserID
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -11,33 +15,29 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface ApiService {
-    //در تمام اپ های اندرویدی نوع رکوست ریسپانس اندرویدی single محسوب میشه یعنی اونایی که از نوع api تعریف میشن از این نوعن
-    // Single  چون فقط یک ریسپانس از سرور برمیگرده( که یا موفقیت آمیز بوده یا نه) استفاده میکنیم
-    //Observable اگر چند ریسپانس داشته باشیم به جای سینگل استفاده میکنیم: مثلا موقع دانلود فایل چون بخش خش دانلود میشه از این نوعه
     @GET("GetBanner.php")
-    fun getAllBanner(
+    fun getBanners(
         @Query("city") city: String, @Query("category") cate: String
-    ): Single<List<AdModel>>
+    ): Single<List<Advertise>>
 
     @FormUrlEncoded
     @POST("SendActivationKey.php")
     fun sendActivationKey(
         @Field("mobile") mobile: String
-    ): Single<LoginModel>
+    ): Single<Login>
 
     @FormUrlEncoded
     @POST("ApplyActivationKey.php")
     fun applyActivationKey(
         @Field("mobile") mobile: String,
         @Field("activation_key") activation_key: String
-    ): Single<LoginModel>
+    ): Single<Login>
 
     @GET("GetUserBanners.php")
-    fun getUserBanner(
+    fun getUserBanners(
         @Query("tell") tell: String
-    ): Single<List<AdModel>>
+    ): Single<List<Advertise>>
 
-    // به جای نوع دادای رشته ای استفاده میکنیم تا مقادیر در دیتابیس داخل "" نشان داده نشود RequestBody
     @Multipart
     @POST("AddBanner.php")
     fun addBanner(
@@ -50,7 +50,7 @@ interface ApiService {
         @Part postImage1: MultipartBody.Part,
         @Part postImage2: MultipartBody.Part,
         @Part postImage3: MultipartBody.Part
-    ): Single<MSG>
+    ): Single<Message>
 
     @Multipart
     @POST("EditBanner.php")
@@ -65,26 +65,23 @@ interface ApiService {
         @Part image1: MultipartBody.Part,
         @Part image2: MultipartBody.Part,
         @Part image3: MultipartBody.Part
-    ): Single<MSG>
+    ): Single<Message>
 
     @GET("DeleteBanner.php")
     fun deleteBanner(
         @Query("id") id: Int
-    ): Single<MSG>
+    ): Single<Message>
 
-    //گرفتن ای دی کاربر از طریق شماره موبایل
     @GET("getUserIdFromPhoneNumber.php")
     fun getUserId(
         @Query("tell") tell: String
-    ): Single<UserIdModel>
+    ): Single<UserID>
 
-    //(صفحه چت شخصی- پیام های پی وی) پیام هایی که کاربر به این ای دی( منحصر بفرد )فرستاده است یا پیام هایی که به کاربر ارسال شده: sender=09105559933&bannerID=3
-    //sender=09187171026&bannerID=0: لیست چت های که به آگهی های مختلف فرستادیم ) پیام هایی که کاربر به آیدی های مختلف(ای دی بنرآی دی برابر 0) فرستاده است )
     @GET("GetMessages.php")
     fun getMessages(
         @Query("MyPhone") myPhone: String,
         @Query("bannerID") bannerID: Int
-    ): Single<List<ChatList>>
+    ): Single<List<Chat>>
 }
 
 fun createApiServiceInstance(): ApiService {

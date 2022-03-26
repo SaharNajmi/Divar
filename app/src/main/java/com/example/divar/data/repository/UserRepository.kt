@@ -1,6 +1,10 @@
 package com.example.divar.data.repository
 
-import com.example.divar.data.model.*
+import com.example.divar.data.db.dao.entities.Advertise
+import com.example.divar.data.model.Chat
+import com.example.divar.data.model.Login
+import com.example.divar.data.model.Message
+import com.example.divar.data.model.UserID
 import com.example.divar.data.repository.source.UserDataSource
 import com.example.divar.data.repository.source.local.UserLocalDataSource
 import com.example.divar.data.repository.source.remote.UserRemoteDataSource
@@ -9,24 +13,24 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import timber.log.Timber
 
-class UserDataRepository(
-    val userRemoteDataSource: UserRemoteDataSource,
-    val userLocalDataSource: UserLocalDataSource
+class UserRepository(
+    private val userRemoteDataSource: UserRemoteDataSource,
+    private val userLocalDataSource: UserLocalDataSource
 ) : UserDataSource {
     override fun
-            sendActivationKey(mobile: String): Single<LoginModel> =
+            sendActivationKey(mobile: String): Single<Login> =
         userRemoteDataSource.sendActivationKey(mobile).doOnSuccess {
             Timber.i("ارسال کد تایید")
         }
 
-    override fun applyActivationKey(mobile: String, activation_key: String): Single<LoginModel> =
+    override fun applyActivationKey(mobile: String, activation_key: String): Single<Login> =
         userRemoteDataSource.applyActivationKey(mobile, activation_key).doOnSuccess {
             Timber.i("لاگین شد")
-            //وقتی ورود با موفقیت انجام شد شماره موبایل را ذخیره و وضعیت لاگین را true کند تا هر سری دوباره لاگین نکند
+            //when login successful -> save state login (auto login)
             onSuccessLogin(it, mobile)
         }
 
-    fun onSuccessLogin(login: LoginModel, phone: String) {
+    private fun onSuccessLogin(login: Login, phone: String) {
         LoginUpdate.update(login.status)
         userLocalDataSource.saveLogin(login.status)
         userLocalDataSource.savePhoneNumber(phone)
@@ -51,7 +55,7 @@ class UserDataRepository(
     override fun getPhoneNumber(): String =
         userLocalDataSource.getPhoneNumber()
 
-    override fun getUserBanner(phoneNumber: String): Single<List<AdModel>> =
+    override fun getUserBanner(phoneNumber: String): Single<List<Advertise>> =
         userRemoteDataSource.getUserBanner(phoneNumber).doOnSuccess { Timber.i("get use banner") }
 
     override fun addBanner(
@@ -64,7 +68,7 @@ class UserDataRepository(
         postImage1: MultipartBody.Part,
         postImage2: MultipartBody.Part,
         postImage3: MultipartBody.Part
-    ): Single<MSG> = userRemoteDataSource.addBanner(
+    ): Single<Message> = userRemoteDataSource.addBanner(
         title,
         description,
         price,
@@ -87,7 +91,7 @@ class UserDataRepository(
         image1: MultipartBody.Part,
         image2: MultipartBody.Part,
         image3: MultipartBody.Part
-    ): Single<MSG> = userRemoteDataSource.editBanner(
+    ): Single<Message> = userRemoteDataSource.editBanner(
         id,
         title,
         description,
@@ -100,15 +104,15 @@ class UserDataRepository(
         image3
     ).doOnSuccess { Timber.i(it.msg) }
 
-    override fun deleteBanner(id: Int): Single<MSG> =
+    override fun deleteBanner(id: Int): Single<Message> =
         userRemoteDataSource.deleteBanner(id).doOnSuccess { Timber.i(it.msg) }
 
-    override fun getUserId(tell: String): Single<UserIdModel> =
+    override fun getUserId(tell: String): Single<UserID> =
         userRemoteDataSource.getUserId(tell).doOnSuccess {
-            Timber.i("user id: " + it.id)
+            Timber.i("user id: " + it.userId)
         }
 
-    override fun getMessage(myPhone: String, bannerId: Int): Single<List<ChatList>> =
+    override fun getMessage(myPhone: String, bannerId: Int): Single<List<Chat>> =
         userRemoteDataSource.getMessage(myPhone, bannerId).doOnSuccess { Timber.i("my chat") }
 
 }

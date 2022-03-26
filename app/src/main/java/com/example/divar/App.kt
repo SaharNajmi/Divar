@@ -5,8 +5,8 @@ import android.content.Context
 import android.os.Bundle
 import androidx.room.Room
 import com.example.divar.data.db.AppDataBase
-import com.example.divar.data.repository.BannerDataRepository
-import com.example.divar.data.repository.UserDataRepository
+import com.example.divar.data.repository.BannerRepository
+import com.example.divar.data.repository.UserRepository
 import com.example.divar.data.repository.source.local.UserLocalDataSource
 import com.example.divar.data.repository.source.remote.BannerRemoteDataSource
 import com.example.divar.data.repository.source.remote.UserRemoteDataSource
@@ -34,32 +34,32 @@ class App : Application() {
 
         Timber.plant(Timber.DebugTree())
 
-        //use Fresco for load imageView
         Fresco.initialize(this)
 
         val myModule = module {
             single<ApiService> { createApiServiceInstance() }
 
-            //add dao room
+            //room dao
             single { Room.databaseBuilder(this@App, AppDataBase::class.java, "db").build() }
 
-            factory<BannerDataRepository> {
-                BannerDataRepository(
+            factory<BannerRepository> {
+                BannerRepository(
                     get<AppDataBase>().bannerDao(),
                     BannerRemoteDataSource(get())
                 )
             }
+
             //sharedPreferences
             single { this@App.getSharedPreferences("app", Context.MODE_PRIVATE) }
 
             single {
-                UserDataRepository(
+                UserRepository(
                     UserRemoteDataSource(get()),
                     UserLocalDataSource(get())
                 )
             }
 
-            //یعنی اینکه برای لود تصاویر از Fresco استفاده میکنیم
+            //Fresco
             single<ImageLoadingService> { FrescoImageLoadingService() }
 
             viewModel { (city: String, category: String) -> BannerViewModel(get(), city, category) }
@@ -80,9 +80,7 @@ class App : Application() {
         }
 
         //auto login
-        //موقع لود اپلیکیشن، این کلاس فراخوانی میشه و وضعیت لاگین را چک می کند تا هر سری کاربر لاگین نکند
-        //نمونه یا اینستنس ساختن از کلاس ریپازیتوری با استفاده از get کوین
-        val userRepository: UserDataRepository = get()
+        val userRepository: UserRepository = get()
         userRepository.checkLogin()
     }
 }

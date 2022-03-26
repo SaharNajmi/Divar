@@ -2,14 +2,14 @@ package com.example.divar.ui.home
 
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
-import com.example.divar.commom.EXTRA_KEY_DATA
-import com.example.divar.commom.MyViewModel
-import com.example.divar.data.model.AdModel
+import com.example.divar.common.Constants.EXTRA_KEY_DATA
+import com.example.divar.common.MyViewModel
+import com.example.divar.data.db.dao.entities.Advertise
 
 class BannerDetailViewModel(val bundle: Bundle) : MyViewModel() {
-    val bannerLiveData = MutableLiveData<AdModel>()
+    val banners = MutableLiveData<Advertise>()
 
     init {
-        bannerLiveData.value = bundle.getParcelable(EXTRA_KEY_DATA)
+        banners.value = bundle.getParcelable(EXTRA_KEY_DATA)
     }
 }

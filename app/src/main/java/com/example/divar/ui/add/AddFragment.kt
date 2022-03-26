@@ -14,9 +14,9 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.divar.R
-import com.example.divar.data.model.ListCity
-import com.example.divar.data.model.MSG
-import com.example.divar.data.model.UserIdModel
+import com.example.divar.common.Constants
+import com.example.divar.data.model.Message
+import com.example.divar.data.model.UserID
 import com.example.divar.service.UriToUploadable
 import com.example.divar.ui.auth.UserViewModel
 import io.reactivex.SingleObserver
@@ -32,16 +32,15 @@ import timber.log.Timber
 import java.util.*
 
 class AddFragment : Fragment() {
-    val userViewModel: UserViewModel by viewModel()
+    private val userViewModel: UserViewModel by viewModel()
     val compositeDisposable = CompositeDisposable()
     private var validate1 = false
     private var validate2 = false
     private var validate3 = false
     private var validate4 = false
-    private var menuItems: ListCity? = null
     private var selectedPositionCateBase: Int? = null
     private var selectedPositionCateSub: Int? = null
-    var userId: Int? = null
+    private var userId: Int? = null
     private val REQUEST_CODE_IMG_1 = 1
     private val REQUEST_CODE_IMG_2 = 2
     private val REQUEST_CODE_IMG_3 = 3
@@ -81,11 +80,11 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // show add layout when user is logged
+        //show add layout when user is logged in
         checkLoginState()
 
-        //use AutoCompleteTextView for search list city
-        searchListCity()
+        //use AutoCompleteTextView for search cities
+        searchCities()
 
         //spinner category
         spinnerSelectCategory()
@@ -93,7 +92,7 @@ class AddFragment : Fragment() {
         //get userId
         getUserId()
 
-        //btn add image in gallery
+        //add image in gallery
         img_add.setOnClickListener {
             uploadImage()
         }
@@ -121,13 +120,13 @@ class AddFragment : Fragment() {
         userViewModel.getUserId(userViewModel.phoneNumber)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<UserIdModel> {
+            .subscribe(object : SingleObserver<UserID> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
                 }
 
-                override fun onSuccess(t: UserIdModel) {
-                    userId = t.id
+                override fun onSuccess(t: UserID) {
+                    userId = t.userId
                 }
 
                 override fun onError(e: Throwable) {
@@ -228,7 +227,7 @@ class AddFragment : Fragment() {
 
         if (validate1 && validate2 && validate3 && validate4) {
 
-            //add user  banner
+            //add user banner
             addBanner()
 
         } else
@@ -239,7 +238,6 @@ class AddFragment : Fragment() {
     }
 
     private fun addBanner() {
-        //RequestBody  به خاطر اینکه مقادیری که به سمت سرور ارسال میشوند داخل""قرار نگیرند
         title =
             RequestBody.create(okhttp3.MultipartBody.FORM, txt_title.text.toString())
         desc =
@@ -261,13 +259,13 @@ class AddFragment : Fragment() {
             post_img_3!!
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<MSG> {
+            .subscribe(object : SingleObserver<Message> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
                 }
 
-                override fun onSuccess(t: MSG) {
-                    Toast.makeText(requireContext(), t!!.msg, Toast.LENGTH_LONG).show()
+                override fun onSuccess(t: Message) {
+                    Toast.makeText(requireContext(), t.msg, Toast.LENGTH_LONG).show()
 
                     //empty text value old
                     txt_title.text.clear()
@@ -332,15 +330,13 @@ class AddFragment : Fragment() {
         }
     }
 
-    private fun searchListCity() {
-        menuItems = ListCity()
-        val list = menuItems!!.arrayListCity()
-        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu, list)
+    private fun searchCities() {
+        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu, Constants.LIST_CITY)
         exposed_dropdown.setAdapter(adapter)
         exposed_dropdown.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(view: View?, hasFocus: Boolean) {
                 if (!hasFocus) {
-                    if (!list.contains(exposed_dropdown.text.toString())) {
+                    if (!Constants.LIST_CITY.contains(exposed_dropdown.text.toString())) {
                         exposed_dropdown.setText("")
                         city_layout.error = "شهر خود را انتخاب کنید"
                         city_layout.isErrorEnabled = true
@@ -357,14 +353,13 @@ class AddFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val upload = UriToUploadable(requireActivity())
-        /*   فایل با چه اسمی آپلود شود
-          UUID.randomUUID(): فایل با اسم تصادفی آپلود شود*/
 
         if (resultCode == RESULT_OK) {
 
             imageUri = data?.data
 
             if (requestCode == REQUEST_CODE_IMG_1) {
+                //UUID.randomUUID(): upload file random
                 post_img_1 = upload.getUploaderFile(imageUri, "image1", "${UUID.randomUUID()}")
                 image_1.setImageURI(imageUri)
                 delete_img_1.visibility = View.VISIBLE

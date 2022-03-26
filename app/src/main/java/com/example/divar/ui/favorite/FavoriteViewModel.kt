@@ -1,9 +1,9 @@
 package com.example.divar.ui.favorite
 
 import androidx.lifecycle.MutableLiveData
-import com.example.divar.commom.MyViewModel
-import com.example.divar.data.model.AdModel
-import com.example.divar.data.repository.BannerDataRepository
+import com.example.divar.common.MyViewModel
+import com.example.divar.data.db.dao.entities.Advertise
+import com.example.divar.data.repository.BannerRepository
 import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -11,30 +11,30 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class FavoriteViewModel(val bannerDataRepository: BannerDataRepository) : MyViewModel() {
-    val favoritebannerLiveData = MutableLiveData<List<AdModel>>()
+class FavoriteViewModel(private val bannerRepository: BannerRepository) : MyViewModel() {
+    val banners = MutableLiveData<List<Advertise>>()
 
     init {
         //show ProgressBar before load item
-        progressLiveData.value = true
+        progress.value = true
         getFavorite()
     }
 
     fun getFavorite() {
-        bannerDataRepository.getFavorite()
+        bannerRepository.getFavorites()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doFinally {
                 //not show ProgressBar after load item
-                progressLiveData.value = false
+                progress.value = false
             }
-            .subscribe(object : SingleObserver<List<AdModel>> {
+            .subscribe(object : SingleObserver<List<Advertise>> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
                 }
 
-                override fun onSuccess(t: List<AdModel>) {
-                    favoritebannerLiveData.postValue(t)
+                override fun onSuccess(t: List<Advertise>) {
+                    banners.postValue(t)
                 }
 
                 override fun onError(e: Throwable) {
@@ -43,12 +43,8 @@ class FavoriteViewModel(val bannerDataRepository: BannerDataRepository) : MyView
             })
     }
 
-    fun refresh() {
-        getFavorite()
-    }
-
-    fun deleteFavorite(banner: AdModel) {
-        bannerDataRepository.deleteFromFavorites(banner)
+    fun deleteFavorite(banner: Advertise) {
+        bannerRepository.deleteFromFavorites(banner)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : CompletableObserver {
@@ -67,8 +63,8 @@ class FavoriteViewModel(val bannerDataRepository: BannerDataRepository) : MyView
 
     }
 
-    fun addFavorite(banner: AdModel) {
-        bannerDataRepository.addToFavorites(banner)
+    fun addFavorite(banner: Advertise) {
+        bannerRepository.addToFavorites(banner)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : CompletableObserver {

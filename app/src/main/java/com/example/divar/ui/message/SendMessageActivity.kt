@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.example.divar.R
-import com.example.divar.commom.*
-import com.example.divar.data.model.ChatList
+import com.example.divar.common.*
+import com.example.divar.data.model.Chat
 import com.example.divar.ui.auth.UserViewModel
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -25,26 +25,24 @@ import java.net.URISyntaxException
 
 class SendMessageActivity : AppCompatActivity() {
 
-    var socket: Socket? = null
-    var handler: Handler? = null
-    lateinit var from: String
-    lateinit var to: String
-    var bannerID: Int = 0
-    lateinit var bannerTitle: String
-    lateinit var bannerImage: String
-    val userViewModel: UserViewModel by viewModel()
-    lateinit var chatList: ArrayList<ChatList>
+    private var socket: Socket? = null
+    private var handler: Handler? = null
+    private lateinit var from: String
+    private lateinit var to: String
+    private var bannerID: Int = 0
+    private lateinit var bannerTitle: String
+    private lateinit var bannerImage: String
+    private val userViewModel: UserViewModel by viewModel()
+    lateinit var chat: ArrayList<Chat>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_message)
-
-        //گرفتن مقادیر موقعی که از صفحه جزیات یا از لیست چت ها وارد این صفحه(صفحه ارسال پیام) میشیم
-        from = intent.getStringExtra("SENDER")
-        to = intent.getStringExtra("RECEIVER")
-        bannerImage = intent.getStringExtra("BANNER_IMAGE")
-        bannerTitle = intent.getStringExtra("BANNER_TITLE")
-        bannerID = intent.getIntExtra("BANNER_ID", 0)
+        from = intent.getStringExtra(Constants.SENDER)
+        to = intent.getStringExtra(Constants.RECEIVER)
+        bannerImage = intent.getStringExtra(Constants.BANNER_IMAGE)
+        bannerTitle = intent.getStringExtra(Constants.BANNER_TITLE)
+        bannerID = intent.getIntExtra(Constants.BANNER_ID, 0)
 
         //view model message
         val messageViewModel: MessageViewModel by viewModel { parametersOf(from, bannerID) }
@@ -52,7 +50,7 @@ class SendMessageActivity : AppCompatActivity() {
 
         //show all messages
         messageViewModel.userMessage.observe(this) {
-            chatList = it as ArrayList<ChatList>
+            chat = it as ArrayList<Chat>
 
             showAllMessages()
         }
@@ -71,8 +69,8 @@ class SendMessageActivity : AppCompatActivity() {
 
         try {
             //creating socket instance
-            //این سوکت به کدوم آدرس وصل شه-برقراری اتصال به سرور
-            socket = IO.socket("http://192.168.1.102:3000")
+            //Connect socket to server
+            socket = IO.socket("http://192.168.43.144:3000")
 
         } catch (e: URISyntaxException) {
             e.printStackTrace()
@@ -81,19 +79,15 @@ class SendMessageActivity : AppCompatActivity() {
 
         socket!!.connect()
 
-        //on  ما به اطلاعات سوکت گوش میدیم - سوکت به ما پیام میده
-        //emit سوکت به اطلاعات ما گوش میده - ما به سوکت پیام میدیم
+        //on : get message
+        //emit : send message
         socket!!.on("chat message", onConnect)
-
-        /* هر سوکتی که به سورو وصل بشه یک id میگیرد با هر کانکنت و دیس کانکت عوض میشه
-        پس ذخیره کردن ایدی فایده ندارد پس باید با اسم سوکت کار کنیم socket nick name*/
-        // socket!!.emit("nickname", from)
 
         //send message
         btn_send.setOnClickListener {
             if (edt_message.text.toString().trim() != "") {
 
-                //جای ارسال کننده و فرستنده عوض بشه در غیر این صورت همیشه فرستنده ثابت می ماند.
+                //change place sender and receiver
                 if (from != userViewModel.phoneNumber) {
                     to = from
                     from = userViewModel.phoneNumber
@@ -115,14 +109,14 @@ class SendMessageActivity : AppCompatActivity() {
 
     private fun showAllMessages() {
         var counter = 0
-        for (item in counter until chatList.size) {
-            //اگر فرستنده خودم باشم
-            if (chatList[counter].sender == userViewModel.phoneNumber) {
+        for (item in counter until chat.size) {
+            //user is sender
+            if (chat[counter].sender == userViewModel.phoneNumber) {
 
                 val textView = TextView(this@SendMessageActivity)
 
                 //show message in textView
-                textView.text = chatList[counter].message
+                textView.text = chat[counter].message
 
                 textView.setTextColor(Color.WHITE)
                 textView.setBackgroundResource(R.drawable.sendchat)
@@ -138,7 +132,7 @@ class SendMessageActivity : AppCompatActivity() {
                 linearMessage.addView(textView)
             } else {
                 val textView = TextView(this@SendMessageActivity)
-                textView.text = chatList[counter].message
+                textView.text = chat[counter].message
                 textView.setTextColor(resources.getColor(R.color.myColor))
                 textView.setBackgroundResource(R.drawable.recivechat)
 
@@ -165,35 +159,36 @@ class SendMessageActivity : AppCompatActivity() {
         bannerTitle: String,
         bannerImage: String
     ) {
-        //ارسال پیام به سمت سرور  با این کلید
+
+        //send message to server with this Key
         socket!!.emit(
             "data",
-            sender + "," + receiver + "," + message + "," + bannerID + "," + bannerTitle + "," + bannerImage
+            "$sender,$receiver,$message,$bannerID,$bannerTitle,$bannerImage"
         )
         socket!!.emit("chat message", message)
     }
 
-    //گوش بده هر موقع پیامی بیاد از طرف سوکت ببین پیغامی میاد یا نه اگه اومد اونو نشون بده
+    //Listen to socket and show messages
     private var onConnect: Emitter.Listener? = Emitter.Listener { args ->
         handler!!.post(object : Runnable {
             override fun run() {
                 val jsonObject = args[0] as JSONObject
                 var message = ""
                 try {
-                    //این کلید message را در سمت سرور در جیسان میگیرد
+                    //get Key in server
                     message = jsonObject.getString("message")
                     val getFrom = jsonObject.getString("from")
                     //getFrom==1    sender
                     //getFrom==2     receiver
-                    //اگر پیام ارسالی خودم باشد
+                    //user is sender
                     if (getFrom == "1") {
                         val textView = TextView(this@SendMessageActivity)
                         textView.text = message
                         textView.setTextColor(Color.WHITE)
                         textView.setBackgroundResource(R.drawable.sendchat)
 
-                        //از لحاظ عرضی و از لحاظ ارتفاع به اندازه خودش جا بگیره
-                        var layoutParams = LinearLayout.LayoutParams(
+                        //layout weight and height -> wrap content
+                        val layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                         )
@@ -228,8 +223,6 @@ class SendMessageActivity : AppCompatActivity() {
         })
     }
 
-
-    //وقتی برنامه بسته بشه یا بیایم بیرون
     override fun onDestroy() {
         super.onDestroy()
         socket!!.disconnect()

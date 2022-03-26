@@ -1,13 +1,13 @@
 package com.example.divar.ui.auth
 
 import androidx.lifecycle.MutableLiveData
-import com.example.divar.commom.MyViewModel
-import com.example.divar.data.model.AdModel
-import com.example.divar.data.model.LoginModel
-import com.example.divar.data.model.MSG
-import com.example.divar.data.model.UserIdModel
+import com.example.divar.common.MyViewModel
+import com.example.divar.data.db.dao.entities.Advertise
+import com.example.divar.data.model.Login
+import com.example.divar.data.model.Message
+import com.example.divar.data.model.UserID
 import com.example.divar.data.repository.LoginUpdate
-import com.example.divar.data.repository.UserDataRepository
+import com.example.divar.data.repository.UserRepository
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,55 +18,53 @@ import okhttp3.RequestBody
 import timber.log.Timber
 
 class UserViewModel(
-    val userDataRepository: UserDataRepository
+    private val userRepository: UserRepository
 ) : MyViewModel() {
 
-    val userBannerLiveData = MutableLiveData<List<AdModel>>()
+    val userBanner = MutableLiveData<List<Advertise>>()
 
+    //send ActivationKey to phoneNumber
+    fun sendActivationKey(mobile: String): Single<Login> =
+        userRepository.sendActivationKey(mobile)
 
-    //ارسال کد فعال سازی به شماره موبایل
-    fun sendActivationKey(mobile: String): Single<LoginModel> =
-        userDataRepository.sendActivationKey(mobile)
-
-    //لاگین کردن با ورود کد تایید
+    //Login by enter ActivationKey
     fun applyActivationKey(
         mobile: String,
         activation_key: String
-    ): Single<LoginModel> = userDataRepository.applyActivationKey(mobile, activation_key)
-
+    ): Single<Login> = userRepository.applyActivationKey(mobile, activation_key)
 
     val isSignIn: Boolean
         get() = LoginUpdate.login != false
 
     val phoneNumber: String
-        get() = userDataRepository.getPhoneNumber()
+        get() = userRepository.getPhoneNumber()
 
-    fun signOut() = userDataRepository.signOut()
+    fun signOut() = userRepository.signOut()
 
-    fun getUserBanner(phone: String): MutableLiveData<List<AdModel>> {
-        userDataRepository.getUserBanner(phone)
+    fun getUserBanners(phone: String): MutableLiveData<List<Advertise>> {
+        userRepository.getUserBanner(phone)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<List<AdModel>> {
+            .subscribe(object : SingleObserver<List<Advertise>> {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
                 }
 
-                override fun onSuccess(t: List<AdModel>) {
-                    userBannerLiveData.value = t
+                override fun onSuccess(t: List<Advertise>) {
+                    userBanner.value = t
                 }
 
                 override fun onError(e: Throwable) {
                     Timber.e(e)
                 }
             })
-        return userBannerLiveData
+        return userBanner
     }
 
-    fun getUserId(tell: String): Single<UserIdModel> = userDataRepository.getUserId(tell)
+    fun getUserId(tell: String): Single<UserID> = userRepository.getUserId(tell)
 
     fun refresh(phone: String) {
-        getUserBanner(phone)
+        getUserBanners(phone)
     }
 
     fun addBanner(
@@ -79,7 +77,7 @@ class UserViewModel(
         postImage1: MultipartBody.Part,
         postImage2: MultipartBody.Part,
         postImage3: MultipartBody.Part
-    ): Single<MSG> = userDataRepository.addBanner(
+    ): Single<Message> = userRepository.addBanner(
         title,
         description,
         price,
@@ -102,7 +100,7 @@ class UserViewModel(
         image1: MultipartBody.Part,
         image2: MultipartBody.Part,
         image3: MultipartBody.Part
-    ): Single<MSG> = userDataRepository.editBanner(
+    ): Single<Message> = userRepository.editBanner(
         id,
         title,
         description,
@@ -117,5 +115,5 @@ class UserViewModel(
 
     fun deleteBanner(
         id: Int
-    ): Single<MSG> = userDataRepository.deleteBanner(id)
+    ): Single<Message> = userRepository.deleteBanner(id)
 }
