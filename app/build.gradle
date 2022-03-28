@@ -40,7 +40,6 @@ android {
 }
 
 dependencies {
-
     def koin_version = "2.2.0"
     def room_version = "2.2.6"
 
@@ -54,27 +53,26 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    /* ==========================Glide | picasso ======================*/
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    //Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
-    /*=============================carouselview=================================*/
+    //Fresco
+    implementation 'com.facebook.fresco:fresco:2.4.0'
+
+    //CarouselView
     implementation 'com.synnapps:carouselview:0.1.5'
 
-    /*====================navigation=====================*/
+    //Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
 
-    //for error 64k method
-    implementation 'com.android.support:multidex:1.0.3'
-
-    //room
+    //Room
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
 
-    /*===========================socket.io==========================================*/
+    //socket.io
     implementation('io.socket:socket.io-client:2.0.0') {
         exclude group: 'org.json', module: 'json'
     }
@@ -92,22 +90,16 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    //rxjava
+    //Rxjava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
-
-    // Fresco
-    implementation 'com.facebook.fresco:fresco:2.4.0'
 
     //Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    //Dynamic Size application in all devices
-    // implementation 'com.github.MrNouri:DynamicSizes:1.0'
-
     //rounded imageView
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
-    //neumorphism
+    //Neumorphism
     implementation 'com.github.fornewid:neumorphism:0.3.0'
 }
