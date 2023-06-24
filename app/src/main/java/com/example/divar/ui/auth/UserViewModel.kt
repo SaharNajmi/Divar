@@ -23,11 +23,9 @@ class UserViewModel(
 
     val userBanner = MutableLiveData<List<Advertise>>()
 
-    //send ActivationKey to phoneNumber
     fun sendActivationKey(mobile: String): Single<Login> =
         userRepository.sendActivationKey(mobile)
 
-    //Login by enter ActivationKey
     fun applyActivationKey(
         mobile: String,
         activation_key: String

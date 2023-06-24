@@ -44,19 +44,14 @@ class SendMessageActivity : AppCompatActivity() {
         bannerTitle = intent.getStringExtra(Constants.BANNER_TITLE)
         bannerID = intent.getIntExtra(Constants.BANNER_ID, 0)
 
-        //view model message
         val messageViewModel: MessageViewModel by viewModel { parametersOf(from, bannerID) }
 
-
-        //show all messages
         messageViewModel.userMessage.observe(this) {
             chat = it as ArrayList<Chat>
 
             showAllMessages()
         }
 
-
-        //back button
         backBtn.setOnClickListener {
             finish()
         }

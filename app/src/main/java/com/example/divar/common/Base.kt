@@ -46,7 +46,6 @@ interface MyProgressBarView {
             viewContext?.let { context ->
                 var loadView = it.findViewById<View>(R.id.loadingView)
                 if (loadView == null && mustShow) {
-                    //add loadView to CoordinatorLayout
                     loadView =
                         LayoutInflater.from(context).inflate(R.layout.view_loading, it, false)
                     it.addView(loadView)

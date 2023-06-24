@@ -73,34 +73,26 @@ class AddFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //show add layout when user is logged in
         checkLoginState()
 
-        //use AutoCompleteTextView for search cities
         searchCities()
 
-        //spinner category
         spinnerSelectCategory()
 
-        //get userId
         getUserId()
 
-        //add image in gallery
         img_add.setOnClickListener {
             uploadImage()
         }
 
-        //delete select image
         deleteImage()
 
-        //submit add banner
         btn_done_add.setOnClickListener {
             submitAddBanner()
         }
@@ -227,7 +219,6 @@ class AddFragment : Fragment() {
 
         if (validate1 && validate2 && validate3 && validate4) {
 
-            //add user banner
             addBanner()
 
         } else
@@ -267,7 +258,6 @@ class AddFragment : Fragment() {
                 override fun onSuccess(t: Message) {
                     Toast.makeText(requireContext(), t.msg, Toast.LENGTH_LONG).show()
 
-                    //empty text value old
                     txt_title.text.clear()
                     txt_description.text.clear()
                     txt_price.text.clear()

@@ -16,7 +16,6 @@ class BannerViewModel(
     var cate: String
 ) : MyViewModel() {
 
-    //get Banners
     val banners = MutableLiveData<List<Advertise>>()
 
     init {

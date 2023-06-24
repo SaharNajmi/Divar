@@ -13,7 +13,6 @@ class BannerRepository(
     override fun getBanners(city: String, category: String): Single<List<Advertise>> =
         bannerLocalDataSource.getFavorites().flatMap { fav ->
             bannerRemoteDataSource.getBanners(city, category).doOnSuccess {
-                //get all favorite Ids
                 val favIds = fav.map { advertise ->
                     advertise.id
                 }

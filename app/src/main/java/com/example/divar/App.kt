@@ -39,7 +39,6 @@ class App : Application() {
         val myModule = module {
             single<ApiService> { createApiServiceInstance() }
 
-            //room dao
             single { Room.databaseBuilder(this@App, AppDataBase::class.java, "db").build() }
 
             factory<BannerRepository> {
@@ -49,7 +48,6 @@ class App : Application() {
                 )
             }
 
-            //sharedPreferences
             single { this@App.getSharedPreferences("app", Context.MODE_PRIVATE) }
 
             single {
@@ -59,7 +57,6 @@ class App : Application() {
                 )
             }
 
-            //Fresco
             single<ImageLoadingService> { FrescoImageLoadingService() }
 
             viewModel { (city: String, category: String) -> BannerViewModel(get(), city, category) }

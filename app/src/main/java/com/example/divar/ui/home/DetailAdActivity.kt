@@ -93,28 +93,23 @@ class DetailAdActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_ad)
 
-        //ui blocked (error->AndroidBlockGuardPolicy)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        //get value banner and show it
         detailBanner()
 
         backBtn.setOnClickListener {
             finish()
         }
 
-        //call phone number
         fab_call.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:$phone")
             startActivity(intent)
         }
 
-        //go activity send message
         img_chat.setOnClickListener {
 
-            //if logged in -> can send message
             if (userViewModel.isSignIn) {
                 val goSendMessage = Intent(this, SendMessageActivity::class.java)
                 goSendMessage.putExtra(Constants.RECEIVER, phone)
@@ -158,7 +153,6 @@ class DetailAdActivity : AppCompatActivity() {
     }
 
     private fun showEditOrDeleteLayout() {
-        //banner's phoneNumber  == user's PhoneNumber  ->can edit\delete banner
         if (userViewModel.phoneNumber == phone) {
             layout_del_edit.visibility = View.VISIBLE
             more_layout.visibility = View.GONE
@@ -239,13 +233,10 @@ class DetailAdActivity : AppCompatActivity() {
             description_detail.text = description
             location_detail.text = city
 
-            //image slider
             imageSlider()
 
-            //show layout edit or layout
             showEditOrDeleteLayout()
 
-            //favorite
             favorite = it.favorite
             checkFavorite(favorite)
 
@@ -272,11 +263,9 @@ class DetailAdActivity : AppCompatActivity() {
             img_fav.setImageResource(R.drawable.ic_dont_favorite)
     }
 
-    //alert dialog edit banner
     private fun showDialogEdit() {
         customLayout = layoutInflater.inflate(R.layout.dialog_edit, null)
 
-        //create alert dialog
         val dialog = AlertDialog.Builder(this)
             .setTitle("ویرایش آگهی")
             .setView(customLayout)
@@ -284,14 +273,10 @@ class DetailAdActivity : AppCompatActivity() {
             .setNegativeButton("انصراف", null)
             .show()
 
-        //edit image
         editImage()
 
-
-        // prevent a dialog from closing when a button is clicked
         val positiveButton: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
-        //show old value in dialog box
         customLayout.txt_edit_title.setText(title)
         customLayout.txt_edit_description.setText(description)
         customLayout.txt_edit_price.setText(price)
@@ -311,7 +296,6 @@ class DetailAdActivity : AppCompatActivity() {
 
         showSpinnerCateInDialogBox()
 
-        //spinner list city
         searchListCity()
         positiveButton.setOnClickListener {
 
@@ -375,7 +359,6 @@ class DetailAdActivity : AppCompatActivity() {
                     "$selectedPositionCateBase,$selectedPositionCateSub"
                 )
 
-                //edit user banner
                 editBanner()
             } else {
 
@@ -389,7 +372,6 @@ class DetailAdActivity : AppCompatActivity() {
     }
 
     private fun showDialogDelete() {
-        //create alert dialog
         AlertDialog.Builder(this)
             .setTitle("حذف آگهی")
             .setMessage("آیا میخواهید این آگهی را حذف کنید؟")
@@ -397,35 +379,28 @@ class DetailAdActivity : AppCompatActivity() {
             .setNegativeButton("خیر", null)
             .setPositiveButton("بله") { dialogInterface, which ->
 
-                //delete banner
                 deleteBanner()
             }
             .show()
     }
 
-    //spinner category
     private fun showSpinnerCateInDialogBox() {
-        //split string category
         val splitCate = category!!.split(",").toTypedArray()
         var cateBase = splitCate[0].toInt()
         cateBase -= 1
         var cateSub = splitCate[1].toInt()
         cateSub -= 1
 
-        //show cate base
         val adapterCate = ArrayAdapter<String>(
             this,
             android.R.layout.simple_spinner_item, cate_base
         )
-        //view dropdown
         adapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         customLayout.spinner_edit_cate.adapter = adapterCate
 
-        //item default spinner cate base
         customLayout.spinner_edit_cate.setSelection(cateBase)
 
-        //show cate sub
         var cate_sub = cate_0
         cate_sub = when (cateBase) {
             0 -> cate_0
@@ -440,10 +415,8 @@ class DetailAdActivity : AppCompatActivity() {
 
         customLayout.spinner_edit_cate_sub.adapter = adapterCateSub
 
-        //item default spinner cate sub
         customLayout.spinner_edit_cate_sub.setSelection(cateSub)
 
-        //Show subcategories when change baseCategory
         customLayout.spinner_edit_cate.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -474,7 +447,6 @@ class DetailAdActivity : AppCompatActivity() {
             }
     }
 
-    //spinner list city
     private fun searchListCity() {
         val adapter = ArrayAdapter(this, R.layout.dropdown_menu, Constants.LIST_CITY)
         customLayout.exposed_dropdown_edit.setAdapter(adapter)

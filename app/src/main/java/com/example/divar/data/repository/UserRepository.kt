@@ -26,7 +26,6 @@ class UserRepository(
     override fun applyActivationKey(mobile: String, activation_key: String): Single<Login> =
         userRemoteDataSource.applyActivationKey(mobile, activation_key).doOnSuccess {
             Timber.i("لاگین شد")
-            //when login successful -> save state login (auto login)
             onSuccessLogin(it, mobile)
         }
 

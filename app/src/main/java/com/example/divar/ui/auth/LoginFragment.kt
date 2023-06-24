@@ -37,19 +37,15 @@ class LoginFragment : Fragment(), ItemOnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //check logged in
         checkLogin()
 
-        //show advertise user
         showAdUser()
 
-        //log out
         txt_log_out.setOnClickListener {
             rec_my_ad.visibility = View.GONE
             txt_log_out.visibility = View.GONE
@@ -57,7 +53,6 @@ class LoginFragment : Fragment(), ItemOnClickListener {
             userViewModel.signOut()
         }
 
-        //send ActivationKey to phoneNumber
         submit_bt.setOnClickListener {
             var isValid = true
             if (!mobile_text.text.toString().trim()
@@ -99,7 +94,6 @@ class LoginFragment : Fragment(), ItemOnClickListener {
             }
         }
 
-        //enter activation code send to phoneNumber
         submit2_bt.setOnClickListener {
             val txtCode = activation_code.text.toString().trim()
             val txtTell = mobile_text.text.toString().trim()
@@ -127,7 +121,6 @@ class LoginFragment : Fragment(), ItemOnClickListener {
                                 txt_log_out.visibility = View.VISIBLE
                                 activation_layout.visibility = View.GONE
 
-                                //show advertise user
                                 showAdUser()
                             }
                         }

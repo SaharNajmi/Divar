@@ -36,14 +36,12 @@ class FavoriteAdapter(
             title.text = item.title
             city.text = item.city
 
-            //item click
             itemView.setOnClickListener {
                 item.favorite = true
                 notifyItemChanged(adapterPosition)
                 favoriteBannerClickListener.onClick(item)
             }
 
-            //delete favorite
             itemView.fav_delete.setOnClickListener {
                 favoriteBannerClickListener.deleteItemClick(item)
                 list.remove(item)

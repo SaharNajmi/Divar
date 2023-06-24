@@ -16,12 +16,10 @@ import com.example.divar.ui.auth.UserViewModel
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_empty_view.view.*
 import org.koin.android.ext.android.get
-import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class ChatFragment : MyFragment(), ChatListAdapter.ChatClickListener {
 
-    //get my phone number
     private val userViewModel: UserViewModel by viewModel()
     private lateinit var viewModel: MessageViewModel
 
@@ -29,7 +27,6 @@ class ChatFragment : MyFragment(), ChatListAdapter.ChatClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
@@ -40,10 +37,8 @@ class ChatFragment : MyFragment(), ChatListAdapter.ChatClickListener {
         val messageViewModel: MessageViewModel by viewModel { parametersOf(myPhone, 0) }
         viewModel = messageViewModel
 
-        //check login for show list chat
         checkLoginState()
 
-        //get list my chat
         messageViewModel.userMessage.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 rec_chat_list.layoutManager =
@@ -52,14 +47,12 @@ class ChatFragment : MyFragment(), ChatListAdapter.ChatClickListener {
                 rec_chat_list.visibility = View.VISIBLE
                 emptyLayout.visibility = View.GONE
             } else {
-                //show empty layout
                 emptyLayout.visibility = View.VISIBLE
                 rec_chat_list.visibility = View.GONE
                 emptyLayout.txtEmpty.text = getString(R.string.emptyChat)
             }
         }
 
-        //show or not show ProgressBar
         messageViewModel.progress.observe(viewLifecycleOwner) {
             setProgress(it)
         }
@@ -84,7 +77,6 @@ class ChatFragment : MyFragment(), ChatListAdapter.ChatClickListener {
 
     override fun onResume() {
         super.onResume()
-        //update messages
         viewModel.getMessage()
     }
 }

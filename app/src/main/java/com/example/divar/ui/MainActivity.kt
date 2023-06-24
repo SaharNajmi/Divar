@@ -16,20 +16,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //BottomNavigationView
         buttonNavigation()
     }
 
     private fun buttonNavigation() {
-        //empty background fab
         bottomNavigationView.background = null
 
-        //show default fragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.switch_fragment, AdListFragment())
             .commit()
 
-        //bottom navigation default selected option
         bottomNavigationView.selectedItemId = R.id.home
 
         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->

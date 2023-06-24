@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
@@ -68,26 +67,20 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ad_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //show banner
         getBanners()
 
-        //search list city with AutoCompleteTextView
         searchCity()
 
-        //search banner
         searchView()
 
-        //change category and list update
         selectSubCategory()
 
-        //show or not show ProgressBar
         bannerViewModel.progress.observe(viewLifecycleOwner) {
             setProgress(it)
         }
@@ -97,7 +90,6 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
         bannerViewModel.banners.observe(viewLifecycleOwner,
             object : Observer<List<Advertise>> {
                 override fun onChanged(banners: List<Advertise>?) {
-                    //  Timber.i("my list " + banners.toString())
 
                     if (banners!!.isNotEmpty()) {
                         bannerAdapter =
@@ -108,7 +100,6 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
                         rec_ad.layoutManager = manager
                         rec_ad.adapter = bannerAdapter
 
-                        //update list
                         bannerAdapter.setData(banners as ArrayList<Advertise>)
 
                         rec_ad.visibility = View.VISIBLE
@@ -124,19 +115,16 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
     }
 
     private fun searchCity() {
-        //filter advertise by city
         val list = LIST_CITY
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu, list)
         auto_complete_textView.setAdapter(adapter)
         auto_complete_textView.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(view: View?, hasFocus: Boolean) {
 
-                //empty text in auto_complete_textView when click and equals text=all city
                 if (!auto_complete_textView.equals(R.string.all_city)) {
                     auto_complete_textView.setText("")
                 }
 
-                //do not select city or enter wrong city
                 if (!hasFocus) {
                     if (!list.contains(auto_complete_textView.text.toString())) {
                         auto_complete_textView.setText(R.string.all_city)
@@ -147,7 +135,6 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
             }
         })
 
-        //update list advertise by city selected
         auto_complete_textView.setOnItemClickListener(OnItemClickListener { arg0, arg1, arg2, arg3 ->
             MY_CITY = auto_complete_textView.text.toString().trim()
             chaneCity()
@@ -155,12 +142,10 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
     }
 
     private fun chaneCity() {
-        //update list
         bannerViewModel.changeCity(MY_CITY)
     }
 
     private fun chaneCategory() {
-        //update list
         bannerViewModel.chaneCategory(MY_CATEGORY)
     }
 
@@ -178,12 +163,10 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
     }
 
     fun selectSubCategory() {
-        //navigation view
         imageFilter.setOnClickListener {
             drawerLayout.openDrawer(navView)
         }
 
-        //expandableListView  <list and sublist category>
         expandableListView = navView.getHeaderView(0).expandableListViewHeader
 
         if (expandableListView != null) {
@@ -201,12 +184,10 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
                 val childP = childPosition + 1
                 MY_CATEGORY = "$groupP,$childP"
 
-                //show title category in textView
                 val titleCate =
                     listData[(titles as ArrayList<String>)[groupPosition]]!![childPosition]
                 textFilter.text = titleCate
 
-                //delete filter
                 if (textFilter.text.equals(R.string.filterName))
                     cancel_filter.visibility = View.GONE
                 else
@@ -219,7 +200,6 @@ class AdListFragment : MyFragment(), ItemOnClickListener {
                     chaneCategory()
                 }
 
-                //update list by category
                 chaneCategory()
 
                 drawerLayout.closeDrawer(navView)

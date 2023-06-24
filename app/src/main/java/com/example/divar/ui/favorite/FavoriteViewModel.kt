@@ -15,7 +15,6 @@ class FavoriteViewModel(private val bannerRepository: BannerRepository) : MyView
     val banners = MutableLiveData<List<Advertise>>()
 
     init {
-        //show ProgressBar before load item
         progress.value = true
         getFavorite()
     }
@@ -25,7 +24,6 @@ class FavoriteViewModel(private val bannerRepository: BannerRepository) : MyView
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doFinally {
-                //not show ProgressBar after load item
                 progress.value = false
             }
             .subscribe(object : SingleObserver<List<Advertise>> {

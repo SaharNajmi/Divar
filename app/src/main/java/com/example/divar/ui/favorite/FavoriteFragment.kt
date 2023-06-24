@@ -26,14 +26,12 @@ class FavoriteFragment : MyFragment(), FavoriteAdapter.FavoriteBannerClickListen
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_favorite, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //show favorite list
         favoriteViewModel.banners.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 rec_favorite.layoutManager =
@@ -44,13 +42,11 @@ class FavoriteFragment : MyFragment(), FavoriteAdapter.FavoriteBannerClickListen
                 emptyLayout.visibility = View.GONE
 
             } else {
-                //show  empty layout
                 emptyLayout.visibility = View.VISIBLE
                 emptyLayout.txtEmpty.text = getString(R.string.emptyFavorite)
             }
         }
 
-        //show or not show ProgressBar
         favoriteViewModel.progress.observe(viewLifecycleOwner) {
             setProgress(it)
         }
